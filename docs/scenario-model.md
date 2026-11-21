@@ -18,8 +18,11 @@ Recipe(pattern: 3x3 grid of item|null,
   count-based.
 - **rotation_mirror**: pattern matches under rotations/reflections (reserved for
   traditional tier equivalence; e.g. any plank type groups, rotations of shaped tools).
+- **translate** (added for the derived stool): pattern matches anywhere in the grid
+  with the same shape; seat = 3 planks in any row. Translations illegal under exact.
 
 Consequences for the craft engine (event-day `packages/world`):
+
 - Dataset FILES (`contracts/scenario.ts`) keep the readable 3x3 array form
   (`GridPattern`); the 9-char template is its graph projection, computed by the
   harness when creating post-hoc Recipe nodes.
@@ -32,22 +35,22 @@ Consequences for the craft engine (event-day `packages/world`):
 
 ## Composition depth = the tier semantics
 
-| Tier | Depth | Seeds from actual Minecraft |
-|---|---|---|
-| traditional | 1 | planks (from log), sticks, torch — recipe or raw items already in inventory; retrieval tier |
-| derived | 2-3 | **fence from logs**: log→planks→sticks, then 4 planks + 2 sticks→3 fence; crafting table; ladder — transfer tier: intermediate recipes must be discovered and chained, quantities budgeted |
-| invented | 2-3 | same compositional engine, invented items/recipes defined by us (hidden held-out book) — search tier |
+| Tier        | Depth | Seeds from actual Minecraft                                                                                                                                                                                                                       |
+| ----------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| traditional | 1-3   | canonical recipes only: torch, pickaxe; composed chains of REAL recipes such as fence-from-logs (log→planks→sticks→fence). Familiarity is the tier, not depth                                                                                     |
+| derived     | 2-4   | plausible but NOT canonical: **wooden stool from logs** — seat = 3 planks in any row (translate equivalence; new item), stool = seat + 3 sticks in a row (legs); quantity budgeting across 4 recipe applications, partial-credit rules documented |
+| invented    | 2-3   | same compositional engine, invented items/recipes defined by us (hidden held-out book) — search tier                                                                                                                                              |
 
 ## Actual-Minecraft seed recipes (verified 2026-11-21)
 
-| recipe | pattern (3x3, `.` = empty) | produces | notes |
-|---|---|---|---|
-| oak_planks | `[oak_log, ., .; ., ., .; ., ., .]` (shapeless, 1 slot) | x4 | any log → matching planks |
-| stick | `[oak_planks, ., .; oak_planks, ., .; ., ., .]` (any 2 planks, exact vertical) | x4 | 1x2 shape anywhere vertical |
-| torch | `[coal, ., .; stick, ., .; ., ., .]` | x4 | coal above stick |
-| crafting_table | `[p, p, .; p, p, .; ., ., .]` | x1 | 2x2 anywhere |
-| oak_fence | `[p, s, p; p, s, p; ., ., .]` | x3 | **changed recipe** (4 planks + 2 sticks), modern 2-row pattern |
-| ladder (optional) | `s, ., s / s, ., s / s, ., s` (7 sticks) | x3 | verify at event if used |
+| recipe            | pattern (3x3, `.` = empty)                                                     | produces | notes                                                          |
+| ----------------- | ------------------------------------------------------------------------------ | -------- | -------------------------------------------------------------- |
+| oak_planks        | `[oak_log, ., .; ., ., .; ., ., .]` (shapeless, 1 slot)                        | x4       | any log → matching planks                                      |
+| stick             | `[oak_planks, ., .; oak_planks, ., .; ., ., .]` (any 2 planks, exact vertical) | x4       | 1x2 shape anywhere vertical                                    |
+| torch             | `[coal, ., .; stick, ., .; ., ., .]`                                           | x4       | coal above stick                                               |
+| crafting_table    | `[p, p, .; p, p, .; ., ., .]`                                                  | x1       | 2x2 anywhere                                                   |
+| oak_fence         | `[p, s, p; p, s, p; ., ., .]`                                                  | x3       | **changed recipe** (4 planks + 2 sticks), modern 2-row pattern |
+| ladder (optional) | `s, ., s / s, ., s / s, ., s` (7 sticks)                                       | x3       | verify at event if used                                        |
 
 Sources: planks/stick ([1337wiki](https://minecraft.1337wiki.com/planks/), [howtocraft](https://howtocraft.net/minecraft/stick)),
 fence current pattern ([digminecraft](https://www.digminecraft.com/basic_recipes/make_oak_fence.php)),
@@ -80,6 +83,7 @@ matching without reassembling it in the query).
 
 Examples: stick `shape: "A.A.A....", var A = planks`; fence `"ASA.ASA.."` with
 A=planks, S=stick; log→planks shapeless → `shape: null` (counts only).
+
 - Equivalence = string algebra on the template (rotation/mirror = char permutation),
   precomputed by the harness into a variants set; no graph joins.
 - Shapeless = `shape: null` + `quantity` on REQUIRES edges. Graceful degradation.

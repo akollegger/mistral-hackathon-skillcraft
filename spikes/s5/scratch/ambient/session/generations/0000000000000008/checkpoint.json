@@ -1,1 +1,16 @@
-{"checkpoint_version":1,"compaction_count":0,"context":{"messages":[]},"last_finished_turn_id":"turn-5b0af2ed72f5394dd764fce5e5bce4a5","last_reported_context_tokens":6660,"notifications":[],"turn":{"outcome":{"output":[{"text":"4","type":"text"}],"type":"completed"},"turn_id":"turn-5b0af2ed72f5394dd764fce5e5bce4a5","type":"terminal"}}
+{
+	"checkpoint_version": 1,
+	"compaction_count": 0,
+	"context": { "messages": [] },
+	"last_finished_turn_id": "turn-5b0af2ed72f5394dd764fce5e5bce4a5",
+	"last_reported_context_tokens": 6660,
+	"notifications": [],
+	"turn": {
+		"outcome": {
+			"output": [{ "text": "4", "type": "text" }],
+			"type": "completed"
+		},
+		"turn_id": "turn-5b0af2ed72f5394dd764fce5e5bce4a5",
+		"type": "terminal"
+	}
+}

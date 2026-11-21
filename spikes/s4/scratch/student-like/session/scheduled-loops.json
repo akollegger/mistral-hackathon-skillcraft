@@ -1,4 +1,4 @@
 {
-  "format": "vibe.scheduled-loops/v1",
-  "loops": []
+	"format": "vibe.scheduled-loops/v1",
+	"loops": []
 }

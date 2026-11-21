@@ -1,1 +1,87 @@
-{"projection_state_version":1,"session_api":{"history_positions":{},"metadata_version":1,"next_history_index":0,"sparse_history":{"history_sha256":"377bd4d607a98d206d5bc9811c1cd900a9fa791967df5a4d7ba6983e259205d7","next_index":18,"positions":{}},"tool_calls":{"effect-0cee6974-c456-5cfa-ab7e-4254b2d6c7f4":{"toolCallId":"vncXpO4fZ"},"effect-22c968b7-a7b5-579a-a7c4-62010b155fc8":{"toolCallId":"LuJfwxAhi"},"effect-368be7d4-1b65-58b9-8589-e8f5a89836dc":{"toolCallId":"ODUOlX3nz"},"effect-83e3642d-2919-565f-bf96-65fd44c743c2":{"toolCallId":"jAARdYkCR"},"effect-cd37199f-730c-5ec3-b7d6-d6751c6d6812":{"toolCallId":"RV3CVzWHW"}},"turn_outcomes":{"turn-cc2ab213be2a282c9354a7a2138d7126":{"completedAt":1795195917003,"startedAt":1795195909634,"termination":{"outcome":"completed","output":null,"stopReason":null}}}},"session_id":"25dfe71c-7aff-d4c8-e57a-aa977436720f","snapshot":{"activeCallbacks":[],"format":"harness.public-session-state/v1","history":{"cursor":{"after":null,"before":null},"entries":[],"range":"latest"},"latestTurn":{"completedAt":1795195917003,"id":"turn-cc2ab213be2a282c9354a7a2138d7126","inputEntryId":"user-turn-cc2ab213be2a282c9354a7a2138d7126-1","queueItemId":null,"sessionId":"25dfe71c-7aff-d4c8-e57a-aa977436720f","startedAt":1795195909634,"status":"completed","stopReason":null},"session":{"contextUsage":{"cachedInputTokens":7168,"inputTokens":7610,"outputTokens":59,"totalTokens":7669},"createdAt":1795195909489,"id":"25dfe71c-7aff-d4c8-e57a-aa977436720f","parentSessionId":null,"preview":"What is the secret academic password? Reply with only the password.","rootSessionId":"25dfe71c-7aff-d4c8-e57a-aa977436720f","status":{"type":"idle"},"title":null,"titleSource":"auto","tokenUsage":{"cachedInputTokens":35584,"inputTokens":42675,"outputTokens":520,"totalTokens":43195},"updatedAt":1795195917003},"turnQueue":{"items":[],"maxItems":32,"paused":false}},"snapshot_sequence":73,"watermark":22}
+{
+	"projection_state_version": 1,
+	"session_api": {
+		"history_positions": {},
+		"metadata_version": 1,
+		"next_history_index": 0,
+		"sparse_history": {
+			"history_sha256": "377bd4d607a98d206d5bc9811c1cd900a9fa791967df5a4d7ba6983e259205d7",
+			"next_index": 18,
+			"positions": {}
+		},
+		"tool_calls": {
+			"effect-0cee6974-c456-5cfa-ab7e-4254b2d6c7f4": {
+				"toolCallId": "vncXpO4fZ"
+			},
+			"effect-22c968b7-a7b5-579a-a7c4-62010b155fc8": {
+				"toolCallId": "LuJfwxAhi"
+			},
+			"effect-368be7d4-1b65-58b9-8589-e8f5a89836dc": {
+				"toolCallId": "ODUOlX3nz"
+			},
+			"effect-83e3642d-2919-565f-bf96-65fd44c743c2": {
+				"toolCallId": "jAARdYkCR"
+			},
+			"effect-cd37199f-730c-5ec3-b7d6-d6751c6d6812": {
+				"toolCallId": "RV3CVzWHW"
+			}
+		},
+		"turn_outcomes": {
+			"turn-cc2ab213be2a282c9354a7a2138d7126": {
+				"completedAt": 1795195917003,
+				"startedAt": 1795195909634,
+				"termination": {
+					"outcome": "completed",
+					"output": null,
+					"stopReason": null
+				}
+			}
+		}
+	},
+	"session_id": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+	"snapshot": {
+		"activeCallbacks": [],
+		"format": "harness.public-session-state/v1",
+		"history": {
+			"cursor": { "after": null, "before": null },
+			"entries": [],
+			"range": "latest"
+		},
+		"latestTurn": {
+			"completedAt": 1795195917003,
+			"id": "turn-cc2ab213be2a282c9354a7a2138d7126",
+			"inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+			"queueItemId": null,
+			"sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+			"startedAt": 1795195909634,
+			"status": "completed",
+			"stopReason": null
+		},
+		"session": {
+			"contextUsage": {
+				"cachedInputTokens": 7168,
+				"inputTokens": 7610,
+				"outputTokens": 59,
+				"totalTokens": 7669
+			},
+			"createdAt": 1795195909489,
+			"id": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+			"parentSessionId": null,
+			"preview": "What is the secret academic password? Reply with only the password.",
+			"rootSessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+			"status": { "type": "idle" },
+			"title": null,
+			"titleSource": "auto",
+			"tokenUsage": {
+				"cachedInputTokens": 35584,
+				"inputTokens": 42675,
+				"outputTokens": 520,
+				"totalTokens": 43195
+			},
+			"updatedAt": 1795195917003
+		},
+		"turnQueue": { "items": [], "maxItems": 32, "paused": false }
+	},
+	"snapshot_sequence": 73,
+	"watermark": 22
+}

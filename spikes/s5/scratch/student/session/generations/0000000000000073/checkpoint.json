@@ -1,1 +1,16 @@
-{"checkpoint_version":1,"compaction_count":0,"context":{"messages":[]},"last_finished_turn_id":"turn-cc2ab213be2a282c9354a7a2138d7126","last_reported_context_tokens":7669,"notifications":[],"turn":{"outcome":{"output":[{"text":"wisteria-cobra","type":"text"}],"type":"completed"},"turn_id":"turn-cc2ab213be2a282c9354a7a2138d7126","type":"terminal"}}
+{
+	"checkpoint_version": 1,
+	"compaction_count": 0,
+	"context": { "messages": [] },
+	"last_finished_turn_id": "turn-cc2ab213be2a282c9354a7a2138d7126",
+	"last_reported_context_tokens": 7669,
+	"notifications": [],
+	"turn": {
+		"outcome": {
+			"output": [{ "text": "wisteria-cobra", "type": "text" }],
+			"type": "completed"
+		},
+		"turn_id": "turn-cc2ab213be2a282c9354a7a2138d7126",
+		"type": "terminal"
+	}
+}

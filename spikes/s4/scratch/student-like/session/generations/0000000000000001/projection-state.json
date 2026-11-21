@@ -1,1 +1,30 @@
-{"projection_state_version":1,"session_id":"dc869b69-6718-e8e6-6b77-5009d3e701c2","snapshot":{"activeCallbacks":[],"format":"harness.public-session-state/v1","history":{"cursor":{"after":null,"before":null},"entries":[],"range":"latest"},"latestTurn":null,"session":{"contextUsage":null,"createdAt":1795196965485,"id":"dc869b69-6718-e8e6-6b77-5009d3e701c2","parentSessionId":null,"preview":"","rootSessionId":"dc869b69-6718-e8e6-6b77-5009d3e701c2","status":{"type":"idle"},"title":null,"titleSource":"auto","tokenUsage":null,"updatedAt":1795196965485},"turnQueue":{"items":[],"maxItems":32,"paused":false}},"snapshot_sequence":0,"watermark":0}
+{
+	"projection_state_version": 1,
+	"session_id": "dc869b69-6718-e8e6-6b77-5009d3e701c2",
+	"snapshot": {
+		"activeCallbacks": [],
+		"format": "harness.public-session-state/v1",
+		"history": {
+			"cursor": { "after": null, "before": null },
+			"entries": [],
+			"range": "latest"
+		},
+		"latestTurn": null,
+		"session": {
+			"contextUsage": null,
+			"createdAt": 1795196965485,
+			"id": "dc869b69-6718-e8e6-6b77-5009d3e701c2",
+			"parentSessionId": null,
+			"preview": "",
+			"rootSessionId": "dc869b69-6718-e8e6-6b77-5009d3e701c2",
+			"status": { "type": "idle" },
+			"title": null,
+			"titleSource": "auto",
+			"tokenUsage": null,
+			"updatedAt": 1795196965485
+		},
+		"turnQueue": { "items": [], "maxItems": 32, "paused": false }
+	},
+	"snapshot_sequence": 0,
+	"watermark": 0
+}

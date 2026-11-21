@@ -1,1 +1,216 @@
-{"projection_state_version":1,"session_api":{"history_positions":{},"metadata_version":1,"next_history_index":0,"sparse_history":{"history_sha256":"166ccf4af2bfb6eccfd8746c58a090abe8cfb7ae15259606be85f78b4f6a13a3","next_index":114,"positions":{}},"tool_calls":{"effect-0002e3dd-c256-5876-9cb8-4f3fc4aecde2":{"toolCallId":"V3QMpIft2"},"effect-0318dacf-d617-5083-a4f4-6cb1130c1f00":{"toolCallId":"typescript:15:woKnq58wI:14:tool:14"},"effect-137b03e1-26e4-56dc-97cd-7a40f7ad0fd9":{"toolCallId":"typescript:19:RmrVKnMip:2:tool:2"},"effect-16ad2ee6-cdaa-5a8d-a893-88216f35170d":{"toolCallId":"typescript:19:RmrVKnMip:0:tool:0"},"effect-16f83e24-c512-51ec-96d6-2c08693aba0c":{"toolCallId":"typescript:13:mTBeB6dl3:8:tool:8"},"effect-1ae0141c-5fd5-5f9e-b939-e9602c7cac48":{"toolCallId":"typescript:11:seBhro5CP:5:tool:5"},"effect-34d8ba2a-61d8-54c5-92b2-bf7c91bb6cfb":{"toolCallId":"typescript:13:mTBeB6dl3:11:tool:11"},"effect-363ded8d-d9a9-504b-b0bc-a9cbfd4511b5":{"toolCallId":"typescript:15:woKnq58wI:6:tool:6"},"effect-3714c739-2d81-5de5-8758-0efd485a78ef":{"toolCallId":"typescript:13:mTBeB6dl3:2:tool:2"},"effect-3cd4fa06-e0cb-5e3e-ada4-1518fd199582":{"toolCallId":"typescript:7:uVtvQS1MW:0:tool:0"},"effect-3dbc4f39-5ba4-5b82-9a34-374d824dd0b2":{"toolCallId":"typescript:13:mTBeB6dl3:0:tool:0"},"effect-4a216fe7-3a7c-57c4-bb49-758340de27c1":{"toolCallId":"typescript:17:4QiJ9P69Q:0:tool:0"},"effect-4aa37b28-e3ab-59d0-bd5a-e12dcc4c2c05":{"toolCallId":"typescript:13:mTBeB6dl3:14:tool:14"},"effect-4bc65995-0479-5f20-983f-419c19b3cd8c":{"toolCallId":"typescript:11:seBhro5CP:1:tool:1"},"effect-52ba1ab1-f038-5816-86c3-f78e03616a47":{"toolCallId":"typescript:13:mTBeB6dl3:7:tool:7"},"effect-566c70ff-8652-5598-86ac-92ac9c24554b":{"toolCallId":"typescript:13:mTBeB6dl3:15:tool:15"},"effect-57c2e3c9-8bdf-55ee-8c2b-e9c3f4ceee4b":{"toolCallId":"typescript:13:mTBeB6dl3:4:tool:4"},"effect-58ed1c56-7d21-5a8f-aee1-6ed09ecd0337":{"toolCallId":"typescript:15:woKnq58wI:3:tool:3"},"effect-67b53fbb-1c86-5b1f-976e-f0698af7e3e2":{"toolCallId":"typescript:13:mTBeB6dl3:6:tool:6"},"effect-6c0dd944-7d88-5cb1-ad35-e7512cc0cc78":{"toolCallId":"typescript:15:woKnq58wI:0:tool:0"},"effect-6dd9582b-ca2f-5971-afa8-8548e3744277":{"toolCallId":"typescript:15:woKnq58wI:7:tool:7"},"effect-6f3d7a45-b618-52e7-92c6-f45b637bd18c":{"toolCallId":"typescript:11:seBhro5CP:6:tool:6"},"effect-72bb3c7c-fe50-5a05-bbbf-14c982e340a0":{"toolCallId":"typescript:11:seBhro5CP:0:tool:0"},"effect-7472d262-91b8-5239-be6a-358e2e884992":{"toolCallId":"typescript:15:woKnq58wI:11:tool:11"},"effect-76c5a3d7-7e67-523e-b0c4-275a212eaa84":{"toolCallId":"typescript:11:seBhro5CP:3:tool:3"},"effect-7dcacfd8-6414-57dc-a75a-2a6ac2abb9f5":{"toolCallId":"typescript:15:woKnq58wI:5:tool:5"},"effect-7f84a501-9197-5b01-b295-da27bcb8d49c":{"toolCallId":"typescript:13:mTBeB6dl3:5:tool:5"},"effect-85a76791-7e29-5998-adcd-2ccb1de17563":{"toolCallId":"typescript:13:mTBeB6dl3:12:tool:12"},"effect-894dc603-207f-5a4d-a03b-5f2031b5f1ef":{"toolCallId":"typescript:15:woKnq58wI:1:tool:1"},"effect-8a08bbc1-7eec-54d9-ace5-63890aa8fc87":{"toolCallId":"typescript:15:woKnq58wI:15:tool:15"},"effect-8baff899-d831-5106-948c-2cd7fcf3ff85":{"toolCallId":"typescript:13:mTBeB6dl3:9:tool:9"},"effect-904c8681-3924-5db4-8083-c7df9013e4bb":{"toolCallId":"typescript:15:woKnq58wI:10:tool:10"},"effect-9d1eca57-a7bf-5cb5-93b0-024d2d3d9ae5":{"toolCallId":"typescript:15:woKnq58wI:2:tool:2"},"effect-a37619ad-30ea-521f-8716-2a04850ae7b8":{"toolCallId":"pwoX560tW"},"effect-a5e8aa01-5812-5bc8-8539-76c7c9b9922c":{"toolCallId":"typescript:11:seBhro5CP:2:tool:2"},"effect-ab2e3652-f85f-5961-be3f-33ae6786a8fc":{"toolCallId":"typescript:15:woKnq58wI:8:tool:8"},"effect-ac813d46-68d0-5c49-bf7f-64a83956eb0a":{"toolCallId":"typescript:13:mTBeB6dl3:3:tool:3"},"effect-b3c88d62-cab4-50b9-a344-4ff198d3eb06":{"toolCallId":"typescript:9:ZHGOZIPcV:0:tool:0"},"effect-b4dae503-994b-5896-b4c1-b18a2a29329b":{"toolCallId":"typescript:11:seBhro5CP:4:tool:4"},"effect-b67c2bd4-60fe-5817-a05a-46217683e7e3":{"toolCallId":"typescript:13:mTBeB6dl3:1:tool:1"},"effect-bf3c8263-bca7-5f5d-b1c2-4e60e526caf4":{"toolCallId":"typescript:15:woKnq58wI:9:tool:9"},"effect-ce30a70a-7c4c-5de1-9fa3-3c909ca795bb":{"toolCallId":"typescript:15:woKnq58wI:13:tool:13"},"effect-d0687ee5-ad56-5548-9cf4-b822a82ca2ee":{"toolCallId":"typescript:13:mTBeB6dl3:10:tool:10"},"effect-e2abc69c-30b7-583d-89e2-2ebc8cb7ea11":{"toolCallId":"typescript:15:woKnq58wI:12:tool:12"},"effect-e520561b-7c95-5839-9260-21f8ce935295":{"toolCallId":"typescript:11:seBhro5CP:7:tool:7"},"effect-e90a086e-69c7-5f9f-8d38-e128fc460c1b":{"toolCallId":"typescript:19:RmrVKnMip:1:tool:1"},"effect-ee157c23-b241-573d-b688-8dee916593d0":{"toolCallId":"typescript:15:woKnq58wI:4:tool:4"},"effect-f51dba30-d44e-53fb-86c2-2f005b09bb4b":{"toolCallId":"typescript:13:mTBeB6dl3:13:tool:13"}},"turn_outcomes":{"turn-b23a4921e2e9f48120a0c2a580e6eb92":{"completedAt":1795197831612,"startedAt":1795197778378,"termination":{"outcome":"completed","output":null,"stopReason":null}}}},"session_id":"79491ba5-d968-e4ec-407c-beed790eba6c","snapshot":{"activeCallbacks":[],"format":"harness.public-session-state/v1","history":{"cursor":{"after":null,"before":null},"entries":[],"range":"latest"},"latestTurn":{"completedAt":1795197831612,"id":"turn-b23a4921e2e9f48120a0c2a580e6eb92","inputEntryId":"user-turn-b23a4921e2e9f48120a0c2a580e6eb92-1","queueItemId":null,"sessionId":"79491ba5-d968-e4ec-407c-beed790eba6c","startedAt":1795197778378,"status":"completed","stopReason":null},"session":{"contextUsage":{"cachedInputTokens":11136,"inputTokens":13717,"outputTokens":495,"totalTokens":14212},"createdAt":1795197777943,"id":"79491ba5-d968-e4ec-407c-beed790eba6c","parentSessionId":null,"preview":"You have a crafting table available as tools (place, take, clear_grid, craft), a 3x3 grid (slots 0-8, row-major), and an inventory. Your goal: craft a torch. Use the tools to do it, then report which…","rootSessionId":"79491ba5-d968-e4ec-407c-beed790eba6c","status":{"type":"idle"},"title":null,"titleSource":"auto","tokenUsage":{"cachedInputTokens":98816,"inputTokens":113266,"outputTokens":5123,"totalTokens":118389},"updatedAt":1795197831612},"turnQueue":{"items":[],"maxItems":32,"paused":false}},"snapshot_sequence":484,"watermark":157}
+{
+	"projection_state_version": 1,
+	"session_api": {
+		"history_positions": {},
+		"metadata_version": 1,
+		"next_history_index": 0,
+		"sparse_history": {
+			"history_sha256": "166ccf4af2bfb6eccfd8746c58a090abe8cfb7ae15259606be85f78b4f6a13a3",
+			"next_index": 114,
+			"positions": {}
+		},
+		"tool_calls": {
+			"effect-0002e3dd-c256-5876-9cb8-4f3fc4aecde2": {
+				"toolCallId": "V3QMpIft2"
+			},
+			"effect-0318dacf-d617-5083-a4f4-6cb1130c1f00": {
+				"toolCallId": "typescript:15:woKnq58wI:14:tool:14"
+			},
+			"effect-137b03e1-26e4-56dc-97cd-7a40f7ad0fd9": {
+				"toolCallId": "typescript:19:RmrVKnMip:2:tool:2"
+			},
+			"effect-16ad2ee6-cdaa-5a8d-a893-88216f35170d": {
+				"toolCallId": "typescript:19:RmrVKnMip:0:tool:0"
+			},
+			"effect-16f83e24-c512-51ec-96d6-2c08693aba0c": {
+				"toolCallId": "typescript:13:mTBeB6dl3:8:tool:8"
+			},
+			"effect-1ae0141c-5fd5-5f9e-b939-e9602c7cac48": {
+				"toolCallId": "typescript:11:seBhro5CP:5:tool:5"
+			},
+			"effect-34d8ba2a-61d8-54c5-92b2-bf7c91bb6cfb": {
+				"toolCallId": "typescript:13:mTBeB6dl3:11:tool:11"
+			},
+			"effect-363ded8d-d9a9-504b-b0bc-a9cbfd4511b5": {
+				"toolCallId": "typescript:15:woKnq58wI:6:tool:6"
+			},
+			"effect-3714c739-2d81-5de5-8758-0efd485a78ef": {
+				"toolCallId": "typescript:13:mTBeB6dl3:2:tool:2"
+			},
+			"effect-3cd4fa06-e0cb-5e3e-ada4-1518fd199582": {
+				"toolCallId": "typescript:7:uVtvQS1MW:0:tool:0"
+			},
+			"effect-3dbc4f39-5ba4-5b82-9a34-374d824dd0b2": {
+				"toolCallId": "typescript:13:mTBeB6dl3:0:tool:0"
+			},
+			"effect-4a216fe7-3a7c-57c4-bb49-758340de27c1": {
+				"toolCallId": "typescript:17:4QiJ9P69Q:0:tool:0"
+			},
+			"effect-4aa37b28-e3ab-59d0-bd5a-e12dcc4c2c05": {
+				"toolCallId": "typescript:13:mTBeB6dl3:14:tool:14"
+			},
+			"effect-4bc65995-0479-5f20-983f-419c19b3cd8c": {
+				"toolCallId": "typescript:11:seBhro5CP:1:tool:1"
+			},
+			"effect-52ba1ab1-f038-5816-86c3-f78e03616a47": {
+				"toolCallId": "typescript:13:mTBeB6dl3:7:tool:7"
+			},
+			"effect-566c70ff-8652-5598-86ac-92ac9c24554b": {
+				"toolCallId": "typescript:13:mTBeB6dl3:15:tool:15"
+			},
+			"effect-57c2e3c9-8bdf-55ee-8c2b-e9c3f4ceee4b": {
+				"toolCallId": "typescript:13:mTBeB6dl3:4:tool:4"
+			},
+			"effect-58ed1c56-7d21-5a8f-aee1-6ed09ecd0337": {
+				"toolCallId": "typescript:15:woKnq58wI:3:tool:3"
+			},
+			"effect-67b53fbb-1c86-5b1f-976e-f0698af7e3e2": {
+				"toolCallId": "typescript:13:mTBeB6dl3:6:tool:6"
+			},
+			"effect-6c0dd944-7d88-5cb1-ad35-e7512cc0cc78": {
+				"toolCallId": "typescript:15:woKnq58wI:0:tool:0"
+			},
+			"effect-6dd9582b-ca2f-5971-afa8-8548e3744277": {
+				"toolCallId": "typescript:15:woKnq58wI:7:tool:7"
+			},
+			"effect-6f3d7a45-b618-52e7-92c6-f45b637bd18c": {
+				"toolCallId": "typescript:11:seBhro5CP:6:tool:6"
+			},
+			"effect-72bb3c7c-fe50-5a05-bbbf-14c982e340a0": {
+				"toolCallId": "typescript:11:seBhro5CP:0:tool:0"
+			},
+			"effect-7472d262-91b8-5239-be6a-358e2e884992": {
+				"toolCallId": "typescript:15:woKnq58wI:11:tool:11"
+			},
+			"effect-76c5a3d7-7e67-523e-b0c4-275a212eaa84": {
+				"toolCallId": "typescript:11:seBhro5CP:3:tool:3"
+			},
+			"effect-7dcacfd8-6414-57dc-a75a-2a6ac2abb9f5": {
+				"toolCallId": "typescript:15:woKnq58wI:5:tool:5"
+			},
+			"effect-7f84a501-9197-5b01-b295-da27bcb8d49c": {
+				"toolCallId": "typescript:13:mTBeB6dl3:5:tool:5"
+			},
+			"effect-85a76791-7e29-5998-adcd-2ccb1de17563": {
+				"toolCallId": "typescript:13:mTBeB6dl3:12:tool:12"
+			},
+			"effect-894dc603-207f-5a4d-a03b-5f2031b5f1ef": {
+				"toolCallId": "typescript:15:woKnq58wI:1:tool:1"
+			},
+			"effect-8a08bbc1-7eec-54d9-ace5-63890aa8fc87": {
+				"toolCallId": "typescript:15:woKnq58wI:15:tool:15"
+			},
+			"effect-8baff899-d831-5106-948c-2cd7fcf3ff85": {
+				"toolCallId": "typescript:13:mTBeB6dl3:9:tool:9"
+			},
+			"effect-904c8681-3924-5db4-8083-c7df9013e4bb": {
+				"toolCallId": "typescript:15:woKnq58wI:10:tool:10"
+			},
+			"effect-9d1eca57-a7bf-5cb5-93b0-024d2d3d9ae5": {
+				"toolCallId": "typescript:15:woKnq58wI:2:tool:2"
+			},
+			"effect-a37619ad-30ea-521f-8716-2a04850ae7b8": {
+				"toolCallId": "pwoX560tW"
+			},
+			"effect-a5e8aa01-5812-5bc8-8539-76c7c9b9922c": {
+				"toolCallId": "typescript:11:seBhro5CP:2:tool:2"
+			},
+			"effect-ab2e3652-f85f-5961-be3f-33ae6786a8fc": {
+				"toolCallId": "typescript:15:woKnq58wI:8:tool:8"
+			},
+			"effect-ac813d46-68d0-5c49-bf7f-64a83956eb0a": {
+				"toolCallId": "typescript:13:mTBeB6dl3:3:tool:3"
+			},
+			"effect-b3c88d62-cab4-50b9-a344-4ff198d3eb06": {
+				"toolCallId": "typescript:9:ZHGOZIPcV:0:tool:0"
+			},
+			"effect-b4dae503-994b-5896-b4c1-b18a2a29329b": {
+				"toolCallId": "typescript:11:seBhro5CP:4:tool:4"
+			},
+			"effect-b67c2bd4-60fe-5817-a05a-46217683e7e3": {
+				"toolCallId": "typescript:13:mTBeB6dl3:1:tool:1"
+			},
+			"effect-bf3c8263-bca7-5f5d-b1c2-4e60e526caf4": {
+				"toolCallId": "typescript:15:woKnq58wI:9:tool:9"
+			},
+			"effect-ce30a70a-7c4c-5de1-9fa3-3c909ca795bb": {
+				"toolCallId": "typescript:15:woKnq58wI:13:tool:13"
+			},
+			"effect-d0687ee5-ad56-5548-9cf4-b822a82ca2ee": {
+				"toolCallId": "typescript:13:mTBeB6dl3:10:tool:10"
+			},
+			"effect-e2abc69c-30b7-583d-89e2-2ebc8cb7ea11": {
+				"toolCallId": "typescript:15:woKnq58wI:12:tool:12"
+			},
+			"effect-e520561b-7c95-5839-9260-21f8ce935295": {
+				"toolCallId": "typescript:11:seBhro5CP:7:tool:7"
+			},
+			"effect-e90a086e-69c7-5f9f-8d38-e128fc460c1b": {
+				"toolCallId": "typescript:19:RmrVKnMip:1:tool:1"
+			},
+			"effect-ee157c23-b241-573d-b688-8dee916593d0": {
+				"toolCallId": "typescript:15:woKnq58wI:4:tool:4"
+			},
+			"effect-f51dba30-d44e-53fb-86c2-2f005b09bb4b": {
+				"toolCallId": "typescript:13:mTBeB6dl3:13:tool:13"
+			}
+		},
+		"turn_outcomes": {
+			"turn-b23a4921e2e9f48120a0c2a580e6eb92": {
+				"completedAt": 1795197831612,
+				"startedAt": 1795197778378,
+				"termination": {
+					"outcome": "completed",
+					"output": null,
+					"stopReason": null
+				}
+			}
+		}
+	},
+	"session_id": "79491ba5-d968-e4ec-407c-beed790eba6c",
+	"snapshot": {
+		"activeCallbacks": [],
+		"format": "harness.public-session-state/v1",
+		"history": {
+			"cursor": { "after": null, "before": null },
+			"entries": [],
+			"range": "latest"
+		},
+		"latestTurn": {
+			"completedAt": 1795197831612,
+			"id": "turn-b23a4921e2e9f48120a0c2a580e6eb92",
+			"inputEntryId": "user-turn-b23a4921e2e9f48120a0c2a580e6eb92-1",
+			"queueItemId": null,
+			"sessionId": "79491ba5-d968-e4ec-407c-beed790eba6c",
+			"startedAt": 1795197778378,
+			"status": "completed",
+			"stopReason": null
+		},
+		"session": {
+			"contextUsage": {
+				"cachedInputTokens": 11136,
+				"inputTokens": 13717,
+				"outputTokens": 495,
+				"totalTokens": 14212
+			},
+			"createdAt": 1795197777943,
+			"id": "79491ba5-d968-e4ec-407c-beed790eba6c",
+			"parentSessionId": null,
+			"preview": "You have a crafting table available as tools (place, take, clear_grid, craft), a 3x3 grid (slots 0-8, row-major), and an inventory. Your goal: craft a torch. Use the tools to do it, then report which…",
+			"rootSessionId": "79491ba5-d968-e4ec-407c-beed790eba6c",
+			"status": { "type": "idle" },
+			"title": null,
+			"titleSource": "auto",
+			"tokenUsage": {
+				"cachedInputTokens": 98816,
+				"inputTokens": 113266,
+				"outputTokens": 5123,
+				"totalTokens": 118389
+			},
+			"updatedAt": 1795197831612
+		},
+		"turnQueue": { "items": [], "maxItems": 32, "paused": false }
+	},
+	"snapshot_sequence": 484,
+	"watermark": 157
+}

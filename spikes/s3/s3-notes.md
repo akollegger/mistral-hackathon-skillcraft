@@ -7,6 +7,7 @@
 no Bolt, no HTTP. Server surfaces stay for S4 (agent-side MCP).
 
 Findings, per checklist:
+
 - [x] `@relate/relate` installs cleanly (spike-local, Node v24.14.1; "up to date in 273ms").
 - [x] Full lineage shape written: Task/Run/Skill/Eval nodes + GENERATED/USED_IN/ATTEMPTED/SCORED_BY edges (1a-2j all green).
 - [x] `CREATE CONSTRAINT ... IS UNIQUE` supported (stats show `constraints_added:1` for Task, Run, Skill).
@@ -46,9 +47,11 @@ with per-language first-party clients. The Node.js one is native bindings, Node 
 
 ```js
 const { Database } = require("@relate/relate"); // or import
-const db = Database.open("./store");            // or ":memory:", or a .rl file
+const db = Database.open("./store"); // or ":memory:", or a .rl file
 const result = db.connect().query("MATCH (p:Person) RETURN p.name");
-result.rows; result.stats; result.consume().elapsedMs;
+result.rows;
+result.stats;
+result.consume().elapsedMs;
 ```
 
 So the harness-side lineage store never needs a server. HTTP Query API v2 / Bolt / MCP

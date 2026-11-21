@@ -18,31 +18,37 @@ vibe --prompt-file <runDir>/prompt.md --workdir <runDir>/dir \
 ## Findings (source: 3.1.4 sdist, `vibe/cli-rust/src/`)
 
 ### Invocation
+
 - `vibe -p TEXT` / `vibe --prompt TEXT` — headless: send prompt, output response, exit.
 - `--prompt-file PATH` — prompt from file; scenario + condition render to `prompt.md`.
 - `--workdir DIR` — run in directory; `--trust` skips the folder-trust prompt (automation).
 
 ### Approval (blocking question — resolved)
+
 - `--approval-policy NAME`: ask, accept-edits, smart-approve, auto-approve, or custom.
 - `--auto-approve` (alias `--yolo`) = approve all tool calls.
 - Harness standard: `--approval-policy auto-approve`, recorded in run.meta.json.
 
 ### Budgets + model pinning
+
 - `--max-turns N`, `--max-tokens N`, `--max-price USD`, `--time-limit SECONDS`.
 - A `--time-limit` exit **writes the export first**, then exits 3 — graceful timeout capture.
 - `--model ALIAS`, `--thinking LEVEL` (headless, new sessions only, not saved as defaults).
 
 ### Run capture
+
 - `--output text|json|streaming`: `json` = final response as JSON; `streaming` = NDJSON events.
 - `--output-dir DIR`: on every exit writes `export.json` (Vibe version, effective config,
   token usage, cost, stop reason, outcome) + session journal copy (`session/`).
   Transcript + telemetry without stderr-scraping.
 
 ### Exit codes (`run_export/model.rs`)
+
 0 finished; 1 usage/config error; 2 infrastructure failure; 3 turn/token/price/deadline/
 terminated/length/refusal; 4 aborted. Typed codes → trivial harness result classification.
 
 ## History (process lesson)
+
 - v2/v3 probes discovered a version skew: probed with 3.1.4 flags against an installed
   2.25.7 argparse CLI → "unrecognized arguments" usage errors (exit 2, 0s elapsed).
   Resolved by upgrading the machine to 3.1.4.
@@ -68,7 +74,7 @@ terminated/length/refusal; 4 aborted. Typed codes → trivial harness result cla
     `context-breakdown.json`, `scheduled-loops.json` — the journal + generations are the
     transcript/capture sources for contracts/event-log parsing
 - [x] 10s elapsed for a 2-step run → full distillation runs with search loops will be
-  minutes, not seconds; P3/P4 time budgets in the plan hold
+      minutes, not seconds; P3/P4 time budgets in the plan hold
 
 ## Implications carried into design
 

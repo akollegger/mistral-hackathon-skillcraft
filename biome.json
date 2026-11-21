@@ -1,0 +1,35 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.6.8/schema.json",
+	"files": {
+		"includes": [
+			"**",
+			"!**/dist/**",
+			"!results/**",
+			"!**/scratch/**",
+			"!spikes/**/node_modules/**"
+		]
+	},
+	"overrides": [
+		{
+			"includes": ["packages/contracts/**"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		}
+	],
+	"linter": {
+		"rules": {
+			"style": {
+				"useTemplate": "off",
+				"noNonNullAssertion": "off"
+			},
+			"suspicious": {
+				"useBiomeIgnoreFolder": "off"
+			}
+		}
+	}
+}

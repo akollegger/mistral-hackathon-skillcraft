@@ -1,8 +1,21 @@
 {
-  "name": "@skillcraft/harness",
-  "version": "0.1.0",
-  "type": "module",
-  "main": "src/index.ts",
-  "dependencies": { "@skillcraft/contracts": "workspace:*", "@skillcraft/world": "workspace:*", "execa": "^9", "zod": "^3" },
-  "scripts": { "test": "vitest run --passWithNoTests" }
+	"name": "@skillcraft/harness",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "src/index.ts",
+	"dependencies": {
+		"@relate/relate": "^1.2.0",
+		"@skillcraft/contracts": "workspace:*",
+		"@skillcraft/world": "workspace:*",
+		"execa": "^9",
+		"zod": "^3"
+	},
+	"devDependencies": {
+		"typescript": "^5.5.0",
+		"vitest": "^2.1.0",
+		"@types/node": "^24"
+	},
+	"scripts": {
+		"test": "vitest run"
+	}
 }

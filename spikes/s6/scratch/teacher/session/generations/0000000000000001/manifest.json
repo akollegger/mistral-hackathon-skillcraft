@@ -1,1 +1,31 @@
-{"checkpoint":{"checkpoint_version":1,"chunks":[],"path":"checkpoint.json","sha256":"4e07f49814606da742e43bd772cca1fac850ce725d2a85e236cbb4378af25e69"},"created_at":"2026-11-20T18:02:58.375Z","execution_state":"quiescent","generation":"0000000000000001","interop_export":null,"manifest_version":1,"projection_state":{"chunks":[],"path":"projection-state.json","sha256":"9d85b16479e4ff4002475d39f073bcd57a44ae79f803d3163b9d7d60a412efa2"},"recovery_journal_segment":{"first_sequence":1,"path":"journal/0000000000000001.jsonl"},"runtime_state":{"chunks":["95fa1a678709a28036090af726419e21c021098cc2e8e039c1b392fd9e24cbee"],"path":"runtime-state.json","sha256":"ac9490d6abc6b6bec086decf058275d68d0c18cbc48c0dc6fa81902037d02406"},"session_id":"79491ba5-d968-e4ec-407c-beed790eba6c","snapshot_sequence":0}
+{
+	"checkpoint": {
+		"checkpoint_version": 1,
+		"chunks": [],
+		"path": "checkpoint.json",
+		"sha256": "4e07f49814606da742e43bd772cca1fac850ce725d2a85e236cbb4378af25e69"
+	},
+	"created_at": "2026-11-20T18:02:58.375Z",
+	"execution_state": "quiescent",
+	"generation": "0000000000000001",
+	"interop_export": null,
+	"manifest_version": 1,
+	"projection_state": {
+		"chunks": [],
+		"path": "projection-state.json",
+		"sha256": "9d85b16479e4ff4002475d39f073bcd57a44ae79f803d3163b9d7d60a412efa2"
+	},
+	"recovery_journal_segment": {
+		"first_sequence": 1,
+		"path": "journal/0000000000000001.jsonl"
+	},
+	"runtime_state": {
+		"chunks": [
+			"95fa1a678709a28036090af726419e21c021098cc2e8e039c1b392fd9e24cbee"
+		],
+		"path": "runtime-state.json",
+		"sha256": "ac9490d6abc6b6bec086decf058275d68d0c18cbc48c0dc6fa81902037d02406"
+	},
+	"session_id": "79491ba5-d968-e4ec-407c-beed790eba6c",
+	"snapshot_sequence": 0
+}

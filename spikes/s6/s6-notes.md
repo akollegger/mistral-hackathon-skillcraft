@@ -7,11 +7,11 @@ in ~2.5 minutes wall-clock (56 + 46 + 30 s of run time for teacher + two student
 
 Per-run results (torch challenge, S2 world, toy task n=1 each):
 
-| Run | Exit | Elapsed | Craft-tool calls | Torch crafted | skill.read | File hunts |
-|---|---|---|---|---|---|---|
-| Teacher | 0 | 56s | 46 (44 place + 2 craft) | yes | n/a | n/a |
-| Student-none | 0 | 46s | 14 (11 place, 2 craft, 1 clear_grid) | yes | 0 | 0 |
-| Student-skill | 0 | 30s | 4 (2 place, 2 craft) | yes | 1 | 0 |
+| Run           | Exit | Elapsed | Craft-tool calls                     | Torch crafted | skill.read | File hunts |
+| ------------- | ---- | ------- | ------------------------------------ | ------------- | ---------- | ---------- |
+| Teacher       | 0    | 56s     | 46 (44 place + 2 craft)              | yes           | n/a        | n/a        |
+| Student-none  | 0    | 46s     | 14 (11 place, 2 craft, 1 clear_grid) | yes           | 0          | 0          |
+| Student-skill | 0    | 30s     | 4 (2 place, 2 craft)                 | yes           | 1          | 0          |
 
 - Teacher solved via 44 systematic place probes (heavy feedback-driven search), then
   wrote `skill-output/SKILL.md` with valid frontmatter. The skill quality followed the

@@ -1,4 +1,5 @@
 ---
+
 name: crafting-table-strategy
 description: Teaches agents how to solve Minecraft-style crafting challenges using the crafting table tools (place, take, clear_grid, craft). Focuses on systematic discovery of inventory, recipes, and optimal placement strategies through feedback analysis.
 ---
@@ -12,20 +13,24 @@ This skill teaches you how to systematically solve crafting challenges in a 3x3 
 Each tool returns structured feedback you must read and act upon:
 
 ### `place(item, slot)` → `{craftable, wouldProduce, grid, inventory}`
+
 - Places `item` from inventory into `slot` (0-8, row-major)
 - **On success**: Returns current grid state, remaining inventory, and whether the grid is now craftable
 - **On failure**: Error reveals if item is not in inventory
 - **Key insight**: Use `wouldProduce` to see what the current grid would craft, even before calling `craft()`
 
 ### `take(slot)` → `{grid, inventory, craftable, wouldProduce}`
+
 - Returns item from `slot` to inventory
 - Use to undo placements and try different configurations
 
 ### `clear_grid()` → `{grid, inventory, craftable, wouldProduce}`
+
 - Returns ALL placed items to inventory
 - Useful for complete reset when starting over
 
 ### `craft()` → `{success, produced, craftable, wouldProduce, grid, inventory}`
+
 - **On success**: Returns the crafted item, clears grid, updates inventory
 - **On failure**: Returns `craftable: false` and `wouldProduce: null`, but **crucially reveals your full inventory** in the error
 
@@ -43,11 +48,12 @@ const result = await tools.mcp_skillcraft_s6.craft({});
 This single call reveals all items and their counts without modifying state.
 
 **Alternative**: Try placing common items until you find what you have:
+
 ```typescript
 try {
-  await tools.mcp_skillcraft_s6.place({ item: "minecraft:coal", slot: 0 });
+	await tools.mcp_skillcraft_s6.place({ item: "minecraft:coal", slot: 0 });
 } catch (e) {
-  // Error message indicates if item is missing
+	// Error message indicates if item is missing
 }
 ```
 
@@ -65,6 +71,7 @@ Once you know your inventory, use systematic placement:
 ### Step 3: Optimal Placement Order
 
 For a 3x3 grid with row-major slots 0-8:
+
 ```
 0 1 2
 3 4 5
@@ -72,6 +79,7 @@ For a 3x3 grid with row-major slots 0-8:
 ```
 
 **Priority order for placement**:
+
 1. Center (slot 4) - Most recipes use center
 2. Top center (slot 1) - Common for items like torches, tools
 3. Bottom center (slot 7) - Common for sticks in tools
@@ -81,20 +89,23 @@ For a 3x3 grid with row-major slots 0-8:
 ## Worked Example: Crafting a Torch
 
 ### Scenario
+
 You need to craft a torch. Your inventory is unknown.
 
 ### Step-by-Step Execution
 
 **Call 1: Discover inventory**
+
 ```typescript
 await tools.mcp_skillcraft_s6.craft({});
-// Returns: {craftable: false, wouldProduce: null, 
+// Returns: {craftable: false, wouldProduce: null,
 //          grid: [[null,null,null],[null,null,null],[null,null,null]],
 //          inventory: {"minecraft:stick": 2, "minecraft:coal": 1}}
 ```
 **Observation**: Inventory contains 2 sticks and 1 coal. Torch recipe likely uses 1 coal + 1 stick.
 
 **Call 2: Place coal in most likely position (top center, slot 1)**
+
 ```typescript
 await tools.mcp_skillcraft_s6.place({ item: "minecraft:coal", slot: 1 });
 // Returns: {craftable: false, wouldProduce: null,
@@ -104,6 +115,7 @@ await tools.mcp_skillcraft_s6.place({ item: "minecraft:coal", slot: 1 });
 **Observation**: Coal placed. Not craftable yet. Need stick.
 
 **Call 3: Place stick in most likely position (center, slot 4)**
+
 ```typescript
 await tools.mcp_skillcraft_s6.place({ item: "minecraft:stick", slot: 4 });
 // Returns: {craftable: true, wouldProduce: "minecraft:torch",
@@ -113,6 +125,7 @@ await tools.mcp_skillcraft_s6.place({ item: "minecraft:stick", slot: 4 });
 **Observation**: Grid is now craftable! `wouldProduce` confirms it will make a torch.
 
 **Call 4: Craft the torch**
+
 ```typescript
 await tools.mcp_skillcraft_s6.craft({});
 // Returns: {success: true, produced: "minecraft:torch",
@@ -124,9 +137,10 @@ await tools.mcp_skillcraft_s6.craft({});
 ### Final Answer for Torch Challenge
 
 Tool calls in order:
+
 1. `tools.mcp_skillcraft_s6.craft({})` - Discover inventory
 2. `tools.mcp_skillcraft_s6.place({ item: "minecraft:coal", slot: 1 })` - Place coal
-3. `tools.mcp_skillcraft_s6.place({ item: "minecraft:stick", slot: 4 })` - Place stick  
+3. `tools.mcp_skillcraft_s6.place({ item: "minecraft:stick", slot: 4 })` - Place stick
 4. `tools.mcp_skillcraft_s6.craft({})` - Craft torch
 
 Final craft result: `{success: true, produced: "minecraft:torch", inventory: {"minecraft:stick": 1, "minecraft:torch": 1}}`
@@ -159,14 +173,14 @@ Final craft result: `{success: true, produced: "minecraft:torch", inventory: {"m
 
 ### Common Recipe Patterns in Minecraft
 
-| Item | Pattern | Slots |
-|------|---------|-------|
-| Torch | Coal + Stick | 1, 4 |
-| Stick | 2 Planks vertical | 1, 4 or 4, 7 |
-| Wooden Plank | 1 Log | 0, 1, 2, 3, 4, 5, 6, 7, 8 (any single slot) |
-| Crafting Table | 4 Planks (2x2) | 0, 1, 3, 4 |
-| Chest | 8 Planks (hollow) | All except center (4) |
-| Furnace | 8 Cobblestone (hollow) | All except center (4) |
+| Item           | Pattern                | Slots                                       |
+| -------------- | ---------------------- | ------------------------------------------- |
+| Torch          | Coal + Stick           | 1, 4                                        |
+| Stick          | 2 Planks vertical      | 1, 4 or 4, 7                                |
+| Wooden Plank   | 1 Log                  | 0, 1, 2, 3, 4, 5, 6, 7, 8 (any single slot) |
+| Crafting Table | 4 Planks (2x2)         | 0, 1, 3, 4                                  |
+| Chest          | 8 Planks (hollow)      | All except center (4)                       |
+| Furnace        | 8 Cobblestone (hollow) | All except center (4)                       |
 
 ### Optimization Tips
 
@@ -179,12 +193,14 @@ Final craft result: `{success: true, produced: "minecraft:torch", inventory: {"m
 ## Debugging Failed Crafts
 
 If `craftable: false`:
+
 - Check `wouldProduce` is null - confirms no recipe matches current grid
 - Verify item names match inventory exactly (e.g., "minecraft:coal" not just "coal")
 - Ensure you're using correct slot numbers (0-8, row-major)
 - Try different arrangements of the same items
 
 If placement fails:
+
 - Item not in inventory (error message tells you)
 - Slot number invalid (must be 0-8)
 - Try the exact item name format from inventory discovery
