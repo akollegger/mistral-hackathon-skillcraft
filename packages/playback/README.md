@@ -17,9 +17,10 @@ pnpm --filter @skillcraft/playback test     # replayer core + demo-fixture tests
 pnpm --filter @skillcraft/playback typecheck
 ```
 
-Load one `events.jsonl` (Run A) or two (Run A + Run B) via the file pickers or by dropping
-files anywhere on the page — two panes render side by side for teacher-vs-student comparison.
-Buttons load the bundled demo runs (`public/demo/teacher.events.jsonl`, `student.events.jsonl`).
+Fixed pair layout: **teacher left, student right** (student pane may stay empty — it shows a
+drop hint until a run is loaded). Load runs via the file pickers or by dropping files anywhere
+on the page (first file → teacher, second → student). Buttons load the bundled demo runs
+(`public/demo/teacher.events.jsonl`, `student.events.jsonl`).
 
 Each pane: 3×3 crafting grid, craftable feedback slot (green = craftable, red = not), inventory
 strip, transport (⏮ ◀ ▶ ▶| ⏭, scrub slider, 0.5–4× speed), and a clickable event list.

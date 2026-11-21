@@ -26,15 +26,16 @@ class RunPane {
   private playBtn: HTMLButtonElement;
   private eventsEl: HTMLOListElement;
 
-  constructor(container: HTMLElement, slotLabel: string) {
+  constructor(container: HTMLElement, slotLabel: string, emptyHint: string) {
     this.root = document.createElement("section");
-    this.root.className = "pane panel";
+    this.root.className = "pane panel empty";
     this.root.innerHTML = `
       <header class="pane-head">
         <span class="slot-label">${slotLabel}</span>
         <span class="file-name">no file loaded</span>
         <span class="badges"></span>
       </header>
+      <div class="empty-state"><span class="empty-art">▚▞</span><span>${emptyHint}</span></div>
       <div class="board">
         <div class="grid" role="grid" aria-label="3x3 crafting grid"></div>
         <div class="arrow"></div>
@@ -115,11 +116,13 @@ class RunPane {
       this.nameEl.textContent = `${fileName} — ${e instanceof ParseError ? e.message : String(e)}`;
       this.nameEl.classList.add("error");
       this.stop();
+      this.render();
       return;
     }
     this.fileName = fileName;
     this.nameEl.textContent = fileName;
     this.nameEl.classList.remove("error");
+    this.root.classList.remove("empty");
     this.scrub.max = String(this.lastIndex());
     this.eventsEl.innerHTML = "";
     this.replay.steps.forEach((s, i) => {
@@ -171,7 +174,13 @@ class RunPane {
   }
 
   private render(): void {
-    const step: ReplayStep | null = this.index >= 0 ? this.replay!.steps[this.index]! : null;
+    if (!this.replay) {
+      this.root.classList.add("empty");
+      this.stepLabel.textContent = "–/–";
+      return;
+    }
+    this.root.classList.remove("empty");
+    const step: ReplayStep | null = this.index >= 0 ? this.replay.steps[this.index]! : null;
     // Grid
     for (let i = 0; i < GRID_CELLS; i++) {
       const cell = this.cells[i]!;
@@ -249,44 +258,41 @@ const logoHolder = document.getElementById("logo")!;
 logoHolder.appendChild(mistralLogo());
 
 const panesEl = document.getElementById("panes")!;
-const paneA = new RunPane(panesEl, "RUN A");
-const paneB = new RunPane(panesEl, "RUN B");
-paneB.root.classList.add("hidden");
+// Fixed pair layout: teacher always left, student always right (may be empty).
+const teacherPane = new RunPane(panesEl, "TEACHER · LEFT", "drop a teacher events.jsonl, or click “demo: teacher”");
+const studentPane = new RunPane(panesEl, "STUDENT · RIGHT", "optional — drop a student events.jsonl, or click “demo: student”");
 
 async function loadInto(pane: RunPane, file: File): Promise<void> {
   pane.loadText(file.name, await file.text());
 }
 
-function wireInput(inputId: string, pane: RunPane, other: RunPane): void {
+function wireInput(inputId: string, pane: RunPane): void {
   const input = document.getElementById(inputId) as HTMLInputElement;
   input.addEventListener("change", () => {
     const f = input.files?.[0];
     if (f) void loadInto(pane, f);
   });
-  // Drag & drop anywhere: first file → this pane, second distinct file → other pane.
-  window.addEventListener("dragover", (e) => e.preventDefault());
-  window.addEventListener("drop", (e) => {
-    e.preventDefault();
-    const files = [...(e.dataTransfer?.files ?? [])];
-    if (files[0]) void loadInto(pane, files[0]);
-    if (files[1]) {
-      other.root.classList.remove("hidden");
-      void loadInto(other, files[1]);
-    }
-  });
 }
-wireInput("file-a", paneA, paneB);
-wireInput("file-b", paneB, paneA);
+wireInput("file-teacher", teacherPane);
+wireInput("file-student", studentPane);
 
-async function loadDemo(pane: RunPane, other: RunPane, which: "teacher" | "student"): Promise<void> {
+// Drag & drop anywhere: first file → teacher (left), second → student (right).
+window.addEventListener("dragover", (e) => e.preventDefault());
+window.addEventListener("drop", (e) => {
+  e.preventDefault();
+  const files = [...(e.dataTransfer?.files ?? [])];
+  if (files[0]) void loadInto(teacherPane, files[0]);
+  if (files[1]) void loadInto(studentPane, files[1]);
+});
+
+async function loadDemo(which: "teacher" | "student"): Promise<void> {
   const res = await fetch(`./demo/${which}.events.jsonl`);
   if (!res.ok) throw new Error(`demo fetch failed: ${res.status}`);
-  if (which === "student") other.root.classList.remove("hidden");
-  pane.loadText(`${which}.events.jsonl (demo)`, await res.text());
+  (which === "teacher" ? teacherPane : studentPane).loadText(`${which}.events.jsonl (demo)`, await res.text());
 }
-document.getElementById("demo-teacher")!.addEventListener("click", () => void loadDemo(paneA, paneB, "teacher"));
-document.getElementById("demo-student")!.addEventListener("click", () => void loadDemo(paneB, paneA, "student"));
+document.getElementById("demo-teacher")!.addEventListener("click", () => void loadDemo("teacher"));
+document.getElementById("demo-student")!.addEventListener("click", () => void loadDemo("student"));
 document.getElementById("demo-both")!.addEventListener("click", async () => {
-  await loadDemo(paneA, paneB, "teacher");
-  await loadDemo(paneB, paneA, "student");
+  await loadDemo("teacher");
+  await loadDemo("student");
 });

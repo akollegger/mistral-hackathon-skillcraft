@@ -17,12 +17,12 @@
       <span id="logo" aria-hidden="true"></span>
       <h1><span class="accent">skillcraft</span> // run replayer</h1>
       <div class="loaders">
-        <label for="file-a">load run A<input id="file-a" type="file" accept=".jsonl,.json,.txt" /></label>
-        <label for="file-b">load run B<input id="file-b" type="file" accept=".jsonl,.json,.txt" /></label>
+        <label for="file-teacher">load teacher<input id="file-teacher" type="file" accept=".jsonl,.json,.txt" /></label>
+        <label for="file-student">load student<input id="file-student" type="file" accept=".jsonl,.json,.txt" /></label>
         <button id="demo-teacher" type="button">demo: teacher</button>
         <button id="demo-student" type="button">demo: student</button>
         <button id="demo-both" type="button">demo: both</button>
-        <span class="hint">…or drop one / two events.jsonl files anywhere. Built from the event log only — never live agent state.</span>
+        <span class="hint">teacher left · student right (student optional). Drop one / two events.jsonl anywhere. Built from the event log only — never live agent state.</span>
       </div>
     </header>
     <main id="panes"></main>

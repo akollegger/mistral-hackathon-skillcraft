@@ -129,18 +129,49 @@ img {
   width: 100%;
 }
 
-/* ---- Panes ---- */
+/* ---- Panes: fixed teacher/student pair, teacher left, student right ---- */
 #panes {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
   padding: 16px;
+  align-items: start;
 }
-#panes:has(.pane:not(.hidden):nth-child(2)) {
-  grid-template-columns: 1fr 1fr;
+@media (max-width: 1100px) {
+  #panes {
+    grid-template-columns: 1fr;
+  }
 }
-.pane.hidden {
+.pane.empty .board,
+.pane.empty .inventory,
+.pane.empty .transport,
+.pane.empty .events {
+  visibility: hidden;
+}
+.empty-state {
   display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 320px;
+  color: var(--dim);
+  font-size: 10px;
+  text-align: center;
+  padding: 0 24px;
+  border: 3px dashed rgba(255, 130, 5, 0.4);
+  margin: 4px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 7px, rgba(255, 255, 255, 0.02) 7px 8px),
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(255, 255, 255, 0.02) 7px 8px);
+}
+.pane.empty .empty-state {
+  display: flex;
+}
+.empty-art {
+  font-size: 28px;
+  color: var(--orange);
+  text-shadow: 3px 3px 0 #000;
 }
 .pane {
   padding: 12px;
@@ -159,6 +190,8 @@ img {
   color: var(--amber);
   font-size: 10px;
 }
+.pane:nth-child(1) .slot-label { color: var(--yellow); }
+.pane:nth-child(2) .slot-label { color: var(--orange); }
 .file-name {
   color: var(--dim);
   font-size: 9px;
