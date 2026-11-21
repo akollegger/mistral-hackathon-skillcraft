@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { buildReplay, buildSteps, parseEvents, ParseError } from "./replayer";
+import { buildReplay, buildSteps, outcomeOf, parseEvents, ParseError, toolCallOf } from "./replayer";
 
+// Legacy contract-shaped sample: {op, item, slot}, flat feedback, nested craft feedback, full RunMeta.
 const meta = {
   runId: "11111111-2222-4333-8444-555555555555",
   role: "student",
@@ -57,6 +57,18 @@ const sample = [
   ev(9, "run_end", { outcome: "success" }),
 ].join("\n");
 
+// Harness-emitted shapes (packages/harness/src/events.ts): tool/input, output-nested feedback.
+const harnessSample = [
+  ev(1, "run_start", { runId: "abc", role: "student", condition: "skill", taskId: "invented:bar", modelAlias: "mistral-medium-latest" }),
+  ev(2, "prompt", { length: 400 }),
+  ev(3, "skill_loaded", { toolName: "mcp_skillcraft_skills.bar-recipe", status: "ok" }),
+  ev(4, "tool_call", { tool: "place", toolName: "mcp_skillcraft.place", input: { item: "invented:goo", slot: 0 }, status: "ok" }),
+  ev(5, "tool_feedback", { tool: "place", toolName: "mcp_skillcraft.place", failed: false, output: feedback([[0, "invented:goo"]], false, null, { "invented:goo": 1 }) }),
+  ev(6, "tool_call", { tool: "craft", toolName: "mcp_skillcraft.craft", input: {}, status: "ok" }),
+  ev(7, "craft_result", { craftable: false, wouldProduce: null, grid: gridWith([]), inventory: { "invented:bar": 1 }, success: true, produced: "invented:bar" }),
+  ev(8, "run_end", { exitCode: 0, contaminated: false }),
+].join("\n");
+
 describe("parseEvents", () => {
   it("parses valid JSONL and skips blank lines", () => {
     const events = parseEvents(`\n${sample}\n\n`);
@@ -78,7 +90,23 @@ describe("parseEvents", () => {
   });
 });
 
-describe("buildSteps", () => {
+describe("normalizers accept both contract and harness shapes", () => {
+  it("toolCallOf: op-shape and tool/input-shape", () => {
+    expect(toolCallOf({ op: "place", item: "minecraft:planks", slot: 3 })).toEqual({ op: "place", item: "minecraft:planks", slot: 3 });
+    expect(toolCallOf({ tool: "place", toolName: "mcp_skillcraft.place", input: { item: "invented:goo", slot: 0 }, status: "ok" })).toEqual({ op: "place", item: "invented:goo", slot: 0 });
+    expect(toolCallOf({ tool: "craft", input: {} })).toEqual({ op: "craft", item: undefined, slot: undefined });
+    expect(toolCallOf({ toolName: "mcp_other.file_read" })).toBeNull();
+  });
+
+  it("outcomeOf: outcome string and exitCode mapping", () => {
+    expect(outcomeOf({ outcome: "success" })).toBe("success");
+    expect(outcomeOf({ exitCode: 0, contaminated: false })).toBe("success");
+    expect(outcomeOf({ exitCode: 3 })).toBe("timeout");
+    expect(outcomeOf({ exitCode: 1 })).toBe("fail");
+  });
+});
+
+describe("buildSteps (contract shape)", () => {
   const steps = buildSteps(parseEvents(sample));
 
   it("produces one snapshot per event", () => {
@@ -92,15 +120,12 @@ describe("buildSteps", () => {
     expect(steps[3]!.craftable).toBe(false);
   });
 
-  it("tracks craftability and wouldProduce", () => {
+  it("tracks craftability, wouldProduce, craft success, lastProduced", () => {
     expect(steps[5]!.craftable).toBe(true);
     expect(steps[5]!.wouldProduce).toBe("invented:fiz");
-  });
-
-  it("records craft success and final state", () => {
     expect(steps[7]!.craftSuccess).toBe(true);
+    expect(steps[7]!.lastProduced).toBe("invented:fiz");
     expect(steps[7]!.grid.flat().every((c) => c === null)).toBe(true);
-    expect(steps[7]!.inventory).toEqual([["invented:fiz", 1]]);
     expect(steps[7]!.label).toContain("invented:fiz");
   });
 
@@ -115,6 +140,28 @@ describe("buildSteps", () => {
   });
 });
 
+describe("buildSteps (harness shape)", () => {
+  const steps = buildSteps(parseEvents(harnessSample));
+
+  it("reads tool/input calls and output-nested feedback", () => {
+    expect(steps[3]!.label).toBe("▶ place invented:goo @ slot 0");
+    expect(steps[4]!.grid[0]![0]).toBe("invented:goo");
+    expect(steps[4]!.inventory).toEqual([["invented:goo", 1]]);
+  });
+
+  it("reads flat craft_result with success/produced", () => {
+    expect(steps[6]!.craftSuccess).toBe(true);
+    expect(steps[6]!.lastProduced).toBe("invented:bar");
+    expect(steps[6]!.label).toBe("✔ crafted invented:bar");
+  });
+
+  it("maps exitCode to outcome and labels skill_loaded", () => {
+    expect(steps[7]!.label).toBe("run end: success");
+    expect(steps[2]!.label).toContain("bar-recipe");
+    expect(steps[1]!.label).toBe("prompt: 400 chars");
+  });
+});
+
 describe("buildReplay", () => {
   it("exposes meta from the run", () => {
     const r = buildReplay(sample);
@@ -123,26 +170,34 @@ describe("buildReplay", () => {
   });
 });
 
-describe("demo fixtures in public/demo", () => {
-  const demo = (name: string) =>
-    readFileSync(fileURLToPath(new URL(`../public/demo/${name}`, import.meta.url)), "utf8");
+describe("demo fixtures in public/demo/runs (harness shape)", () => {
+  const demo = (name: string) => readFileSync(`public/demo/runs/${name}.jsonl`, "utf8");
 
-  it("teacher demo parses and ends in a successful craft", () => {
-    const r = buildReplay(demo("teacher.events.jsonl"));
+  it("matrix run 1: teacher none taught ends in a successful craft", () => {
+    const r = buildReplay(demo("teacher-none-taught"));
     expect(r.meta?.role).toBe("teacher");
-    const last = r.steps[r.steps.length - 1]!;
-    expect(last.kind).toBe("run_end");
-    expect(last.label).toBe("run end: success");
-    const craft = r.steps.find((s) => s.kind === "craft_result")!;
-    expect(craft.craftSuccess).toBe(true);
-    expect(craft.wouldProduce ?? r.steps[craft.index - 1]!.wouldProduce).toBe("minecraft:wooden_pickaxe");
-  });
-
-  it("student demo parses, shows a failed attempt then success", () => {
-    const r = buildReplay(demo("student.events.jsonl"));
-    expect(r.meta?.condition).toBe("skill");
-    expect(r.meta?.heldOut).toBe(true);
+    expect(r.meta?.condition ?? null).toBeNull(); // teacher: condition null in start payload
     const crafts = r.steps.filter((s) => s.kind === "craft_result");
     expect(crafts.map((s) => s.craftSuccess)).toEqual([false, true]);
+    expect(r.steps[r.steps.length - 1]!.label).toBe("run end: success");
+  });
+
+  it("matrix run 4: student none taught fails", () => {
+    const r = buildReplay(demo("student-none-taught"));
+    expect(r.meta?.role).toBe("student");
+    expect(r.meta?.condition).toBe("none");
+    expect(r.steps[r.steps.length - 1]!.label).toBe("run end: fail");
+    expect(r.steps.some((s) => s.craftSuccess === false)).toBe(true);
+  });
+
+  it("matrix runs 5/6: student with skill succeeds, incl. held-out", () => {
+    const taught = buildReplay(demo("student-skill-taught"));
+    expect(taught.meta?.condition).toBe("skill");
+    expect(taught.meta?.heldOut).toBe(false);
+    expect(taught.steps[taught.steps.length - 1]!.label).toBe("run end: success");
+    const heldOut = buildReplay(demo("student-skill-heldout"));
+    expect(heldOut.meta?.heldOut).toBe(true);
+    expect(heldOut.meta?.taskId).toBe("invented:qux");
+    expect(heldOut.steps.some((s) => s.lastProduced === "invented:qux")).toBe(true);
   });
 });

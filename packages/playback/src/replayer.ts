@@ -1,73 +1,40 @@
 /** Playback replayer core: parse an events.jsonl file and fold it into
  *  per-event snapshots of the mocked crafting table. Pure logic — no DOM.
  *
- *  Payload narrowing lives here (playback-local) rather than in
- *  @skillcraft/contracts: the contract marks payload as `unknown` and notes
- *  per-kind zod is added when building; playback is the first builder. */
+ *  Tolerant by design: the frozen contract (contracts/event-log.ts, tool.ts)
+ *  and the harness emitter (harness/events.ts) use different payload shapes.
+ *  Both are accepted:
+ *    tool_call     {op, item?, slot?}            (contract)
+ *                  {tool, toolName, input:{item?,slot?}, status}   (harness)
+ *    tool_feedback {craftable, wouldProduce, grid, inventory}        (contract)
+ *                  {tool, toolName, failed, output:{craftable, ...}} (harness)
+ *    craft_result  {success, produced, feedback:{...}}               (contract)
+ *                  {craftable, ..., success?, produced?}              (harness)
+ *    run_start     full RunMeta                   (contract)
+ *                  {runId, role, condition, taskId, modelAlias}     (harness)
+ *    run_end       {outcome}                      (contract)
+ *                  {exitCode, contaminated}        (harness)  */
 import { z } from "zod";
-// Subpath imports: the package barrel re-exports `Condition` from two modules
-// (pre-existing ambiguity on main), which fails tsc. Subpaths are clean.
-import { Event, RunMeta } from "@skillcraft/contracts/event-log";
-import { ItemId, Quantity, ToolCall } from "@skillcraft/contracts/tool";
+import { Event } from "@skillcraft/contracts/event-log";
 
 export type RunEvent = z.infer<typeof Event>;
-export type RunMetaT = z.infer<typeof RunMeta>;
-export type Grid = (string | null)[][]
+export type Grid = (string | null)[][];
 
-/** Normalized feedback: the contract's Inventory is z.map, which cannot
- *  round-trip through JSON — the harness emits a record (or entry pairs),
- *  so playback accepts both and normalizes to a Map. */
-export interface Feedback {
-  craftable: boolean;
-  wouldProduce: string | null;
-  grid: Grid;
-  inventory: Map<string, number>;
-}
-
-export interface CraftRes {
-  success: boolean;
-  produced: string | null;
-  feedback: Feedback;
-}
-
-const InventoryJson = z.union([
-  z.record(ItemId, Quantity),
-  z.array(z.tuple([ItemId, Quantity])),
-]);
-
-const FeedbackJson = z.object({
-  craftable: z.boolean(),
-  wouldProduce: ItemId.nullable(),
-  grid: z.array(z.array(ItemId.nullable())).length(3),
-  inventory: InventoryJson,
-});
-
-const CraftResultJson = z.object({
-  success: z.boolean(),
-  produced: ItemId.nullable(),
-  feedback: FeedbackJson,
-});
-
-const toFeedback = (f: z.infer<typeof FeedbackJson>): Feedback => ({
-  craftable: f.craftable,
-  wouldProduce: f.wouldProduce,
-  grid: f.grid as Grid,
-  inventory: new Map(Array.isArray(f.inventory) ? f.inventory : Object.entries(f.inventory)),
-});
-
-/** Per-kind payload schemas. Loose on purpose: the harness may add fields. */
-const PayloadOf = {
-  run_start: RunMeta,
-  prompt: z.object({ text: z.string() }).passthrough(),
-  tool_call: ToolCall,
-  tool_feedback: FeedbackJson,
-  craft_result: CraftResultJson,
-  final_grid: z.array(z.array(z.string().nullable())).length(3),
-  skill_loaded: z.object({ name: z.string() }).passthrough(),
-  run_end: z.object({ outcome: z.enum(["success", "fail", "timeout"]) }).passthrough(),
-} as const;
-
-export type EventKindName = keyof typeof PayloadOf;
+/** Loose run identity — a union of the contract RunMeta and the harness's
+ *  reduced run_start payload (extra fields pass through). */
+export const RunInfo = z
+  .object({
+    runId: z.string(),
+    role: z.enum(["teacher", "student"]),
+    condition: z.string().nullable().optional(),
+    taskId: z.string(),
+    tier: z.string().optional(),
+    heldOut: z.boolean().optional(),
+    modelAlias: z.string().optional(),
+    outcome: z.string().nullable().optional(),
+  })
+  .passthrough();
+export type RunInfoT = z.infer<typeof RunInfo>;
 
 export class ParseError extends Error {
   constructor(
@@ -79,7 +46,7 @@ export class ParseError extends Error {
   }
 }
 
-/** Parse JSONL text into validated events. Throws ParseError with line number. */
+/** Parse JSONL text into validated envelope events (payload stays unknown). */
 export function parseEvents(text: string): RunEvent[] {
   const out: RunEvent[] = [];
   const lines = text.split("\n");
@@ -101,15 +68,112 @@ export function parseEvents(text: string): RunEvent[] {
   return out;
 }
 
-/** Narrow an event payload to its per-kind shape. Throws on mismatch.
- *  Pass the (narrowed) kind explicitly: RunEvent is a single object type with
- *  a union `kind`, so generics can't infer the literal from the event alone. */
-export function payloadOf<K extends EventKindName>(kind: K, payload?: unknown): z.infer<(typeof PayloadOf)[K]> {
-  return PayloadOf[kind].parse(payload) as z.infer<(typeof PayloadOf)[K]>;
+// ---------- Payload normalizers ----------
+
+const CraftOp = z.enum(["place", "take", "clear", "craft"]);
+export type CraftOpT = z.infer<typeof CraftOp>;
+export interface ToolCallN {
+  op: CraftOpT;
+  item: string | undefined;
+  slot: number | undefined;
 }
 
+export function toolCallOf(payload: unknown): ToolCallN | null {
+  if (!payload || typeof payload !== "object") return null;
+  const o = payload as Record<string, unknown>;
+  const op = typeof o.tool === "string" ? o.tool : o.op;
+  if (typeof op !== "string" || !CraftOp.safeParse(op).success) return null;
+  const input =
+    o.input && typeof o.input === "object" ? (o.input as Record<string, unknown>) : o;
+  return {
+    op: op as CraftOpT,
+    item: typeof input.item === "string" ? input.item : undefined,
+    slot: typeof input.slot === "number" ? input.slot : undefined,
+  };
+}
+
+const FeedbackJson = z.object({
+  craftable: z.boolean(),
+  wouldProduce: z.string().nullable(),
+  grid: z.array(z.array(z.string().nullable())).length(3),
+  inventory: z.union([
+    z.record(z.string(), z.number().int().positive()),
+    z.array(z.tuple([z.string(), z.number().int().positive()])),
+  ]),
+});
+
+export interface Feedback {
+  craftable: boolean;
+  wouldProduce: string | null;
+  grid: Grid;
+  inventory: Map<string, number>;
+}
+
+/** Accepts feedback flat (contract) or nested under `output` (harness).
+ *  Inventory accepts a record or [key, qty] pairs (z.map can't round-trip JSON). */
+export function feedbackOf(payload: unknown): Feedback | null {
+  if (!payload || typeof payload !== "object") return null;
+  const o = payload as Record<string, unknown>;
+  const raw = o.output && typeof o.output === "object" ? o.output : o;
+  const parsed = FeedbackJson.safeParse(raw);
+  if (!parsed.success) return null;
+  const f = parsed.data;
+  return {
+    craftable: f.craftable,
+    wouldProduce: f.wouldProduce,
+    grid: f.grid as Grid,
+    inventory: new Map(Array.isArray(f.inventory) ? f.inventory : Object.entries(f.inventory)),
+  };
+}
+
+export interface CraftRes {
+  success: boolean | null;
+  produced: string | null;
+  feedback: Feedback;
+}
+
+/** Contract shape {success, produced, feedback} or harness shape (flat output
+ *  with optional success/produced). */
+export function craftResultOf(payload: unknown): CraftRes | null {
+  if (!payload || typeof payload !== "object") return null;
+  const o = payload as Record<string, unknown>;
+  if (o.feedback && typeof o.feedback === "object") {
+    const inner = feedbackOf(o.feedback);
+    if (inner)
+      return {
+        success: typeof o.success === "boolean" ? o.success : null,
+        produced: typeof o.produced === "string" ? o.produced : null,
+        feedback: inner,
+      };
+  }
+  const f = feedbackOf(payload);
+  if (!f) return null;
+  return {
+    success: typeof o.success === "boolean" ? o.success : null,
+    produced: typeof o.produced === "string" ? o.produced : null,
+    feedback: f,
+  };
+}
+
+const RunInfoLoose = RunInfo;
+
+export function runInfoOf(payload: unknown): RunInfoT | null {
+  const parsed = RunInfoLoose.safeParse(payload);
+  return parsed.success ? parsed.data : null;
+}
+
+/** run_end: contract {outcome} or harness {exitCode, contaminated}. */
+export function outcomeOf(payload: unknown): string | null {
+  if (!payload || typeof payload !== "object") return null;
+  const o = payload as Record<string, unknown>;
+  if (typeof o.outcome === "string") return o.outcome;
+  if (typeof o.exitCode === "number") return o.exitCode === 0 ? "success" : o.exitCode === 3 ? "timeout" : "fail";
+  return null;
+}
+
+// ---------- Replay folding ----------
+
 export interface ReplayStep {
-  /** Index into the steps array; -1 would be "before the run". */
   index: number;
   seq: number;
   kind: string;
@@ -118,11 +182,10 @@ export interface ReplayStep {
   inventory: [string, number][];
   craftable: boolean;
   wouldProduce: string | null;
-  /** Success of the most recent craft_result, null if none yet. */
   craftSuccess: boolean | null;
   /** Item produced by the most recent successful craft, null if none yet. */
   lastProduced: string | null;
-  meta: RunMetaT | null;
+  meta: RunInfoT | null;
 }
 
 const emptyGrid = (): Grid => [
@@ -131,12 +194,12 @@ const emptyGrid = (): Grid => [
   [null, null, null],
 ];
 
-const toolCallLabel = (c: z.infer<typeof ToolCall>): string => {
+const toolCallLabel = (c: ToolCallN): string => {
   switch (c.op) {
     case "place":
-      return `place ${c.item} @ slot ${c.slot}`;
+      return `place ${c.item ?? "?"} @ slot ${c.slot ?? "?"}`;
     case "take":
-      return `take slot ${c.slot}`;
+      return `take slot ${c.slot ?? "?"}`;
     case "clear":
       return "clear grid";
     case "craft":
@@ -154,56 +217,69 @@ export function buildSteps(events: RunEvent[]): ReplayStep[] {
   let wouldProduce: string | null = null;
   let craftSuccess: boolean | null = null;
   let lastProduced: string | null = null;
-  let meta: RunMetaT | null = null;
+  let meta: RunInfoT | null = null;
 
   return events.map((ev, index) => {
     let label: string = ev.kind;
     switch (ev.kind) {
       case "run_start": {
-        meta = payloadOf(ev.kind, ev.payload);
-        label = `run start · ${meta.role}${meta.condition ? ` · ${meta.condition}` : ""} · ${meta.tier} · task ${meta.taskId}`;
+        meta = runInfoOf(ev.payload) ?? meta;
+        label = `run start · ${meta?.role ?? "?"}${meta?.condition ? ` · ${meta.condition}` : ""} · task ${meta?.taskId ?? "?"}`;
         break;
       }
       case "prompt": {
-        label = `prompt: ${truncate(payloadOf(ev.kind, ev.payload).text)}`;
+        const o = ev.payload as Record<string, unknown> | null;
+        label = `prompt: ${typeof o?.text === "string" ? truncate(o.text) : `${o?.length ?? "?"} chars`}`;
         break;
       }
       case "tool_call": {
-        label = `▶ ${toolCallLabel(payloadOf(ev.kind, ev.payload))}`;
+        const c = toolCallOf(ev.payload);
+        label = c ? `▶ ${toolCallLabel(c)}` : "▶ tool call";
         break;
       }
       case "tool_feedback": {
-        const f = toFeedback(payloadOf(ev.kind, ev.payload));
-        grid = f.grid.map((r) => [...r]);
-        inventory = new Map(f.inventory);
-        craftable = f.craftable;
-        wouldProduce = f.wouldProduce;
-        label = `feedback: ${craftable ? `craftable → ${wouldProduce}` : "not craftable"}`;
+        const f = feedbackOf(ev.payload);
+        if (f) {
+          grid = f.grid.map((r) => [...r]);
+          inventory = new Map(f.inventory);
+          craftable = f.craftable;
+          wouldProduce = f.wouldProduce;
+          label = `feedback: ${craftable ? `craftable → ${wouldProduce}` : "not craftable"}`;
+        } else {
+          label = "feedback";
+        }
         break;
       }
       case "craft_result": {
-        const c = payloadOf(ev.kind, ev.payload);
-        const f = toFeedback(c.feedback);
-        grid = f.grid.map((r) => [...r]);
-        inventory = new Map(f.inventory);
-        craftable = f.craftable;
-        wouldProduce = f.wouldProduce;
-        craftSuccess = c.success;
-        if (c.success) lastProduced = c.produced;
-        label = c.success ? `✔ crafted ${c.produced}` : "✘ craft failed";
+        const c = craftResultOf(ev.payload);
+        if (c) {
+          grid = c.feedback.grid.map((r) => [...r]);
+          inventory = new Map(c.feedback.inventory);
+          craftable = c.feedback.craftable;
+          wouldProduce = c.feedback.wouldProduce;
+          craftSuccess = c.success;
+          if (c.success) lastProduced = c.produced;
+          label = c.success === true ? `✔ crafted ${c.produced}` : c.success === false ? "✘ craft failed" : "craft attempt";
+        } else {
+          label = "craft result";
+        }
         break;
       }
       case "final_grid": {
-        grid = (payloadOf(ev.kind, ev.payload) as Grid).map((r) => [...r]) as Grid;
+        const g = z.array(z.array(z.string().nullable())).length(3).safeParse(ev.payload);
+        if (g.success) grid = g.data as Grid;
         label = "final grid";
         break;
       }
       case "skill_loaded": {
-        label = `skill loaded: ${payloadOf(ev.kind, ev.payload).name}`;
+        const o = ev.payload as Record<string, unknown> | null;
+        label = `skill loaded: ${o?.name ?? o?.toolName ?? "?"}`;
         break;
       }
       case "run_end": {
-        label = `run end: ${payloadOf(ev.kind, ev.payload).outcome}`;
+        const outcome = outcomeOf(ev.payload);
+        if (meta && outcome) meta = { ...meta, outcome };
+        label = `run end: ${outcome ?? "?"}`;
         break;
       }
     }
@@ -226,7 +302,7 @@ export function buildSteps(events: RunEvent[]): ReplayStep[] {
 export interface Replay {
   events: RunEvent[];
   steps: ReplayStep[];
-  meta: RunMetaT | null;
+  meta: RunInfoT | null;
 }
 
 export function buildReplay(text: string): Replay {

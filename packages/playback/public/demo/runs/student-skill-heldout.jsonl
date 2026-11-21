@@ -1,0 +1,10 @@
+{"ts":"2026-11-21T12:16:40.180Z","seq":61,"kind":"run_start","payload":{"runId":"a0000006-0000-4000-8000-000000000006","role":"student","condition":"skill","taskId":"invented:qux","modelAlias":"mistral-medium-latest","tier":"invented","heldOut":true,"outcome":null}}
+{"ts":"2026-11-21T12:16:41.180Z","seq":62,"kind":"skill_loaded","payload":{"toolName":"mcp_skillcraft_skills.bar-recipe","status":"ok"}}
+{"ts":"2026-11-21T12:16:42.180Z","seq":63,"kind":"prompt","payload":{"length":400}}
+{"ts":"2026-11-21T12:16:43.180Z","seq":64,"kind":"tool_call","payload":{"tool":"place","toolName":"mcp_skillcraft.place","input":{"item":"invented:goo","slot":0},"status":"ok"}}
+{"ts":"2026-11-21T12:16:44.180Z","seq":65,"kind":"tool_feedback","payload":{"tool":"place","toolName":"mcp_skillcraft.place","failed":false,"output":{"craftable":false,"wouldProduce":null,"grid":[["invented:goo",null,null],[null,null,null],[null,null,null]],"inventory":{"minecraft:planks":2,"invented:goo":1}}}}
+{"ts":"2026-11-21T12:16:45.180Z","seq":66,"kind":"tool_call","payload":{"tool":"place","toolName":"mcp_skillcraft.place","input":{"item":"minecraft:planks","slot":1},"status":"ok"}}
+{"ts":"2026-11-21T12:16:46.180Z","seq":67,"kind":"tool_feedback","payload":{"tool":"place","toolName":"mcp_skillcraft.place","failed":false,"output":{"craftable":true,"wouldProduce":"invented:qux","grid":[["invented:goo","minecraft:planks",null],[null,null,null],[null,null,null]],"inventory":{"invented:goo":1}}}}
+{"ts":"2026-11-21T12:16:47.180Z","seq":68,"kind":"tool_call","payload":{"tool":"craft","toolName":"mcp_skillcraft.craft","input":{},"status":"ok"}}
+{"ts":"2026-11-21T12:16:48.180Z","seq":69,"kind":"craft_result","payload":{"craftable":false,"wouldProduce":null,"grid":[[null,null,null],[null,null,null],[null,null,null]],"inventory":{"invented:qux":1},"success":true,"produced":"invented:qux"}}
+{"ts":"2026-11-21T12:16:49.180Z","seq":70,"kind":"run_end","payload":{"exitCode":0,"contaminated":false}}

@@ -131,6 +131,34 @@ img {
   font-size: 9px;
   width: 100%;
 }
+.scenario-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--dim);
+  align-self: center;
+}
+#scenario,
+.run-select,
+.speed {
+  font-family: inherit;
+  font-size: 9px;
+  background: var(--panel);
+  color: var(--ink);
+  border: 3px solid var(--line);
+  padding: 6px;
+  cursor: pointer;
+}
+.story-bar {
+  padding: 8px 16px;
+  font-size: 9px;
+  color: var(--ink);
+  background: var(--yellow);
+  border-bottom: 4px solid var(--line);
+  min-height: 14px;
+}
+.story-bar:empty {
+  display: none;
+}
 
 /* ---- Panes: fixed teacher/student pair, teacher left, student right ---- */
 #panes {
@@ -192,6 +220,32 @@ img {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+/* Segmented toggles (skill / held-out) */
+.toggle {
+  display: inline-flex;
+  border: 3px solid var(--line);
+  box-shadow: 3px 3px 0 var(--line);
+}
+.toggle button {
+  font-family: inherit;
+  font-size: 8px;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  border: none;
+  background: var(--panel);
+  color: var(--dim);
+  cursor: pointer;
+}
+.toggle button + button {
+  border-left: 3px solid var(--line);
+}
+.toggle button.on {
+  background: var(--ink);
+  color: #fff;
+}
+.run-select {
+  max-width: 180px;
 }
 .slot-label {
   font-size: 10px;

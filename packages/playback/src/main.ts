@@ -1,21 +1,31 @@
-/** Run replayer UI. Each loaded run gets a RunPane: crafting grid, craftable
- *  feedback, inventory strip, transport (scrub/step/play), and an event list.
- *  Panes are independent; load two files to compare teacher vs student. */
+/** Run replayer UI with a scenario chooser (docs/demo-matrix.md).
+ *
+ *  Both panes always visible: teacher left, student right. Each pane has a
+ *  skill toggle (no skill | skill) and a held-out toggle (taught | held-out);
+ *  loading a scenario starts both panes on the no-skill/taught runs
+ *  (matrix runs 1 + 4). A demo-story button walks 4 → 1 → 5: student baseline,
+ *  teacher generates the skill, student with skill. */
 import { buildReplay, ParseError, type Replay, type ReplayStep } from "./replayer";
+import { fetchRunEvents, fetchRunIndex, pickRun, scenariosOf, type RunIndex, type RunSummary } from "./runs";
 import { arrowSprite, itemSprite, mistralLogo } from "./sprites";
 
 const GRID_CELLS = 9;
 
+type Condition = "none" | "skill";
+
 class RunPane {
+  role: "teacher" | "student";
+  condition: Condition = "none";
+  heldOut = false;
   replay: Replay | null = null;
-  fileName = "";
-  index = -1; // -1 = before first event
+  runLabel = "";
+  index = -1;
   playing = false;
   speed = 1;
   private timer: number | null = null;
 
   readonly root: HTMLElement;
-  private nameEl: HTMLElement;
+  readonly nameEl: HTMLElement;
   private badgesEl: HTMLElement;
   private cells: HTMLElement[] = [];
   private invEl: HTMLElement;
@@ -25,17 +35,28 @@ class RunPane {
   private stepLabel: HTMLElement;
   private playBtn: HTMLButtonElement;
   private eventsEl: HTMLOListElement;
+  readonly condButtons: HTMLButtonElement[];
+  readonly heldButtons: HTMLButtonElement[];
+  readonly runSelect: HTMLSelectElement;
 
-  constructor(container: HTMLElement, slotLabel: string, emptyHint: string) {
+  constructor(container: HTMLElement, role: "teacher" | "student") {
+    this.role = role;
     this.root = document.createElement("section");
     this.root.className = "pane panel empty";
     this.root.innerHTML = `
       <header class="pane-head">
-        <span class="slot-label">${slotLabel}</span>
-        <span class="file-name">no file loaded</span>
+        <span class="slot-label">${role === "teacher" ? "TEACHER · LEFT" : "STUDENT · RIGHT"}</span>
+        <span class="toggle" data-dim="condition">
+          <button type="button" data-v="none" class="on">no skill</button><button type="button" data-v="skill">skill</button>
+        </span>
+        <span class="toggle" data-dim="heldOut">
+          <button type="button" data-v="false" class="on">taught</button><button type="button" data-v="true">held-out</button>
+        </span>
+        <select class="run-select" title="run"></select>
+        <span class="file-name">no run loaded</span>
         <span class="badges"></span>
       </header>
-      <div class="empty-state"><span class="empty-art">▚▞</span><span>${emptyHint}</span></div>
+      <div class="empty-state"><span class="empty-art">▚▞</span><span>no matching run for this scenario — adjust the toggles</span></div>
       <div class="board">
         <div class="grid" role="grid" aria-label="3x3 crafting grid"></div>
         <div class="arrow"></div>
@@ -82,6 +103,9 @@ class RunPane {
     this.stepLabel = this.root.querySelector(".step-label")!;
     this.playBtn = this.root.querySelector('[data-act="play"]')!;
     this.eventsEl = this.root.querySelector(".events")!;
+    this.condButtons = [...this.root.querySelectorAll<HTMLButtonElement>('.toggle[data-dim="condition"] button')];
+    this.heldButtons = [...this.root.querySelectorAll<HTMLButtonElement>('.toggle[data-dim="heldOut"] button')];
+    this.runSelect = this.root.querySelector(".run-select")!;
 
     this.root.querySelector(".transport")!.addEventListener("click", (e) => {
       const btn = (e.target as HTMLElement).closest("button");
@@ -96,7 +120,7 @@ class RunPane {
     this.scrub.addEventListener("input", () => this.setIndex(Number(this.scrub.value)));
     this.root.querySelector(".speed")!.addEventListener("change", (e) => {
       this.speed = Number((e.target as HTMLSelectElement).value);
-      if (this.playing) this.startTimer(); // restart with new interval
+      if (this.playing) this.startTimer();
     });
     this.eventsEl.addEventListener("click", (e) => {
       const li = (e.target as HTMLElement).closest("li[data-idx]");
@@ -119,7 +143,7 @@ class RunPane {
       this.render();
       return;
     }
-    this.fileName = fileName;
+    this.runLabel = fileName;
     this.nameEl.textContent = fileName;
     this.nameEl.classList.remove("error");
     this.root.classList.remove("empty");
@@ -147,7 +171,8 @@ class RunPane {
   }
 
   play(): void {
-    if (!this.replay || this.index >= this.lastIndex()) this.setIndex(0);
+    if (!this.replay) return;
+    if (this.index >= this.lastIndex()) this.setIndex(0);
     this.playing = true;
     this.playBtn.textContent = "⏸";
     this.startTimer();
@@ -173,7 +198,7 @@ class RunPane {
     }, 700 / this.speed);
   }
 
-  private render(): void {
+  render(): void {
     if (!this.replay) {
       this.root.classList.add("empty");
       this.stepLabel.textContent = "–/–";
@@ -181,15 +206,12 @@ class RunPane {
     }
     this.root.classList.remove("empty");
     const step: ReplayStep | null = this.index >= 0 ? this.replay.steps[this.index]! : null;
-    // Grid
     for (let i = 0; i < GRID_CELLS; i++) {
       const cell = this.cells[i]!;
       const item = step ? step.grid[(i / 3) | 0]![i % 3] : null;
       cell.replaceChildren(item ? itemSprite(item) : document.createTextNode(""));
       cell.classList.toggle("filled", item !== null);
     }
-    // Output / craftable feedback: show what the grid would craft, or — after a
-    // successful craft — the item that was produced (the grid is consumed then).
     const craftable = step?.craftable ?? false;
     const shown = step ? (step.wouldProduce ?? step.lastProduced) : null;
     this.outSlot.replaceChildren(shown ? itemSprite(shown) : document.createTextNode(""));
@@ -198,7 +220,6 @@ class RunPane {
     this.outSlot.classList.toggle("produced", step?.craftSuccess === true);
     const craftNote = step?.craftSuccess === true ? " ✔" : step?.craftSuccess === false ? " ✘" : "";
     this.outLabel.textContent = shown ? `${shown}${craftNote}` : step ? "not craftable" : "?";
-    // Inventory
     this.invEl.replaceChildren();
     if (step) {
       for (const [item, qty] of step.inventory) {
@@ -219,23 +240,21 @@ class RunPane {
         this.invEl.appendChild(empty);
       }
     }
-    // Badges
     this.badgesEl.replaceChildren();
-    const m = step?.meta ?? this.replay?.meta ?? null;
+    const m = step?.meta ?? this.replay.meta;
     if (m) {
       this.badgesEl.append(
         badge(`role-${m.role}`, m.role),
         badge(m.condition ? `cond-${m.condition}` : "cond-none", m.condition ?? "no aid"),
-        badge(`tier-${m.tier}`, m.tier),
-        badge(m.heldOut ? "held-out" : "seen", m.heldOut ? "held-out" : "seen"),
+        badge(m.tier ? `tier-${m.tier}` : "tier", m.tier ?? ""),
+        badge(m.heldOut ? "held-out" : "seen", m.heldOut ? "held-out" : "taught"),
       );
-      const end = this.replay!.steps[this.lastIndex()]!;
+      const end = this.replay.steps[this.lastIndex()]!;
       const outcome = end.kind === "run_end" ? (end.label.split(": ").pop() ?? "") : (m.outcome ?? "…");
       this.badgesEl.appendChild(badge(`outcome-${outcome}`, outcome));
     }
-    // Transport
     this.scrub.value = String(Math.max(0, this.index));
-    this.stepLabel.textContent = `${this.index + 1}/${this.replay!.steps.length}`;
+    this.stepLabel.textContent = `${this.index + 1}/${this.replay.steps.length}`;
     [...this.eventsEl.children].forEach((li, i) => {
       li.classList.toggle("active", i === this.index);
       if (i === this.index) li.scrollIntoView({ block: "nearest" });
@@ -256,45 +275,150 @@ function escapeHtml(s: string): string {
 
 // ---- App wiring ----
 
-const logoHolder = document.getElementById("logo")!;
-logoHolder.appendChild(mistralLogo());
+document.getElementById("logo")!.appendChild(mistralLogo());
 
 const panesEl = document.getElementById("panes")!;
-// Fixed pair layout: teacher always left, student always right (may be empty).
-const teacherPane = new RunPane(panesEl, "TEACHER · LEFT", "drop a teacher events.jsonl, or click “demo: teacher”");
-const studentPane = new RunPane(panesEl, "STUDENT · RIGHT", "optional — drop a student events.jsonl, or click “demo: student”");
+const teacherPane = new RunPane(panesEl, "teacher");
+const studentPane = new RunPane(panesEl, "student");
 
-async function loadInto(pane: RunPane, file: File): Promise<void> {
-  pane.loadText(file.name, await file.text());
+let index: RunIndex | null = null;
+let scenario = "";
+let scenarioTier: string | undefined;
+
+const scenarioSelect = document.getElementById("scenario") as HTMLSelectElement;
+const storyBtn = document.getElementById("demo-story") as HTMLButtonElement;
+const storyBar = document.getElementById("story-bar")!;
+
+function matchingRuns(pane: RunPane): RunSummary[] {
+  if (!index) return [];
+  return index.runs.filter((r) => {
+    if (r.role !== pane.role || (r.condition ?? "none") !== pane.condition) return false;
+    if (pane.heldOut) return r.heldOut === true && (scenarioTier === undefined || r.tier === scenarioTier);
+    return r.taskId === scenario && !r.heldOut;
+  });
 }
 
+async function loadPaneRun(pane: RunPane): Promise<void> {
+  if (!index) return;
+  const matches = matchingRuns(pane);
+  pane.runSelect.innerHTML = "";
+  for (const r of matches) {
+    const opt = document.createElement("option");
+    opt.value = r.runId;
+    opt.textContent = `${r.outcome ?? "…"} · ${r.startedAt ? r.startedAt.slice(11, 19) : r.runId}`;
+    pane.runSelect.appendChild(opt);
+  }
+  const run = pickRun(index.runs, { role: pane.role, condition: pane.condition, heldOut: pane.heldOut, taskId: scenario, tier: scenarioTier });
+  if (!run) {
+    pane.replay = null;
+    pane.nameEl.textContent = "no matching run";
+    pane.stop();
+    pane.render();
+    return;
+  }
+  pane.runSelect.value = run.runId;
+  const text = await fetchRunEvents(run);
+  pane.loadText(run.file ? run.file : `${run.runId.slice(0, 8)}…`, text);
+}
+
+function syncToggle(buttons: HTMLButtonElement[], value: string): void {
+  for (const b of buttons) b.classList.toggle("on", b.dataset.v === value);
+}
+
+function wirePane(pane: RunPane): void {
+  for (const b of pane.condButtons)
+    b.addEventListener("click", () => {
+      pane.condition = b.dataset.v as Condition;
+      syncToggle(pane.condButtons, b.dataset.v!);
+      void loadPaneRun(pane);
+    });
+  for (const b of pane.heldButtons)
+    b.addEventListener("click", () => {
+      pane.heldOut = b.dataset.v === "true";
+      syncToggle(pane.heldButtons, b.dataset.v!);
+      void loadPaneRun(pane);
+    });
+  pane.runSelect.addEventListener("change", async () => {
+    const run = matchingRuns(pane).find((r) => r.runId === pane.runSelect.value);
+    if (run && index) pane.loadText(run.file ? run.file : run.runId.slice(0, 8), await fetchRunEvents(run));
+  });
+}
+wirePane(teacherPane);
+wirePane(studentPane);
+
+async function loadScenario(taskId: string): Promise<void> {
+  scenario = taskId;
+  scenarioTier = scenariosOf(index?.runs ?? []).find((s) => s.taskId === taskId)?.tier;
+  // Both panes start on the no-skill / taught runs (matrix runs 1 + 4).
+  teacherPane.condition = "none";
+  teacherPane.heldOut = false;
+  studentPane.condition = "none";
+  studentPane.heldOut = false;
+  syncToggle(teacherPane.condButtons, "none");
+  syncToggle(teacherPane.heldButtons, "false");
+  syncToggle(studentPane.condButtons, "none");
+  syncToggle(studentPane.heldButtons, "false");
+  await Promise.all([loadPaneRun(teacherPane), loadPaneRun(studentPane)]);
+}
+
+// Demo story: 4 → 1 → 5 (student baseline, teacher generates skill, student with skill).
+const STORY = [
+  { caption: "1/3 · student, no skill — the cold baseline", pane: () => studentPane, condition: "none" as Condition, heldOut: false },
+  { caption: "2/3 · teacher, no skill — searches and generates the skill", pane: () => teacherPane, condition: "none" as Condition, heldOut: false },
+  { caption: "3/3 · student, with the generated skill — the lift", pane: () => studentPane, condition: "skill" as Condition, heldOut: false },
+];
+let storyStep = -1;
+storyBtn.addEventListener("click", async () => {
+  storyStep = (storyStep + 1) % STORY.length;
+  const s = STORY[storyStep]!;
+  const pane = s.pane();
+  pane.condition = s.condition;
+  pane.heldOut = s.heldOut;
+  syncToggle(pane.condButtons, s.condition);
+  syncToggle(pane.heldButtons, "false");
+  storyBar.textContent = s.caption;
+  await loadPaneRun(pane);
+  pane.play();
+});
+
+// Manual file loading still works: pickers + drag & drop.
 function wireInput(inputId: string, pane: RunPane): void {
   const input = document.getElementById(inputId) as HTMLInputElement;
-  input.addEventListener("change", () => {
+  input.addEventListener("change", async () => {
     const f = input.files?.[0];
-    if (f) void loadInto(pane, f);
+    if (f) pane.loadText(f.name, await f.text());
   });
 }
 wireInput("file-teacher", teacherPane);
 wireInput("file-student", studentPane);
-
-// Drag & drop anywhere: first file → teacher (left), second → student (right).
 window.addEventListener("dragover", (e) => e.preventDefault());
 window.addEventListener("drop", (e) => {
   e.preventDefault();
   const files = [...(e.dataTransfer?.files ?? [])];
-  if (files[0]) void loadInto(teacherPane, files[0]);
-  if (files[1]) void loadInto(studentPane, files[1]);
+  if (files[0]) void files[0].text().then((t) => teacherPane.loadText(files[0]!.name, t));
+  if (files[1]) void files[1].text().then((t) => studentPane.loadText(files[1]!.name, t));
 });
 
-async function loadDemo(which: "teacher" | "student"): Promise<void> {
-  const res = await fetch(`./demo/${which}.events.jsonl`);
-  if (!res.ok) throw new Error(`demo fetch failed: ${res.status}`);
-  (which === "teacher" ? teacherPane : studentPane).loadText(`${which}.events.jsonl (demo)`, await res.text());
-}
-document.getElementById("demo-teacher")!.addEventListener("click", () => void loadDemo("teacher"));
-document.getElementById("demo-student")!.addEventListener("click", () => void loadDemo("student"));
-document.getElementById("demo-both")!.addEventListener("click", async () => {
-  await loadDemo("teacher");
-  await loadDemo("student");
-});
+// Boot: discover runs (dev API or demo fixtures), pick the latest scenario.
+void (async () => {
+  try {
+    index = await fetchRunIndex();
+  } catch (e) {
+    storyBar.textContent = `run discovery failed: ${e instanceof Error ? e.message : String(e)}`;
+    return;
+  }
+  const scenarios = scenariosOf(index.runs);
+  scenarioSelect.innerHTML = "";
+  for (const s of scenarios) {
+    const opt = document.createElement("option");
+    opt.value = s.taskId;
+    opt.textContent = `${s.taskId}${s.tier ? ` · ${s.tier}` : ""}`;
+    scenarioSelect.appendChild(opt);
+  }
+  if (scenarios.length > 0) {
+    await loadScenario(scenarios[0]!.taskId);
+    if (!index.demo) storyBar.textContent = `scanning results/ — ${index.runs.length} runs found`;
+    else storyBar.textContent = "demo fixtures loaded (no results/ dir) — press ▶ demo story";
+  }
+  scenarioSelect.addEventListener("change", () => void loadScenario(scenarioSelect.value));
+})();

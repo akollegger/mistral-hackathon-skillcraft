@@ -1,0 +1,88 @@
+{
+  "scenarios": [
+    {
+      "taskId": "invented:bar",
+      "tier": "invented",
+      "label": "invented:bar (taught)"
+    },
+    {
+      "taskId": "invented:qux",
+      "tier": "invented",
+      "label": "invented:qux (held-out)"
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/teacher-none-taught.jsonl",
+      "runId": "demo-teacher-none-taught",
+      "role": "teacher",
+      "condition": null,
+      "taskId": "invented:bar",
+      "tier": "invented",
+      "heldOut": false,
+      "outcome": "success",
+      "modelAlias": "mistral-large-4-0",
+      "startedAt": "2026-11-21T12:16:39.180Z"
+    },
+    {
+      "file": "runs/teacher-skill-taught.jsonl",
+      "runId": "demo-teacher-skill-taught",
+      "role": "teacher",
+      "condition": "skill",
+      "taskId": "invented:bar",
+      "tier": "invented",
+      "heldOut": false,
+      "outcome": "success",
+      "modelAlias": "mistral-large-4-0",
+      "startedAt": "2026-11-21T12:17:39.180Z"
+    },
+    {
+      "file": "runs/teacher-skill-heldout.jsonl",
+      "runId": "demo-teacher-skill-heldout",
+      "role": "teacher",
+      "condition": "skill",
+      "taskId": "invented:qux",
+      "tier": "invented",
+      "heldOut": true,
+      "outcome": "success",
+      "modelAlias": "mistral-large-4-0",
+      "startedAt": "2026-11-21T12:18:39.180Z"
+    },
+    {
+      "file": "runs/student-none-taught.jsonl",
+      "runId": "demo-student-none-taught",
+      "role": "student",
+      "condition": "none",
+      "taskId": "invented:bar",
+      "tier": "invented",
+      "heldOut": false,
+      "outcome": "fail",
+      "modelAlias": "mistral-medium-latest",
+      "startedAt": "2026-11-21T12:19:39.180Z"
+    },
+    {
+      "file": "runs/student-skill-taught.jsonl",
+      "runId": "demo-student-skill-taught",
+      "role": "student",
+      "condition": "skill",
+      "taskId": "invented:bar",
+      "tier": "invented",
+      "heldOut": false,
+      "outcome": "success",
+      "modelAlias": "mistral-medium-latest",
+      "startedAt": "2026-11-21T12:20:39.180Z"
+    },
+    {
+      "file": "runs/student-skill-heldout.jsonl",
+      "runId": "demo-student-skill-heldout",
+      "role": "student",
+      "condition": "skill",
+      "taskId": "invented:qux",
+      "tier": "invented",
+      "heldOut": true,
+      "outcome": "success",
+      "modelAlias": "mistral-medium-latest",
+      "startedAt": "2026-11-21T12:21:39.180Z"
+    }
+  ]
+}
