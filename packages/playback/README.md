@@ -3,7 +3,7 @@
 Event-log replayer; mocked crafting table UI. Fully parallel, never on the critical path.
 
 - Consumes `events.jsonl` only (never live agent state), via `@skillcraft/contracts` schemas.
-- Lofi pixel-art UI: 32×32 procedurally painted sprites, chunky beveled borders, Mistral
+- Lofi pixel-art UI: 32×32 procedurally painted sprites, chunky black borders on a clean white base, Mistral
   gradient accents (`#FFD800 → #E10500`). No image assets, no UI framework — Vite + vanilla TS.
 - Aesthetic: concrete pixel-art Minecraft reference given to Vibe CLI at the event; grid,
   inventory strip, step/scrub controls, craftable feedback rendering.
