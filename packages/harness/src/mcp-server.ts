@@ -93,18 +93,34 @@ export const TOOLS = [
 	},
 ];
 
+/** Hard per-run budget on craft tool calls (env SKILLCRAFT_MAX_TOOL_CALLS,
+ *  default 80). Beyond the budget the server refuses calls with a full-feedback
+ *  error, so a flailing agent cannot burn the whole event clock. Env var (not
+ *  the run-spec schema) because contracts are frozen. */
+export const MAX_TOOL_CALLS = Number(
+	process.env.SKILLCRAFT_MAX_TOOL_CALLS ?? "80",
+);
+
 /** One server instance = one run = one World. */
-export function createServer(spec: RunSpec) {
+export function createServer(spec: RunSpec, maxToolCalls = MAX_TOOL_CALLS) {
 	const scenario: Scenario = {
 		...spec.scenario,
 		inventory: new Map(spec.scenario.inventory),
 	};
 	const world = new World(scenario, spec.book);
+	let toolCalls = 0;
 
 	function callTool(
 		name: string,
 		rawArgs: Record<string, unknown>,
 	): CallResult {
+		toolCalls += 1;
+		if (toolCalls > maxToolCalls) {
+			return {
+				...serialize(world.state),
+				error: `tool-call budget exhausted (${maxToolCalls}); the run is over — summarize what you learned`,
+			};
+		}
 		const parsed = ToolCall.safeParse({ op: name, ...rawArgs });
 		if (!parsed.success) {
 			// Invalid call still carries full feedback (frozen contract: errors included).

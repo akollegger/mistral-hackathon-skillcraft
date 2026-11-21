@@ -70,6 +70,8 @@ export interface SpawnRunRequest {
 	book: Book;
 	timeLimitSec: number;
 	maxTurns: number;
+	/** hard cap on craft tool calls, enforced by the MCP server (default 80) */
+	maxToolCalls?: number;
 	/** student conditions: source files to copy into the run dir */
 	skillContent?: string; // skill.md content (skill condition)
 	transcriptContent?: string; // transcript.md content (transcript condition)
@@ -278,7 +280,10 @@ export async function spawnRun(req: SpawnRunRequest): Promise<SpawnRunResult> {
 	const serverBundle =
 		process.env.SKILLCRAFT_MCP_SERVER ??
 		resolve("packages/harness/dist/mcp-server.mjs");
-	registerCraftServer(serverBundle, { SKILLCRAFT_RUN_SPEC: paths.specPath });
+	registerCraftServer(serverBundle, {
+		SKILLCRAFT_RUN_SPEC: paths.specPath,
+		SKILLCRAFT_MAX_TOOL_CALLS: String(req.maxToolCalls ?? 80),
+	});
 	try {
 		const proc = await execa(
 			"vibe",
@@ -302,7 +307,11 @@ export async function spawnRun(req: SpawnRunRequest): Promise<SpawnRunResult> {
 				modelAlias,
 			],
 			{
-				env: { ...process.env, SKILLCRAFT_RUN_SPEC: paths.specPath },
+				env: {
+					...process.env,
+					SKILLCRAFT_RUN_SPEC: paths.specPath,
+					SKILLCRAFT_MAX_TOOL_CALLS: String(req.maxToolCalls ?? 80),
+				},
 				reject: false,
 			},
 		);

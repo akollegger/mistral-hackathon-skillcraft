@@ -41,6 +41,17 @@ const call = (
 };
 
 describe("craft MCP server (stdio JSON-RPC handler)", () => {
+	it("refuses calls beyond the tool-call budget with full feedback", () => {
+		const server = createServer(spec, 3);
+		call(server, 1, "clear", {});
+		call(server, 2, "clear", {});
+		call(server, 3, "clear", {});
+		const { payload } = call(server, 4, "clear", {});
+		expect(payload.error).toMatch(/budget exhausted/);
+		expect(payload).toHaveProperty("craftable");
+		expect(payload).toHaveProperty("inventory");
+	});
+
 	it("initialize advertises server name 'skillcraft' (namespacing root for mcp_skillcraft_*)", () => {
 		const server = createServer(spec);
 		const res = server.handle({
