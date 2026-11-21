@@ -8,11 +8,11 @@ Skillcraft measures how AI agents acquire knowledge, using a Minecraft-inspired 
 
 Each agent faces three tiers of challenge:
 
-1. **Traditional** (craft a pickaxe): canonical Minecraft recipes. Success comes from facts memorized in training. *This is retrieval.*
-2. **Derived** (craft a stool): plausible recipes that are not part of the game. Success requires generalizing from known recipes to unfamiliar but related combinations. *This is transfer.*
-3. **Invented** (craft a bar, given quantities of foo, meh, and a fiz): out-of-distribution items made of resources that do not exist. Nothing in training helps; the agent must learn an unknown recipe through exploration and feedback. *This is search.*
+1. **Traditional** (craft a pickaxe): canonical Minecraft recipes. Success comes from facts memorized in training. _This is retrieval._
+2. **Derived** (craft a stool): plausible recipes that are not part of the game. Success requires generalizing from known recipes to unfamiliar but related combinations. _This is transfer._
+3. **Invented** (craft a bar, given quantities of foo, meh, and a fiz): out-of-distribution items made of resources that do not exist. Nothing in training helps; the agent must learn an unknown recipe through exploration and feedback. _This is search._
 
-The experiment proper is skill distillation: an experienced **teacher** agent solves invented-tier challenges, then writes a reusable **skill** — a portable, human-readable procedure file. That skill is copied into a fresh working directory and given to a naive **student** agent, which faces both the taught task and *held-out* tasks the teacher never saw. We measure whether distilled skills transfer, whether skills transfer better than raw transcripts, and how few examples a student needs.
+The experiment proper is skill distillation: an experienced **teacher** agent solves invented-tier challenges, then writes a reusable **skill** — a portable, human-readable procedure file. That skill is copied into a fresh working directory and given to a naive **student** agent, which faces both the taught task and _held-out_ tasks the teacher never saw. We measure whether distilled skills transfer, whether skills transfer better than raw transcripts, and how few examples a student needs.
 
 The result is a quantified answer to a question every team building on LLMs asks: can one agent's hard-won experience be packaged and handed to another — and is that memory, transfer, or search?
 

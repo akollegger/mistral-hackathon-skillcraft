@@ -43,6 +43,7 @@ fallback only. Tool results (including errors) always carry the full feedback ob
 ## Prompt templates (decided shapes; scenario text is event-day)
 
 **Teacher** (role: teacher, condition: null):
+
 1. Task statement: inventory (ids + quantities), target item, 3x3 grid explanation.
 2. Tool description: place/take/clear/craft + feedback contract ("every action tells you
    whether your current grid is craftable and what it would produce").
@@ -52,6 +53,7 @@ fallback only. Tool results (including errors) always carry the full feedback ob
    feedback, pruning heuristics); worked examples allowed and encouraged; no hidden-channel hints.
 
 **Student** (role: student, condition: none|transcript|skill):
+
 - Identical to teacher items 1-2. Condition injection, verbatim placement order:
   - none: nothing added.
   - transcript: `transcript.md` path, "an agent previously worked on a related problem; this is its raw transcript."
@@ -59,16 +61,18 @@ fallback only. Tool results (including errors) always carry the full feedback ob
 - No task-specific hints leak through condition injection phrasing (word-matched stems).
 
 ## Tuning knobs (record in run.meta.json, never silently varying)
+
 - Vibe CLI invocation flags, model/pinning date, timeout budget per run, max tool calls.
 - Grid dimensions and repetition counts come from the pre-committed matrix in the plan (P4).
 
 ## Skill-inject decisions (post-S5)
+
 - Dir-local skills live at `<dir>/.agents/skills/<name>/SKILL.md`; the loader REQUIRES
   YAML frontmatter (`name`, `description`) — files without it fail with
   "Missing or invalid YAML frontmatter". Teacher skill-generation prompt must mandate
   frontmatter, and the harness validates it at acceptance time (reject non-compliant skills).
 - Student `file_read` effects on the SKILL.md path is a traceable strategy event:
-  S5 showed a cold run can succeed by *hunting and reading* the skill as a plain file
+  S5 showed a cold run can succeed by _hunting and reading_ the skill as a plain file
   even when skill loading failed — distinguish auto-load vs file-hunt in the event log.
 - Ambient skills (`ls ~/.vibe/skills`, e.g. the relate bundle) are recorded in
   run.meta.json and the directory is moved aside during official runs, restored after.

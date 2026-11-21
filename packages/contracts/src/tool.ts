@@ -11,22 +11,22 @@ export const Inventory = z.map(ItemId, Quantity);
 
 /** Tool calls. Model-facing grammar; harness routes to world model. */
 export const ToolCall = z.discriminatedUnion("op", [
-  z.object({ op: z.literal("place"), item: ItemId, slot: Slot }),
-  z.object({ op: z.literal("take"), slot: Slot }),
-  z.object({ op: z.literal("clear") }),
-  z.object({ op: z.literal("craft") }),
+	z.object({ op: z.literal("place"), item: ItemId, slot: Slot }),
+	z.object({ op: z.literal("take"), slot: Slot }),
+	z.object({ op: z.literal("clear") }),
+	z.object({ op: z.literal("craft") }),
 ]);
 
 /** Feedback contract: returned on EVERY place/take/clear/craft. */
 export const ToolFeedback = z.object({
-  craftable: z.boolean(),
-  wouldProduce: ItemId.nullable(), // null when not craftable
-  grid: z.array(z.array(ItemId.nullable())).length(3), // [row][col] item ids (null = empty slot)
-  inventory: Inventory,
+	craftable: z.boolean(),
+	wouldProduce: ItemId.nullable(), // null when not craftable
+	grid: z.array(z.array(ItemId.nullable())).length(3), // [row][col] item ids (null = empty slot)
+	inventory: Inventory,
 });
 
 export const CraftResult = z.object({
-  success: z.boolean(),
-  produced: ItemId.nullable(),
-  feedback: ToolFeedback,
+	success: z.boolean(),
+	produced: ItemId.nullable(),
+	feedback: ToolFeedback,
 });

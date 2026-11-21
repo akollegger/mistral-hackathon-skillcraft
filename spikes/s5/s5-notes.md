@@ -3,6 +3,7 @@
 ## Verdict — GREEN, CLOSED (2026-11-20; S5b run completed)
 
 ### S5b result: TRUE AUTO-LOAD (clean branch of the verdict rule)
+
 - **0 file reads** on the run (no `.agents` crawl), answer **wisteria-cobra** correct.
 - Log shows a `skill.read` effect: `"Loading skill: distill-probe"` returning the full
   `<skill_content>` body in-context; model then quotes the skill's table directly.
@@ -11,7 +12,7 @@
   first-class event, cleanly distinct from `file_read` effects.
 - Usage: 13,565 input (7,808 cached) / 139 output, exit 0, finished.
 - **Ambient contamination settled:** bare-run context-breakdown shows exactly 1
-  skill-related entry of size 0 — no relate-bundle *content* enters bare runs
+  skill-related entry of size 0 — no relate-bundle _content_ enters bare runs
   (catalog mention at most). Official runs still move `~/.vibe/skills` aside.
 
 1. **Skill placement confirmed.** `relate update` wrote the bundle to
@@ -22,16 +23,16 @@
    the loader's own error message referencing exactly that path.
 
 2. **Skills REQUIRE YAML frontmatter to load as skills.** The injection SKILL.md
-   (no frontmatter) failed: *"Failed to load: Missing or invalid YAML frontmatter
-   (metadata section must start and end with ---)"*. → **Confirmed hard requirement
+   (no frontmatter) failed: _"Failed to load: Missing or invalid YAML frontmatter
+   (metadata section must start and end with ---)"_. → **Confirmed hard requirement
    by S5b**: with frontmatter the same injection loads cleanly via `skill.read`.
    Teacher skill-generation prompt must mandate frontmatter (`name`, `description`).
 
 3. **The injection test "passed" — but via file-hunting, not skill loading.** Because
    the skill failed to load, the model answered **wisteria-cobra** only after 5
    `file_system.read_file` calls crawling `.agents/ → skills/ → distill-probe/ →
-   SKILL.md`. The answer is correct, but the mechanism is *find-and-read*, not
-   *loaded skill*. Both are legitimate behaviors to measure, but they are different
+   SKILL.md`. The answer is correct, but the mechanism is _find-and-read_, not
+   _loaded skill_. Both are legitimate behaviors to measure, but they are different
    conditions — and file-hunting depends on the prompt implicitly encouraging search.
 
 4. **`--trust` bypasses the project-config trust prompt headlessly** — the run with

@@ -1,7 +1,9 @@
 {
-  "name": "skillcraft-s3-spike",
-  "private": true,
-  "type": "module",
-  "description": "Throwaway S3 spike: Relate from TypeScript/Node. Delete before the event.",
-  "dependencies": { "@relate/relate": "*" }
+	"name": "skillcraft-s3-spike",
+	"private": true,
+	"type": "module",
+	"description": "Throwaway S3 spike: Relate from TypeScript/Node. Delete before the event.",
+	"dependencies": {
+		"@relate/relate": "*"
+	}
 }

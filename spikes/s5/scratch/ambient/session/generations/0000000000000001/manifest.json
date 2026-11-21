@@ -1,1 +1,31 @@
-{"checkpoint":{"checkpoint_version":1,"chunks":[],"path":"checkpoint.json","sha256":"4e07f49814606da742e43bd772cca1fac850ce725d2a85e236cbb4378af25e69"},"created_at":"2026-11-20T17:31:46.179Z","execution_state":"quiescent","generation":"0000000000000001","interop_export":null,"manifest_version":1,"projection_state":{"chunks":[],"path":"projection-state.json","sha256":"204e7544660d5e9b55dcf65ef9526209c0475104de89d9006956668401117a52"},"recovery_journal_segment":{"first_sequence":1,"path":"journal/0000000000000001.jsonl"},"runtime_state":{"chunks":["d60b4ac8939e19d913eff7e355bb77b30dd03bbb04121ad3204702aa741bde32"],"path":"runtime-state.json","sha256":"ca70903b74c5f2d57b1fde31bd8a0c9209e2b30ae71f59cc229ef7aab7b09569"},"session_id":"959f481b-370f-5a55-5477-0cbebf89dd04","snapshot_sequence":0}
+{
+	"checkpoint": {
+		"checkpoint_version": 1,
+		"chunks": [],
+		"path": "checkpoint.json",
+		"sha256": "4e07f49814606da742e43bd772cca1fac850ce725d2a85e236cbb4378af25e69"
+	},
+	"created_at": "2026-11-20T17:31:46.179Z",
+	"execution_state": "quiescent",
+	"generation": "0000000000000001",
+	"interop_export": null,
+	"manifest_version": 1,
+	"projection_state": {
+		"chunks": [],
+		"path": "projection-state.json",
+		"sha256": "204e7544660d5e9b55dcf65ef9526209c0475104de89d9006956668401117a52"
+	},
+	"recovery_journal_segment": {
+		"first_sequence": 1,
+		"path": "journal/0000000000000001.jsonl"
+	},
+	"runtime_state": {
+		"chunks": [
+			"d60b4ac8939e19d913eff7e355bb77b30dd03bbb04121ad3204702aa741bde32"
+		],
+		"path": "runtime-state.json",
+		"sha256": "ca70903b74c5f2d57b1fde31bd8a0c9209e2b30ae71f59cc229ef7aab7b09569"
+	},
+	"session_id": "959f481b-370f-5a55-5477-0cbebf89dd04",
+	"snapshot_sequence": 0
+}

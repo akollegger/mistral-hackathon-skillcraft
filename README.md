@@ -6,13 +6,13 @@ Skillcraft measures how AI agents acquire knowledge, using a Minecraft-inspired 
 
 Each agent faces three tiers of challenge:
 
-1. **Traditional** (craft a pickaxe): canonical recipes. Success comes from facts memorized in training. *This is retrieval.*
-2. **Derived** (craft a stool): plausible recipes that are not part of the game. Success requires generalizing from known combinations to related ones. *This is transfer.*
-3. **Invented** (craft a bar, given quantities of foo, meh, and a fiz): out-of-distribution resources that do not exist. Nothing in training helps; the agent must learn an unknown recipe through exploration and feedback. *This is search.*
+1. **Traditional** (craft a pickaxe): canonical recipes. Success comes from facts memorized in training. _This is retrieval._
+2. **Derived** (craft a stool): plausible recipes that are not part of the game. Success requires generalizing from known combinations to related ones. _This is transfer._
+3. **Invented** (craft a bar, given quantities of foo, meh, and a fiz): out-of-distribution resources that do not exist. Nothing in training helps; the agent must learn an unknown recipe through exploration and feedback. _This is search._
 
 Recipes in this project are **composable functions**: input ingredients at exact grid locations produce a quantity of a target item, and outputs feed other recipes (logs → planks → sticks → fence). Composition depth is the tier semantics, and quantity budgeting makes solutions non-trivial.
 
-The experiment proper is **skill distillation**: an experienced **teacher** agent solves challenges and writes a reusable **skill** (a portable, human-readable procedure file with YAML frontmatter). That skill is copied into a fresh working directory and given to a naive **student** agent, which faces both the taught task and *held-out* tasks the teacher never saw. We measure whether distilled skills transfer, whether they beat raw transcripts, and how few examples a student needs.
+The experiment proper is **skill distillation**: an experienced **teacher** agent solves challenges and writes a reusable **skill** (a portable, human-readable procedure file with YAML frontmatter). That skill is copied into a fresh working directory and given to a naive **student** agent, which faces both the taught task and _held-out_ tasks the teacher never saw. We measure whether distilled skills transfer, whether they beat raw transcripts, and how few examples a student needs.
 
 ## Headline numbers
 
@@ -56,13 +56,13 @@ Open an issue before large changes, so we don't collide with event-day wiring.
 
 ## Prep / event boundary
 
-| Written before the event (this repo now) | Written during the event clock |
-| --- | --- |
-| Design docs, specs, prompt templates | World model implementation |
-| Zod schemas / types in `packages/contracts` | Harness orchestration implementation |
-| Tooling configs (pnpm, tsconfig, vitest, biome) | Scenario dataset (recipe books) |
+| Written before the event (this repo now)        | Written during the event clock        |
+| ----------------------------------------------- | ------------------------------------- |
+| Design docs, specs, prompt templates            | World model implementation            |
+| Zod schemas / types in `packages/contracts`     | Harness orchestration implementation  |
+| Tooling configs (pnpm, tsconfig, vitest, biome) | Scenario dataset (recipe books)       |
 | Spikes in `spikes/` (probe evidence + verdicts) | Teacher/student runs, skills, results |
-| | Analysis, playback UI, write-up |
+|                                                 | Analysis, playback UI, write-up       |
 
 The spike notes are the institutional memory: every locked decision (feedback contract, skill frontmatter gate, anti-cheat rules, event-log parsing rules, Relate rulings) traces to an `sN-notes.md` with raw evidence.
 

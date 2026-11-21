@@ -1,1 +1,81 @@
-{"projection_state_version":1,"session_api":{"history_positions":{},"metadata_version":1,"next_history_index":0,"sparse_history":{"history_sha256":"bf2b0a42f6d5251778d6e109ee5086210b62a03b7f06c5e5dc05b1dab4ffde21","next_index":31,"positions":{}},"tool_calls":{"effect-10538bc6-bcd6-5409-85aa-4a8ff04f17dd":{"toolCallId":"PQSY6pHHz"},"effect-754ec894-9840-5b87-9f8b-d4db36a8511d":{"toolCallId":"0bhWONnbK"},"effect-fac6cc56-a67b-5f4e-acba-938a63692fc7":{"toolCallId":"cWfemj1DI"}},"turn_outcomes":{"turn-66f59222d3e5b3de3b8d24260554d9fc":{"completedAt":1795197023438,"startedAt":1795197009581,"termination":{"outcome":"completed","output":null,"stopReason":"iteration_limit"}}}},"session_id":"a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e","snapshot":{"activeCallbacks":[],"format":"harness.public-session-state/v1","history":{"cursor":{"after":null,"before":null},"entries":[],"range":"latest"},"latestTurn":{"completedAt":1795197023438,"id":"turn-66f59222d3e5b3de3b8d24260554d9fc","inputEntryId":"user-turn-66f59222d3e5b3de3b8d24260554d9fc-1","queueItemId":null,"sessionId":"a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e","startedAt":1795197009581,"status":"completed","stopReason":"limit"},"session":{"contextUsage":{"cachedInputTokens":7680,"inputTokens":8134,"outputTokens":75,"totalTokens":8209},"createdAt":1795197009277,"id":"a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e","parentSessionId":null,"preview":"Use the relate-shared MCP server to run this Cypher against the graph:   CREATE (t:Task {taskId: 's4-probe', tier: 'invented'})   RETURN t.taskId AS created Then run: MATCH (n) RETURN count(n) AS node…","rootSessionId":"a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e","status":{"type":"idle"},"title":null,"titleSource":"auto","tokenUsage":{"cachedInputTokens":64768,"inputTokens":73546,"outputTokens":599,"totalTokens":74145},"updatedAt":1795197023438},"turnQueue":{"items":[],"maxItems":32,"paused":false}},"snapshot_sequence":71,"watermark":20}
+{
+	"projection_state_version": 1,
+	"session_api": {
+		"history_positions": {},
+		"metadata_version": 1,
+		"next_history_index": 0,
+		"sparse_history": {
+			"history_sha256": "bf2b0a42f6d5251778d6e109ee5086210b62a03b7f06c5e5dc05b1dab4ffde21",
+			"next_index": 31,
+			"positions": {}
+		},
+		"tool_calls": {
+			"effect-10538bc6-bcd6-5409-85aa-4a8ff04f17dd": {
+				"toolCallId": "PQSY6pHHz"
+			},
+			"effect-754ec894-9840-5b87-9f8b-d4db36a8511d": {
+				"toolCallId": "0bhWONnbK"
+			},
+			"effect-fac6cc56-a67b-5f4e-acba-938a63692fc7": {
+				"toolCallId": "cWfemj1DI"
+			}
+		},
+		"turn_outcomes": {
+			"turn-66f59222d3e5b3de3b8d24260554d9fc": {
+				"completedAt": 1795197023438,
+				"startedAt": 1795197009581,
+				"termination": {
+					"outcome": "completed",
+					"output": null,
+					"stopReason": "iteration_limit"
+				}
+			}
+		}
+	},
+	"session_id": "a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e",
+	"snapshot": {
+		"activeCallbacks": [],
+		"format": "harness.public-session-state/v1",
+		"history": {
+			"cursor": { "after": null, "before": null },
+			"entries": [],
+			"range": "latest"
+		},
+		"latestTurn": {
+			"completedAt": 1795197023438,
+			"id": "turn-66f59222d3e5b3de3b8d24260554d9fc",
+			"inputEntryId": "user-turn-66f59222d3e5b3de3b8d24260554d9fc-1",
+			"queueItemId": null,
+			"sessionId": "a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e",
+			"startedAt": 1795197009581,
+			"status": "completed",
+			"stopReason": "limit"
+		},
+		"session": {
+			"contextUsage": {
+				"cachedInputTokens": 7680,
+				"inputTokens": 8134,
+				"outputTokens": 75,
+				"totalTokens": 8209
+			},
+			"createdAt": 1795197009277,
+			"id": "a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e",
+			"parentSessionId": null,
+			"preview": "Use the relate-shared MCP server to run this Cypher against the graph:   CREATE (t:Task {taskId: 's4-probe', tier: 'invented'})   RETURN t.taskId AS created Then run: MATCH (n) RETURN count(n) AS node…",
+			"rootSessionId": "a33f3e6a-2bef-34f3-0fb6-48665ee8dd3e",
+			"status": { "type": "idle" },
+			"title": null,
+			"titleSource": "auto",
+			"tokenUsage": {
+				"cachedInputTokens": 64768,
+				"inputTokens": 73546,
+				"outputTokens": 599,
+				"totalTokens": 74145
+			},
+			"updatedAt": 1795197023438
+		},
+		"turnQueue": { "items": [], "maxItems": 32, "paused": false }
+	},
+	"snapshot_sequence": 71,
+	"watermark": 20
+}

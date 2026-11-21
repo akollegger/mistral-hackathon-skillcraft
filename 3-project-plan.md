@@ -68,7 +68,7 @@ At the event: judges see live agent runs, real distilled skill files, a queryabl
 - [ ] Built from the event log format only — never from live agent state — so it can't break anything upstream
 - [ ] Event-log replayer: mocked crafting table, inventory strip, place/take/clear/craft steps, craftable feedback rendering, step/scrub controls
 - [ ] Aesthetic spec: concrete Minecraft reference passed to Vibe ("pixel-art textures, 3×3 grid, slot hover states"), not "make it nice"
-- [ ] Demo scene: teacher search → distilled skill → cold student success, replayed side by side
+- [ ] Demo scene: teacher search → distilled skill → cold student success, replayed side by side (6-run per-scenario matrix in [`docs/demo-matrix.md`](./docs/demo-matrix.md))
 - [ ] Kill criterion: zero core time spent. UI work by a teammate or after the grid is green; if partial, replaying just one teacher run + one student run counts as done.
 
 ### Phase 7 — Pitch + write-up (serialize last)
@@ -78,25 +78,25 @@ At the event: judges see live agent runs, real distilled skill files, a queryabl
 
 ## Parallelization summary
 
-| Phase | Runs in parallel with | Blocking gate |
-| --- | --- | --- |
-| P1 world model | nothing (critical path) | blocks P2+ |
-| P2 harness | P1 (starts on grammar freeze) | blocks all runs |
-| P3 teacher runs | P4a (no-skill condition runs) | transcript/skill cells need P3 |
-| P4 conditions grid | P3 (partially), P5 partially, P6 fully | blocks P7 numbers |
-| P5 eval | P4 tail-end runs | blocks P7 |
-| P6 playback | P3/P4/P5 entirely | none — never on critical path |
-| P7 write-up | nothing | last |
+| Phase              | Runs in parallel with                  | Blocking gate                  |
+| ------------------ | -------------------------------------- | ------------------------------ |
+| P1 world model     | nothing (critical path)                | blocks P2+                     |
+| P2 harness         | P1 (starts on grammar freeze)          | blocks all runs                |
+| P3 teacher runs    | P4a (no-skill condition runs)          | transcript/skill cells need P3 |
+| P4 conditions grid | P3 (partially), P5 partially, P6 fully | blocks P7 numbers              |
+| P5 eval            | P4 tail-end runs                       | blocks P7                      |
+| P6 playback        | P3/P4/P5 entirely                      | none — never on critical path  |
+| P7 write-up        | nothing                                | last                           |
 
 Team split (or solo ordering): solo → P1→P2 strictly sequential, launch P3+P4a as background runs, build P5 queries while the grid chews, P6 only if capacity remains; team of 2 → one on runs (P3/P4), one on P6 from the event-log spec written in P2; team of 3+ → evals and write-up get a dedicated owner.
 
 ## Risks and mitigations
 
-| Risk | Mitigation |
-| --- | --- |
-| Nondeterminism muddies results | Repeats with spread, never single-run cells; grid dimensions pre-committed |
-| Skills collapse to cached answers | Skill-format rubric, answer-vs-procedure classification, held-out tasks, transcript condition |
-| Relate integration eats time | 90-min kill criterion → JSON-line fallback |
-| Feedback spec ambiguity (variant placements) | Rotation/mirror equivalence decided in P1, validated against spec before real runs |
-| Invented tier too hard (zero successes) | Keep feedback rich enough for search; partial credit for well-formed attempts; report attempt-effort even on failure — cuts are interesting |
-| One-day time crunch | Pre-declared grid dimensions, P4 starts no-skill immediately, P6 fully parallel and droppable |
+| Risk                                         | Mitigation                                                                                                                                  |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nondeterminism muddies results               | Repeats with spread, never single-run cells; grid dimensions pre-committed                                                                  |
+| Skills collapse to cached answers            | Skill-format rubric, answer-vs-procedure classification, held-out tasks, transcript condition                                               |
+| Relate integration eats time                 | 90-min kill criterion → JSON-line fallback                                                                                                  |
+| Feedback spec ambiguity (variant placements) | Rotation/mirror equivalence decided in P1, validated against spec before real runs                                                          |
+| Invented tier too hard (zero successes)      | Keep feedback rich enough for search; partial credit for well-formed attempts; report attempt-effort even on failure — cuts are interesting |
+| One-day time crunch                          | Pre-declared grid dimensions, P4 starts no-skill immediately, P6 fully parallel and droppable                                               |

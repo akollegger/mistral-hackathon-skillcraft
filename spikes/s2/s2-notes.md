@@ -9,6 +9,7 @@ event source we should parse — far cleaner than the journal.**
 ## What happened in the run (worth reading closely)
 
 The model (mistral-medium-3.5 default):
+
 1. Found the tools itself via the CLI's built-in `search_tool_functions`, which surfaced
    the `mcp_skillcraft_s2` connector (tools are namespaced `mcp_skillcraft_s2.place` etc.).
 2. **Failed 8 times in a row guessing item names** ("coal", "charcoal", "stick", "torch",
@@ -52,7 +53,7 @@ discovery, pruning, and recovery. The spike accidentally validated the whole pre
    place/take returns craftability + state. Fix: every tool result, including errors,
    includes `{craftable, wouldProduce, grid, inventory}`.
 2. **Inventory in the task prompt is a deliberate variable, not an omission.** The spike
-   prompt (no inventory) produced 8 failed probes — that's a *hard task* variant. The
+   prompt (no inventory) produced 8 failed probes — that's a _hard task_ variant. The
    harness protocol's standard task statement includes inventory ids + quantities; the
    "blind inventory" variant is exactly the kind of tier/difficulty knob to keep in the
    scenario spec, deliberately.

@@ -1,1 +1,114 @@
-{"projection_state_version":1,"session_api":{"history_positions":{},"metadata_version":1,"next_history_index":0,"sparse_history":{"history_sha256":"0f0351583facbab758c7a60f17d9c271863243758d09a99acfa78497bc1f1115","next_index":42,"positions":{}},"tool_calls":{"effect-14ce1ec3-ff78-53a6-bcbe-3babece7b0f8":{"toolCallId":"typescript:15:OjcUxHKVn:0:tool:0"},"effect-1f1a047b-7156-5a84-adce-9cdf04c873e4":{"toolCallId":"typescript:15:OjcUxHKVn:2:tool:2"},"effect-3398c3f0-0ceb-5fe2-b2af-dffaf07250f6":{"toolCallId":"typescript:11:i2rWsNzlp:4:tool:4"},"effect-42d12ff4-0b99-52c5-8ca9-9bd8b5d514a6":{"toolCallId":"typescript:11:i2rWsNzlp:5:tool:5"},"effect-4550e68f-6d68-55bd-bfca-afde44921e7c":{"toolCallId":"typescript:9:cBZntbuxz:0:tool:0"},"effect-4a5af55c-18f4-5627-a435-97cf0709cb8c":{"toolCallId":"typescript:11:i2rWsNzlp:0:tool:0"},"effect-67a0c21f-714e-57c0-af4e-91cc5aa88f54":{"toolCallId":"typescript:11:i2rWsNzlp:1:tool:1"},"effect-735439a4-2d19-5f3f-b1c2-1f43e3245775":{"toolCallId":"typescript:15:OjcUxHKVn:1:tool:1"},"effect-91c47218-977d-5074-9df3-f49976c8722c":{"toolCallId":"typescript:11:i2rWsNzlp:6:tool:6"},"effect-a681eecb-bf88-575f-85a5-c018011d3d2b":{"toolCallId":"typescript:7:3HgcfOeeQ:0:tool:0"},"effect-b9552098-6bac-5321-8248-6476235f1a92":{"toolCallId":"typescript:11:i2rWsNzlp:3:tool:3"},"effect-f0d44e71-ba3d-5062-a391-c975f8c0c585":{"toolCallId":"typescript:11:i2rWsNzlp:2:tool:2"},"effect-f20c1a45-aefa-581c-a289-69125ac6dfcb":{"toolCallId":"typescript:13:7ev0U7FNp:1:tool:1"},"effect-f554d59b-9a95-5ff3-b4c0-2d6b2eb7122d":{"toolCallId":"typescript:13:7ev0U7FNp:0:tool:0"}},"turn_outcomes":{"turn-08e66e73a53e8428dc161cba812fa602":{"completedAt":1795197878425,"startedAt":1795197833617,"termination":{"outcome":"completed","output":null,"stopReason":null}}}},"session_id":"bf52641c-715e-025c-f71d-0eb2d8a1f26d","snapshot":{"activeCallbacks":[],"format":"harness.public-session-state/v1","history":{"cursor":{"after":null,"before":null},"entries":[],"range":"latest"},"latestTurn":{"completedAt":1795197878425,"id":"turn-08e66e73a53e8428dc161cba812fa602","inputEntryId":"user-turn-08e66e73a53e8428dc161cba812fa602-1","queueItemId":null,"sessionId":"bf52641c-715e-025c-f71d-0eb2d8a1f26d","startedAt":1795197833617,"status":"completed","stopReason":null},"session":{"contextUsage":{"cachedInputTokens":9344,"inputTokens":10178,"outputTokens":525,"totalTokens":10703},"createdAt":1795197833467,"id":"bf52641c-715e-025c-f71d-0eb2d8a1f26d","parentSessionId":null,"preview":"You have a crafting table available as tools (place, take, clear_grid, craft), a 3x3 grid (slots 0-8, row-major), and an inventory. Your goal: craft a torch. Use the tools to do it, then report which…","rootSessionId":"bf52641c-715e-025c-f71d-0eb2d8a1f26d","status":{"type":"idle"},"title":null,"titleSource":"auto","tokenUsage":{"cachedInputTokens":57472,"inputTokens":67595,"outputTokens":2214,"totalTokens":69809},"updatedAt":1795197878425},"turnQueue":{"items":[],"maxItems":32,"paused":false}},"snapshot_sequence":162,"watermark":51}
+{
+	"projection_state_version": 1,
+	"session_api": {
+		"history_positions": {},
+		"metadata_version": 1,
+		"next_history_index": 0,
+		"sparse_history": {
+			"history_sha256": "0f0351583facbab758c7a60f17d9c271863243758d09a99acfa78497bc1f1115",
+			"next_index": 42,
+			"positions": {}
+		},
+		"tool_calls": {
+			"effect-14ce1ec3-ff78-53a6-bcbe-3babece7b0f8": {
+				"toolCallId": "typescript:15:OjcUxHKVn:0:tool:0"
+			},
+			"effect-1f1a047b-7156-5a84-adce-9cdf04c873e4": {
+				"toolCallId": "typescript:15:OjcUxHKVn:2:tool:2"
+			},
+			"effect-3398c3f0-0ceb-5fe2-b2af-dffaf07250f6": {
+				"toolCallId": "typescript:11:i2rWsNzlp:4:tool:4"
+			},
+			"effect-42d12ff4-0b99-52c5-8ca9-9bd8b5d514a6": {
+				"toolCallId": "typescript:11:i2rWsNzlp:5:tool:5"
+			},
+			"effect-4550e68f-6d68-55bd-bfca-afde44921e7c": {
+				"toolCallId": "typescript:9:cBZntbuxz:0:tool:0"
+			},
+			"effect-4a5af55c-18f4-5627-a435-97cf0709cb8c": {
+				"toolCallId": "typescript:11:i2rWsNzlp:0:tool:0"
+			},
+			"effect-67a0c21f-714e-57c0-af4e-91cc5aa88f54": {
+				"toolCallId": "typescript:11:i2rWsNzlp:1:tool:1"
+			},
+			"effect-735439a4-2d19-5f3f-b1c2-1f43e3245775": {
+				"toolCallId": "typescript:15:OjcUxHKVn:1:tool:1"
+			},
+			"effect-91c47218-977d-5074-9df3-f49976c8722c": {
+				"toolCallId": "typescript:11:i2rWsNzlp:6:tool:6"
+			},
+			"effect-a681eecb-bf88-575f-85a5-c018011d3d2b": {
+				"toolCallId": "typescript:7:3HgcfOeeQ:0:tool:0"
+			},
+			"effect-b9552098-6bac-5321-8248-6476235f1a92": {
+				"toolCallId": "typescript:11:i2rWsNzlp:3:tool:3"
+			},
+			"effect-f0d44e71-ba3d-5062-a391-c975f8c0c585": {
+				"toolCallId": "typescript:11:i2rWsNzlp:2:tool:2"
+			},
+			"effect-f20c1a45-aefa-581c-a289-69125ac6dfcb": {
+				"toolCallId": "typescript:13:7ev0U7FNp:1:tool:1"
+			},
+			"effect-f554d59b-9a95-5ff3-b4c0-2d6b2eb7122d": {
+				"toolCallId": "typescript:13:7ev0U7FNp:0:tool:0"
+			}
+		},
+		"turn_outcomes": {
+			"turn-08e66e73a53e8428dc161cba812fa602": {
+				"completedAt": 1795197878425,
+				"startedAt": 1795197833617,
+				"termination": {
+					"outcome": "completed",
+					"output": null,
+					"stopReason": null
+				}
+			}
+		}
+	},
+	"session_id": "bf52641c-715e-025c-f71d-0eb2d8a1f26d",
+	"snapshot": {
+		"activeCallbacks": [],
+		"format": "harness.public-session-state/v1",
+		"history": {
+			"cursor": { "after": null, "before": null },
+			"entries": [],
+			"range": "latest"
+		},
+		"latestTurn": {
+			"completedAt": 1795197878425,
+			"id": "turn-08e66e73a53e8428dc161cba812fa602",
+			"inputEntryId": "user-turn-08e66e73a53e8428dc161cba812fa602-1",
+			"queueItemId": null,
+			"sessionId": "bf52641c-715e-025c-f71d-0eb2d8a1f26d",
+			"startedAt": 1795197833617,
+			"status": "completed",
+			"stopReason": null
+		},
+		"session": {
+			"contextUsage": {
+				"cachedInputTokens": 9344,
+				"inputTokens": 10178,
+				"outputTokens": 525,
+				"totalTokens": 10703
+			},
+			"createdAt": 1795197833467,
+			"id": "bf52641c-715e-025c-f71d-0eb2d8a1f26d",
+			"parentSessionId": null,
+			"preview": "You have a crafting table available as tools (place, take, clear_grid, craft), a 3x3 grid (slots 0-8, row-major), and an inventory. Your goal: craft a torch. Use the tools to do it, then report which…",
+			"rootSessionId": "bf52641c-715e-025c-f71d-0eb2d8a1f26d",
+			"status": { "type": "idle" },
+			"title": null,
+			"titleSource": "auto",
+			"tokenUsage": {
+				"cachedInputTokens": 57472,
+				"inputTokens": 67595,
+				"outputTokens": 2214,
+				"totalTokens": 69809
+			},
+			"updatedAt": 1795197878425
+		},
+		"turnQueue": { "items": [], "maxItems": 32, "paused": false }
+	},
+	"snapshot_sequence": 162,
+	"watermark": 51
+}
