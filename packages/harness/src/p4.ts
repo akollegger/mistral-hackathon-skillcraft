@@ -217,6 +217,7 @@ async function main() {
 						book: cell.book,
 						timeLimitSec: 300,
 						maxTurns: 30,
+						maxToolCalls: 200, // teacher headroom (students stay capped at 80)
 						skillContent: src.content,
 					});
 					const tsuccess = succeeded(tres.eventsPath, cell.scenario.targetItem);
