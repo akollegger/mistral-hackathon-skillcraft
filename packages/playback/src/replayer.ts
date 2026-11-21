@@ -97,8 +97,9 @@ const FeedbackJson = z.object({
   wouldProduce: z.string().nullable(),
   grid: z.array(z.array(z.string().nullable())).length(3),
   inventory: z.union([
-    z.record(z.string(), z.number().int().positive()),
-    z.array(z.tuple([z.string(), z.number().int().positive()])),
+    // nonnegative: a slot can hit 0 when its last item is placed on the grid
+    z.record(z.string(), z.number().int().nonnegative()),
+    z.array(z.tuple([z.string(), z.number().int().nonnegative()])),
   ]),
 });
 

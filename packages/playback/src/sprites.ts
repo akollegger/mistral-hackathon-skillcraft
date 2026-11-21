@@ -207,23 +207,26 @@ function paintCraftingTable(): Buf {
 
 function paintPickaxe(head: { dark: string; base: string; light: string; hi: string }): Buf {
   const b = newBuf();
-  // handle: diagonal, bottom-left → top-right
-  for (let t = 0; t <= 16; t++) {
-    const x = 6 + t, y = 26 - t;
+  // handle: diagonal, bottom-left → top-right, 3px thick
+  for (let t = 0; t <= 15; t++) {
+    const x = 7 + t, y = 25 - t;
     rect(b, x - 1, y - 1, x + 1, y + 1, WOOD.base);
     set(b, x - 1, y - 1, WOOD.light);
+    set(b, x + 1, y + 1, WOOD.dark);
   }
-  // head: curved pick across the top, perpendicular to the handle
-  for (let t = 0; t <= 14; t++) {
-    const x = 12 + t;
-    const y = 8 + Math.round(4 * Math.sin((t / 14) * Math.PI)); // arc dipping mid
-    rect(b, x - 1, y - 2, x + 1, y + 1, head.base);
-    set(b, x, y - 2, head.hi);
-    set(b, x, y + 1, head.dark);
+  // head: compact crescent blade along the anti-diagonal (perpendicular to
+  // the handle), centered on the handle tip, bowed outward, tapered tips
+  for (let t = 0; t <= 12; t++) {
+    const x = 16 + t;
+    const y = x - 12 - Math.round(3 * Math.sin((t / 12) * Math.PI)); // bow away from handle
+    const half = t < 2 || t > 10 ? 1 : 2; // taper tips
+    for (let d = -half; d <= half; d++) {
+      set(b, x + d, y - d, d === -half ? head.hi : d === half ? head.dark : d === -half + 1 ? head.light : head.base);
+    }
   }
-  // head sockets
-  set(b, 13, 8, head.light);
-  set(b, 25, 10, head.light);
+  // socket where handle meets head
+  set(b, 21, 10, WOOD.dark);
+  set(b, 22, 11, WOOD.dark);
   outline(b);
   return b;
 }
@@ -251,11 +254,96 @@ function paintFallbackGem(itemId: string): Buf {
   return b;
 }
 
+function paintLog(): Buf {
+  const b = newBuf();
+  const BARK = { dark: "#4a3319", base: "#6e4f27", light: "#8a6a3d", hi: "#a07b4f" };
+  // vertical log, bark border, lighter heartwood center
+  rect(b, 8, 3, 23, 28, BARK.base);
+  rect(b, 8, 3, 9, 28, BARK.dark);
+  rect(b, 22, 3, 23, 28, BARK.dark);
+  rect(b, 11, 5, 20, 26, BARK.light);
+  // growth rings on the cut top
+  rect(b, 8, 3, 23, 5, BARK.hi);
+  rect(b, 11, 3, 20, 4, BARK.dark);
+  set(b, 15, 4, BARK.dark);
+  // bark texture streaks
+  for (let y = 6; y <= 27; y++) {
+    if (hash2(3, y) > 0.6) set(b, 8, y, BARK.dark);
+    if (hash2(9, y) > 0.6) set(b, 23, y, BARK.dark);
+    if (hash2(y, 5) > 0.75) set(b, 11 + (hash2(y, 11) * 9) | 0, y, BARK.base);
+  }
+  outline(b);
+  return b;
+}
+
+function paintTorch(): Buf {
+  const b = newBuf();
+  // stick handle, bottom-left → top-right
+  for (let t = 0; t <= 12; t++) {
+    const x = 9 + t, y = 24 - t;
+    rect(b, x - 1, y - 1, x + 1, y + 1, WOOD.base);
+    set(b, x - 1, y - 1, WOOD.light);
+  }
+  // coal head
+  rect(b, 17, 7, 24, 13, COAL.base);
+  rect(b, 18, 8, 21, 10, COAL.light);
+  set(b, 19, 9, COAL.hi);
+  set(b, 23, 12, COAL.dark);
+  outline(b);
+  return b;
+}
+
+function paintFence(): Buf {
+  const b = newBuf();
+  // two horizontal rails
+  rect(b, 3, 10, 28, 13, WOOD.base);
+  rect(b, 3, 20, 28, 23, WOOD.base);
+  rect(b, 3, 10, 28, 10, WOOD.hi);
+  rect(b, 3, 20, 28, 20, WOOD.hi);
+  // three vertical pickets
+  for (const x0 of [5, 14, 23]) {
+    rect(b, x0, 5, x0 + 4, 27, WOOD.base);
+    rect(b, x0, 5, x0 + 4, 6, WOOD.hi); // pointed-ish cap
+    set(b, x0 + 2, 5, WOOD.light);
+    rect(b, x0, 26, x0 + 4, 27, WOOD.dark);
+    if (hash2(x0, 12) > 0.5) set(b, x0 + 1, 15, WOOD.dark);
+  }
+  outline(b);
+  return b;
+}
+
+function paintStool(): Buf {
+  const b = newBuf();
+  // round-ish seat
+  rect(b, 6, 7, 25, 11, WOOD.base);
+  rect(b, 6, 7, 25, 8, WOOD.hi);
+  rect(b, 6, 10, 25, 11, WOOD.dark);
+  rect(b, 8, 6, 23, 6, WOOD.light); // seat top edge
+  // four splayed legs
+  for (let t = 0; t <= 12; t++) {
+    set(b, 8 + (t >> 2), 12 + t, WOOD.base);
+    set(b, 23 - (t >> 2), 12 + t, WOOD.base);
+  }
+  rect(b, 9, 17, 22, 18, WOOD.dark); // stretcher bar
+  outline(b);
+  return b;
+}
+
 // ---------- Registry ----------
 type Painter = () => Buf;
 const PAINTERS: Record<string, Painter> = {
   planks: paintPlanks,
+  oak_planks: paintPlanks,
+  oak_plank: paintPlanks, // typo seen in run events
+  oak_log: paintLog,
+  log: paintLog,
   stick: paintStick,
+  torch: paintTorch,
+  oak_fence: paintFence,
+  fence: paintFence,
+  seat: paintStool,
+  wooden_stool: paintStool,
+  stool: paintStool,
   cobblestone: paintCobblestone,
   stone: paintCobblestone,
   coal: paintCoal,
@@ -275,16 +363,21 @@ const PAINTERS: Record<string, Painter> = {
 // duplicate item would render. Each call blits a fresh canvas from the buffer.
 const cache = new Map<string, Buf>();
 
-/** 32×32 sprite for an item id. Null/empty → empty slot canvas. */
-export function itemSprite(itemId: string | null): HTMLCanvasElement {
-  if (!itemId) return blit(newBuf());
+/** Pixel buffer for an item id (test hook; itemSprite blits from this). */
+export function itemBuf(itemId: string | null): Buf {
+  if (!itemId) return newBuf();
   const hit = cache.get(itemId);
-  if (hit) return blit(hit);
+  if (hit) return hit;
   const suffix = itemId.includes(":") ? itemId.split(":").slice(1).join(":") : itemId;
   const painter = PAINTERS[suffix];
   const buf = painter ? painter() : paintFallbackGem(itemId);
   cache.set(itemId, buf);
-  return blit(buf);
+  return buf;
+}
+
+/** 32×32 sprite for an item id. Null/empty → empty slot canvas. */
+export function itemSprite(itemId: string | null): HTMLCanvasElement {
+  return blit(itemBuf(itemId));
 }
 
 /** The Mistral pixel "M": 5×5 texels in the brand gradient, on a 32×32 canvas. */

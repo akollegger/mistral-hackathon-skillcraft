@@ -22,9 +22,9 @@ describe("runSpecOf", () => {
 	it("serializes scenario inventory Map to entries for the MCP server", () => {
 		const spec = runSpecOf(inventedScenario, inventedBook);
 		expect(spec.scenario.inventory).toEqual([
-			["invented:foo", 2],
-			["invented:meh", 1],
-			["invented:fiz", 3],
+			["item:foo", 2],
+			["item:meh", 1],
+			["item:fiz", 3],
 		]);
 		expect(spec.book).toHaveLength(2);
 		expect(() => JSON.parse(JSON.stringify(spec))).not.toThrow();
@@ -98,6 +98,6 @@ describe("demo-matrix prompt selection", () => {
 			"a previous agent distilled its experience into this skill: skill.md",
 		);
 		expect(CELLS.length).toBe(5);
-		expect(TARGETS["inv-qux-heldout"]).toBe("invented:qux");
+		expect(TARGETS["inv-qux-heldout"]).toBe("item:qux");
 	});
 });

@@ -22,21 +22,21 @@ const P = (rows: string[], dict: Record<string, string>): GridPattern =>
 // -- Traditional tier (canonical Minecraft recipes; letters bound to real ids) --
 
 const MC = {
-	o: "minecraft:oak_log",
-	p: "minecraft:oak_planks",
-	s: "minecraft:stick",
-	c: "minecraft:coal",
-	e: "derived:seat",
-	f: "invented:foo",
-	m: "invented:meh",
-	z: "invented:fiz",
+	o: "item:oak_log",
+	p: "item:oak_planks",
+	s: "item:stick",
+	c: "item:coal",
+	e: "item:seat",
+	f: "item:foo",
+	m: "item:meh",
+	z: "item:fiz",
 };
 
 export const traditionalBook: Recipe[] = [
 	{
 		recipeId: "mc:planks",
 		tier: "traditional",
-		targetItem: "minecraft:oak_planks",
+		targetItem: "item:oak_planks",
 		produces: 4,
 		pattern: P(["o..", "...", "..."], MC),
 		equivalence: "shapeless",
@@ -46,7 +46,7 @@ export const traditionalBook: Recipe[] = [
 	{
 		recipeId: "mc:stick",
 		tier: "traditional",
-		targetItem: "minecraft:stick",
+		targetItem: "item:stick",
 		produces: 4,
 		pattern: P(["p..", "p..", "..."], MC),
 		equivalence: "rotation_mirror",
@@ -56,7 +56,7 @@ export const traditionalBook: Recipe[] = [
 	{
 		recipeId: "mc:torch",
 		tier: "traditional",
-		targetItem: "minecraft:torch",
+		targetItem: "item:torch",
 		produces: 4,
 		pattern: P(["c..", "s..", "..."], MC),
 		equivalence: "rotation_mirror",
@@ -66,7 +66,7 @@ export const traditionalBook: Recipe[] = [
 	{
 		recipeId: "mc:crafting_table",
 		tier: "traditional",
-		targetItem: "minecraft:crafting_table",
+		targetItem: "item:crafting_table",
 		produces: 1,
 		pattern: P(["pp.", "pp.", "..."], MC),
 		equivalence: "rotation_mirror",
@@ -76,7 +76,7 @@ export const traditionalBook: Recipe[] = [
 	{
 		recipeId: "mc:wooden_pickaxe",
 		tier: "traditional",
-		targetItem: "minecraft:wooden_pickaxe",
+		targetItem: "item:wooden_pickaxe",
 		produces: 1,
 		pattern: P(["ppp", ".s.", ".s."], MC),
 		equivalence: "rotation_mirror",
@@ -86,7 +86,7 @@ export const traditionalBook: Recipe[] = [
 	{
 		recipeId: "mc:oak_fence",
 		tier: "traditional",
-		targetItem: "minecraft:oak_fence",
+		targetItem: "item:oak_fence",
 		produces: 3,
 		pattern: P(["psp", "psp", "..."], MC),
 		equivalence: "rotation_mirror",
@@ -98,11 +98,11 @@ export const traditionalBook: Recipe[] = [
 export const pickaxeScenario: Scenario = {
 	taskId: "trad-pickaxe-1",
 	tier: "traditional",
-	targetItem: "minecraft:wooden_pickaxe",
+	targetItem: "item:wooden_pickaxe",
 	inventory: new Map([
-		["minecraft:oak_planks", 5],
-		["minecraft:stick", 2],
-		["minecraft:cobblestone", 1],
+		["item:oak_planks", 5],
+		["item:stick", 2],
+		["item:cobblestone", 1],
 	]),
 	depth: 1,
 	heldOut: false,
@@ -114,10 +114,10 @@ export const pickaxeScenario: Scenario = {
 export const fenceFromLogsScenario: Scenario = {
 	taskId: "trad-fence-1",
 	tier: "traditional",
-	targetItem: "minecraft:oak_fence",
+	targetItem: "item:oak_fence",
 	inventory: new Map([
-		["minecraft:oak_log", 2],
-		["minecraft:coal", 1],
+		["item:oak_log", 2],
+		["item:coal", 1],
 	]), // coal = distractor / torch option
 	depth: 3,
 	heldOut: false,
@@ -135,7 +135,7 @@ export const derivedBook: Recipe[] = [
 	{
 		recipeId: "dv:seat",
 		tier: "derived",
-		targetItem: "derived:seat",
+		targetItem: "item:seat",
 		produces: 1,
 		pattern: P(["ppp", "...", "..."], DV),
 		equivalence: "translate",
@@ -145,7 +145,7 @@ export const derivedBook: Recipe[] = [
 	{
 		recipeId: "dv:stool",
 		tier: "derived",
-		targetItem: "derived:wooden_stool",
+		targetItem: "item:wooden_stool",
 		produces: 1,
 		pattern: P([".e.", "sss", "..."], DV),
 		equivalence: "rotation_mirror",
@@ -158,10 +158,10 @@ export const derivedBook: Recipe[] = [
 export const stoolFromLogsScenario: Scenario = {
 	taskId: "der-stool-1",
 	tier: "derived",
-	targetItem: "derived:wooden_stool",
+	targetItem: "item:wooden_stool",
 	inventory: new Map([
-		["minecraft:oak_log", 3],
-		["minecraft:coal", 1],
+		["item:oak_log", 3],
+		["item:coal", 1],
 	]), // 3 logs: 12 planks, budget 3 (seat) + 2 (sticks)
 	depth: 4,
 	heldOut: false,
@@ -173,11 +173,11 @@ export const stoolFromLogsScenario: Scenario = {
 export const inventedScenario: Scenario = {
 	taskId: "inv-bar-1",
 	tier: "invented",
-	targetItem: "invented:bar",
+	targetItem: "item:bar",
 	inventory: new Map([
-		["invented:foo", 2],
-		["invented:meh", 1],
-		["invented:fiz", 3],
+		["item:foo", 2],
+		["item:meh", 1],
+		["item:fiz", 3],
 	]),
 	depth: 1,
 	heldOut: false,
@@ -188,12 +188,12 @@ export const inventedBook: Recipe[] = [
 	{
 		recipeId: "inv:bar",
 		tier: "invented",
-		targetItem: "invented:bar",
+		targetItem: "item:bar",
 		produces: 2,
 		pattern: P(["f..", "m..", "z.."], {
-			f: "invented:foo",
-			m: "invented:meh",
-			z: "invented:fiz",
+			f: "item:foo",
+			m: "item:meh",
+			z: "item:fiz",
 		}),
 		equivalence: "exact",
 		intermediate: false,
@@ -205,12 +205,12 @@ export const inventedBook: Recipe[] = [
 		// with pattern complexity (pilot finding 2026-11-21).
 		recipeId: "inv:qux",
 		tier: "invented",
-		targetItem: "invented:qux",
+		targetItem: "item:qux",
 		produces: 2,
 		pattern: P(["z..", "f..", "m.."], {
-			z: "invented:fiz",
-			f: "invented:foo",
-			m: "invented:meh",
+			z: "item:fiz",
+			f: "item:foo",
+			m: "item:meh",
 		}),
 		equivalence: "exact",
 		intermediate: false,
@@ -222,11 +222,11 @@ export const inventedBook: Recipe[] = [
 export const heldOutScenario: Scenario = {
 	taskId: "inv-qux-heldout",
 	tier: "invented",
-	targetItem: "invented:qux",
+	targetItem: "item:qux",
 	inventory: new Map([
-		["invented:foo", 1],
-		["invented:meh", 2],
-		["invented:fiz", 2],
+		["item:foo", 1],
+		["item:meh", 2],
+		["item:fiz", 2],
 	]),
 	depth: 1,
 	heldOut: true,

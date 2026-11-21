@@ -13,7 +13,7 @@ describe("lineage store (in-process @relate/relate, S3 rulings)", () => {
 			store.upsertTask({
 				taskId: "inv-bar-1",
 				tier: "invented",
-				targetItem: "invented:bar",
+				targetItem: "item:bar",
 			});
 			store.upsertRun({
 				runId: "11111111-1111-4111-8111-111111111111",
@@ -135,8 +135,8 @@ describe("lineage store (in-process @relate/relate, S3 rulings)", () => {
 				`MATCH (r:Recipe {recipeId:"mc:oak_fence"})-[e:REQUIRES]->(i:Item) RETURN i.itemId AS itemId, e.quantity AS quantity, e.var AS v ORDER BY itemId`,
 			);
 			expect(req).toEqual([
-				{ itemId: "minecraft:oak_planks", quantity: 4, v: "A" },
-				{ itemId: "minecraft:stick", quantity: 2, v: "B" },
+				{ itemId: "item:oak_planks", quantity: 4, v: "A" },
+				{ itemId: "item:stick", quantity: 2, v: "B" },
 			]);
 		} finally {
 			store.close();

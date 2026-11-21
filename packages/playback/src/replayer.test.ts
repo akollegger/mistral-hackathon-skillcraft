@@ -7,7 +7,7 @@ const meta = {
   runId: "11111111-2222-4333-8444-555555555555",
   role: "student",
   condition: "skill",
-  taskId: "invented:fiz",
+  taskId: "item:fiz",
   tier: "invented",
   heldOut: true,
   dir: "/tmp/run-1",
@@ -48,12 +48,12 @@ const feedback = (entries: [number, string][], craftable: boolean, wouldProduce:
 const sample = [
   ev(1, "run_start", meta),
   ev(2, "prompt", { text: "craft the fiz" }),
-  ev(3, "tool_call", { op: "place", item: "minecraft:planks", slot: 0 }),
-  ev(4, "tool_feedback", feedback([[0, "minecraft:planks"]], false, null, { "minecraft:planks": 2 })),
-  ev(5, "tool_call", { op: "place", item: "minecraft:planks", slot: 1 }),
-  ev(6, "tool_feedback", feedback([[0, "minecraft:planks"], [1, "minecraft:planks"]], true, "invented:fiz", { "minecraft:planks": 1 })),
+  ev(3, "tool_call", { op: "place", item: "item:planks", slot: 0 }),
+  ev(4, "tool_feedback", feedback([[0, "item:planks"]], false, null, { "item:planks": 2 })),
+  ev(5, "tool_call", { op: "place", item: "item:planks", slot: 1 }),
+  ev(6, "tool_feedback", feedback([[0, "item:planks"], [1, "item:planks"]], true, "item:fiz", { "item:planks": 1 })),
   ev(7, "tool_call", { op: "craft" }),
-  ev(8, "craft_result", { success: true, produced: "invented:fiz", feedback: feedback([], false, null, { "invented:fiz": 1 }) }),
+  ev(8, "craft_result", { success: true, produced: "item:fiz", feedback: feedback([], false, null, { "item:fiz": 1 }) }),
   ev(9, "run_end", { outcome: "success" }),
 ].join("\n");
 
@@ -62,8 +62,8 @@ const harnessSample = [
   ev(1, "run_start", { runId: "abc", role: "student", condition: "skill", taskId: "inv-bar-1", modelAlias: "mistral-medium-latest" }),
   ev(2, "prompt", { length: 400 }),
   ev(3, "skill_loaded", { toolName: "mcp_skillcraft_skills.bar-recipe", status: "ok" }),
-  ev(4, "tool_call", { tool: "place", toolName: "mcp_skillcraft.place", input: { item: "invented:goo", slot: 0 }, status: "ok" }),
-  ev(5, "tool_feedback", { tool: "place", toolName: "mcp_skillcraft.place", failed: false, output: feedback([[0, "invented:goo"]], false, null, { "invented:goo": 1 }) }),
+  ev(4, "tool_call", { tool: "place", toolName: "mcp_skillcraft.place", input: { item: "item:goo", slot: 0 }, status: "ok" }),
+  ev(5, "tool_feedback", { tool: "place", toolName: "mcp_skillcraft.place", failed: false, output: feedback([[0, "item:goo"]], false, null, { "item:goo": 1 }) }),
   ev(6, "tool_call", { tool: "craft", toolName: "mcp_skillcraft.craft", input: {}, status: "ok" }),
   ev(7, "craft_result", { craftable: false, wouldProduce: null, grid: gridWith([]), inventory: { "inv-bar-1": 1 }, success: true, produced: "inv-bar-1" }),
   ev(8, "run_end", { exitCode: 0, contaminated: false }),
@@ -92,8 +92,8 @@ describe("parseEvents", () => {
 
 describe("normalizers accept both contract and harness shapes", () => {
   it("toolCallOf: op-shape and tool/input-shape", () => {
-    expect(toolCallOf({ op: "place", item: "minecraft:planks", slot: 3 })).toEqual({ op: "place", item: "minecraft:planks", slot: 3 });
-    expect(toolCallOf({ tool: "place", toolName: "mcp_skillcraft.place", input: { item: "invented:goo", slot: 0 }, status: "ok" })).toEqual({ op: "place", item: "invented:goo", slot: 0 });
+    expect(toolCallOf({ op: "place", item: "item:planks", slot: 3 })).toEqual({ op: "place", item: "item:planks", slot: 3 });
+    expect(toolCallOf({ tool: "place", toolName: "mcp_skillcraft.place", input: { item: "item:goo", slot: 0 }, status: "ok" })).toEqual({ op: "place", item: "item:goo", slot: 0 });
     expect(toolCallOf({ tool: "craft", input: {} })).toEqual({ op: "craft", item: undefined, slot: undefined });
     expect(toolCallOf({ toolName: "mcp_other.file_read" })).toBeNull();
   });
@@ -115,18 +115,18 @@ describe("buildSteps (contract shape)", () => {
   });
 
   it("folds tool_feedback into grid and inventory state", () => {
-    expect(steps[3]!.grid[0]![0]).toBe("minecraft:planks");
-    expect(steps[3]!.inventory).toEqual([["minecraft:planks", 2]]);
+    expect(steps[3]!.grid[0]![0]).toBe("item:planks");
+    expect(steps[3]!.inventory).toEqual([["item:planks", 2]]);
     expect(steps[3]!.craftable).toBe(false);
   });
 
   it("tracks craftability, wouldProduce, craft success, lastProduced", () => {
     expect(steps[5]!.craftable).toBe(true);
-    expect(steps[5]!.wouldProduce).toBe("invented:fiz");
+    expect(steps[5]!.wouldProduce).toBe("item:fiz");
     expect(steps[7]!.craftSuccess).toBe(true);
-    expect(steps[7]!.lastProduced).toBe("invented:fiz");
+    expect(steps[7]!.lastProduced).toBe("item:fiz");
     expect(steps[7]!.grid.flat().every((c) => c === null)).toBe(true);
-    expect(steps[7]!.label).toContain("invented:fiz");
+    expect(steps[7]!.label).toContain("item:fiz");
   });
 
   it("carries run meta through and labels the run end", () => {
@@ -135,7 +135,7 @@ describe("buildSteps (contract shape)", () => {
   });
 
   it("labels tool calls readably", () => {
-    expect(steps[2]!.label).toBe("▶ place minecraft:planks @ slot 0");
+    expect(steps[2]!.label).toBe("▶ place item:planks @ slot 0");
     expect(steps[6]!.label).toBe("▶ craft!");
   });
 });
@@ -144,15 +144,30 @@ describe("buildSteps (harness shape)", () => {
   const steps = buildSteps(parseEvents(harnessSample));
 
   it("reads tool/input calls and output-nested feedback", () => {
-    expect(steps[3]!.label).toBe("▶ place invented:goo @ slot 0");
-    expect(steps[4]!.grid[0]![0]).toBe("invented:goo");
-    expect(steps[4]!.inventory).toEqual([["invented:goo", 1]]);
+    expect(steps[3]!.label).toBe("▶ place item:goo @ slot 0");
+    expect(steps[4]!.grid[0]![0]).toBe("item:goo");
+    expect(steps[4]!.inventory).toEqual([["item:goo", 1]]);
   });
 
   it("reads flat craft_result with success/produced", () => {
     expect(steps[6]!.craftSuccess).toBe(true);
     expect(steps[6]!.lastProduced).toBe("inv-bar-1");
     expect(steps[6]!.label).toBe("✔ crafted inv-bar-1");
+  });
+
+  it("accepts zero-quantity inventory entries (item exhausted by placing)", () => {
+    // Regression: a feedback whose inventory hits 0 (e.g. both sticks placed)
+    // must still fold the grid — positive() rejected 0 and froze the board.
+    const text = [
+      ev(0, "run_start", { runId: "r", role: "student", condition: "skill", taskId: "trad-pickaxe-1" }),
+      ev(1, "tool_call", { tool: "place", toolName: "mcp_skillcraft.place", input: { item: "item:stick", slot: 7 }, status: "completed" }),
+      ev(2, "tool_feedback", { tool: "place", toolName: "mcp_skillcraft.place", failed: false, output: { craftable: true, wouldProduce: "item:wooden_pickaxe", grid: [["item:oak_planks", "item:oak_planks", "item:oak_planks"], [null, "item:stick", null], [null, "item:stick", null]], inventory: { "item:oak_planks": 2, "item:stick": 0 } } }),
+    ].join("\n");
+    const s = buildSteps(parseEvents(text));
+    expect(s[2]!.grid[2]![1]).toBe("item:stick");
+    expect(s[2]!.craftable).toBe(true);
+    expect(s[2]!.wouldProduce).toBe("item:wooden_pickaxe");
+    expect(s[2]!.inventory).toEqual([["item:oak_planks", 2], ["item:stick", 0]]);
   });
 
   it("maps exitCode to outcome and labels skill_loaded", () => {
@@ -165,7 +180,7 @@ describe("buildSteps (harness shape)", () => {
 describe("buildReplay", () => {
   it("exposes meta from the run", () => {
     const r = buildReplay(sample);
-    expect(r.meta?.taskId).toBe("invented:fiz");
+    expect(r.meta?.taskId).toBe("item:fiz");
     expect(r.steps).toHaveLength(9);
   });
 });
@@ -198,6 +213,6 @@ describe("demo fixtures in public/demo/runs (harness shape)", () => {
     const heldOut = buildReplay(demo("student-skill-heldout"));
     expect(heldOut.meta?.heldOut).toBe(true);
     expect(heldOut.meta?.taskId).toBe("inv-qux-heldout");
-    expect(heldOut.steps.some((s) => s.lastProduced === "invented:qux")).toBe(true);
+    expect(heldOut.steps.some((s) => s.lastProduced === "item:qux")).toBe(true);
   });
 });

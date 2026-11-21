@@ -4,7 +4,7 @@
 import { z } from "zod";
 
 export const Slot = z.number().int().min(0).max(8); // 3x3 grid, row-major
-export const ItemId = z.string().min(1); // e.g. "minecraft:stick" | "invented:fiz" | "derived:stool"
+export const ItemId = z.string().min(1); // single neutral namespace, e.g. "item:stick"
 export const Quantity = z.number().int().positive();
 
 export const Inventory = z.map(ItemId, Quantity);

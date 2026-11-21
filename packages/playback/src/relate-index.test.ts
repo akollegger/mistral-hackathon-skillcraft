@@ -29,9 +29,9 @@ function seed(dbPath: string): void {
        r.failedAttempts = 0, r.durationMs = 1000`,
       { runId, ...props } as never,
     );
-  run("t1", { role: "teacher", condition: null, taskId: "invented:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 6 });
-  run("s1", { role: "student", condition: "skill", taskId: "invented:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 3 });
-  run("s2", { role: "student", condition: "none", taskId: "invented:bar", tier: "invented", heldOut: false, outcome: "fail", toolCalls: 6 });
+  run("t1", { role: "teacher", condition: null, taskId: "item:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 6 });
+  run("s1", { role: "student", condition: "skill", taskId: "item:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 3 });
+  run("s2", { role: "student", condition: "none", taskId: "item:bar", tier: "invented", heldOut: false, outcome: "fail", toolCalls: 6 });
   conn.query("CREATE (s:Skill {skillId: 'sk1'})");
   conn.query("MATCH (a:Run {runId:'t1'}), (b:Skill {skillId:'sk1'}), (c:Run {runId:'s1'}) CREATE (a)-[:GENERATED]->(b)-[:USED_IN]->(c)");
   db.checkpoint();
@@ -56,7 +56,7 @@ describe("readRelateIndex", () => {
     const s1 = idx!.runs.find((r) => r.runId === "s1")!;
     expect(s1.role).toBe("student");
     expect(s1.condition).toBe("skill");
-    expect(s1.taskId).toBe("invented:bar");
+    expect(s1.taskId).toBe("item:bar");
     expect(s1.tier).toBe("invented");
     expect(s1.heldOut).toBe(false);
     expect(s1.outcome).toBe("success");

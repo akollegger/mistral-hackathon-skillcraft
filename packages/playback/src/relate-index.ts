@@ -111,17 +111,18 @@ export function readRelateIndex(resultsDir: string): RelateIndex | null {
     // conn.query returns a result object; rows live under .rows (per harness relate.ts)
     const rows = (conn.query(RUNS_CYPHER) as unknown as { rows: Record<string, unknown>[] }).rows;
     const pairRows = (conn.query(PAIRS_CYPHER) as unknown as { rows: Record<string, unknown>[] }).rows;
-    const runs: RunSummary[] = rows.map((r) => {
+    const runs: RunSummary[] = [];
+    for (const r of rows) {
       const runId = String(r.runId);
-      // startedAt: Run nodes carry no ts; use the run dir mtime (JSONL fallback
-      // uses the first event ts). Keeps "most recent first" ordering working.
+      // Skip runs whose directory is gone (archived/moved): the graph can lag
+      // behind the filesystem, but the UI should reflect what's on disk now.
       let startedAt: string | null = null;
       try {
         startedAt = statSync(join(resultsDir, "runs", runId)).mtime.toISOString();
       } catch {
-        /* run dir missing */
+        continue; // run dir missing → archived, exclude
       }
-      return {
+      runs.push({
         runId,
         role: String(r.role ?? "?"),
         condition: (r.condition as string | null) ?? null,
@@ -133,8 +134,8 @@ export function readRelateIndex(resultsDir: string): RelateIndex | null {
         toolCalls: (r.toolCalls as number | undefined) ?? undefined,
         startedAt,
         file: undefined,
-      };
-    });
+      });
+    }
     runs.sort((a, b) => (b.startedAt ?? "").localeCompare(a.startedAt ?? ""));
     const pairs: SkillPair[] = pairRows.map((p) => ({
       teacherRunId: String(p.teacherRunId),

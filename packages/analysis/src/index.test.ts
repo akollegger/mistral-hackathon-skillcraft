@@ -80,7 +80,7 @@ function mkRun(
 describe("P5 analysis tables", () => {
 	it("computes skill lift, strategy quality, sample efficiency, skill quality from run logs", () => {
 		const dir = mkdtempSync(join(tmpdir(), "skillcraft-analysis-"));
-		const targets = { "inv-bar-1": "invented:bar" };
+		const targets = { "inv-bar-1": "item:bar" };
 		// teacher run (has skill meta, procedure, 2 examples)
 		mkRun(
 			dir,
@@ -92,7 +92,7 @@ describe("P5 analysis tables", () => {
 			"inv-bar-1",
 			100,
 			5,
-			"invented:bar",
+			"item:bar",
 			{ classification: "procedure", exampleCount: 2 },
 		);
 		// students: none x2 (1 success), skill x2 (2 success)
@@ -106,7 +106,7 @@ describe("P5 analysis tables", () => {
 			"inv-bar-1",
 			14,
 			3,
-			"invented:bar",
+			"item:bar",
 		);
 		mkRun(
 			dir,
@@ -130,7 +130,7 @@ describe("P5 analysis tables", () => {
 			"inv-bar-1",
 			4,
 			1,
-			"invented:bar",
+			"item:bar",
 			{ classification: "procedure", exampleCount: 2 },
 		);
 		mkRun(
@@ -143,7 +143,7 @@ describe("P5 analysis tables", () => {
 			"inv-bar-1",
 			6,
 			0,
-			"invented:bar",
+			"item:bar",
 			{ classification: "procedure", exampleCount: 2 },
 		);
 

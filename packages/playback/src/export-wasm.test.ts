@@ -23,6 +23,7 @@ function seedResults(): { resultsDir: string; outDir: string } {
   mkdirSync(join(resultsDir, "lineage"), { recursive: true });
   mkdirSync(join(resultsDir, "runs", "t1"), { recursive: true });
   mkdirSync(join(resultsDir, "runs", "s1"), { recursive: true });
+  mkdirSync(join(resultsDir, "runs", "s2"), { recursive: true }); // graph-only runs without a dir are now excluded
   writeFileSync(join(resultsDir, "runs", "t1", "events.jsonl"), '{"ts":"2026-11-21T10:00:00.000Z","seq":0,"kind":"run_start","payload":{}}\n');
   writeFileSync(join(resultsDir, "runs", "s1", "events.jsonl"), '{"ts":"2026-11-21T10:05:00.000Z","seq":0,"kind":"run_start","payload":{}}\n');
 
@@ -33,9 +34,9 @@ function seedResults(): { resultsDir: string; outDir: string } {
       `MERGE (r:Run {runId: $id}) SET r.role=$role, r.condition=$condition, r.taskId=$taskId, r.tier=$tier, r.heldOut=$heldOut, r.outcome=$outcome, r.toolCalls=$toolCalls, r.failedAttempts=0, r.durationMs=1`,
       { id, ...p },
     );
-  run("t1", { role: "teacher", condition: null, taskId: "invented:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 6 });
-  run("s1", { role: "student", condition: "skill", taskId: "invented:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 3 });
-  run("s2", { role: "student", condition: "none", taskId: "invented:bar", tier: "invented", heldOut: false, outcome: "fail", toolCalls: 6 });
+  run("t1", { role: "teacher", condition: null, taskId: "item:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 6 });
+  run("s1", { role: "student", condition: "skill", taskId: "item:bar", tier: "invented", heldOut: false, outcome: "success", toolCalls: 3 });
+  run("s2", { role: "student", condition: "none", taskId: "item:bar", tier: "invented", heldOut: false, outcome: "fail", toolCalls: 6 });
   c.query("CREATE (s:Skill {skillId: 'sk1', classification: 'procedure', exampleCount: 2})");
   c.query("MATCH (a:Run {runId:'t1'}), (b:Skill {skillId:'sk1'}), (c:Run {runId:'s1'}) CREATE (a)-[:GENERATED]->(b)-[:USED_IN]->(c)");
   c.query("CREATE (r:Recipe {recipeId: 'hidden-answer'})"); // must NOT be exported (anti-cheat)

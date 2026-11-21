@@ -5,8 +5,8 @@ import { renderStudentPrompt, renderTeacherPrompt } from "./prompts.js";
 describe("prompt templates (docs/harness-protocol.md shapes)", () => {
 	it("teacher prompt: task + tools + teaching phase with frontmatter mandate and rubric", () => {
 		const p = renderTeacherPrompt(inventedScenario);
-		expect(p).toContain("invented:bar");
-		expect(p).toContain("invented:foo x2");
+		expect(p).toContain("item:bar");
+		expect(p).toContain("item:foo x2");
 		expect(p).toContain("0 1 2");
 		expect(p).toContain("Feedback contract");
 		expect(p).toContain("skill.md");
@@ -19,7 +19,7 @@ describe("prompt templates (docs/harness-protocol.md shapes)", () => {
 	it("student prompt is identical minus teaching, condition none adds nothing", () => {
 		const teacher = renderTeacherPrompt(stoolFromLogsScenario);
 		const student = renderStudentPrompt(stoolFromLogsScenario, "none");
-		expect(student).toContain("derived:wooden_stool");
+		expect(student).toContain("item:wooden_stool");
 		expect(student).toContain("Feedback contract");
 		expect(student).not.toContain("Teaching phase");
 		expect(student).not.toContain("skill.md");

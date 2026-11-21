@@ -51,7 +51,7 @@ describe("effect parser (S6 rulings)", () => {
 				"failed",
 				JSON.stringify({ error: "slot occupied", craftable: false }),
 			),
-			toolEffect("mcp_skillcraft.craft", "completed", fb(true, "invented:bar")),
+			toolEffect("mcp_skillcraft.craft", "completed", fb(true, "item:bar")),
 			{
 				type: "effect",
 				detail: { kind: "tool", toolName: "file_read", input: {} },
@@ -68,7 +68,7 @@ describe("effect parser (S6 rulings)", () => {
 		expect(parsed.events.some((e) => e.kind === "craft_result")).toBe(true);
 		expect(parsed.finalFeedback).toMatchObject({
 			craftable: true,
-			wouldProduce: "invented:bar",
+			wouldProduce: "item:bar",
 		});
 	});
 

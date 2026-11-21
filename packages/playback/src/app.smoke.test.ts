@@ -70,7 +70,7 @@ describe("app smoke: scenario chooser + story", () => {
     const craft = lis.find((li) => li.textContent?.includes("crafted"));
     craft!.click();
     await flush();
-    expect(student!.querySelector(".output-label")!.textContent).toContain("invented:bar");
+    expect(student!.querySelector(".output-label")!.textContent).toContain("item:bar");
     expect(countSprites(student!)).toBe(0);
   });
 

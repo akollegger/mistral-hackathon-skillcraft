@@ -12,7 +12,7 @@ const events = [
 		kind: "tool_call",
 		payload: {
 			tool: "place",
-			input: { item: "invented:foo", slot: 0 },
+			input: { item: "item:foo", slot: 0 },
 			status: "completed",
 		},
 	},
@@ -57,9 +57,9 @@ const events = [
 		seq: 6,
 		kind: "craft_result",
 		payload: {
-			produced: "invented:bar",
+			produced: "item:bar",
 			craftable: true,
-			wouldProduce: "invented:bar",
+			wouldProduce: "item:bar",
 		},
 	},
 ];
@@ -71,7 +71,7 @@ describe("transcript renderer", () => {
 		writeFileSync(f, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
 		const t = renderTranscript(f, { taskId: "inv-bar-1", outcome: "success" });
 		expect(t).toContain("# Transcript — task inv-bar-1");
-		expect(t).toContain('place({"item":"invented:foo","slot":0})');
+		expect(t).toContain('place({"item":"item:foo","slot":0})');
 		expect(t).toContain("craftable=false wouldProduce=?");
 		expect(t).toContain('error="Grid is not craftable"');
 		expect(t).toContain("craft_result");
@@ -82,8 +82,8 @@ describe("transcript renderer", () => {
 		const dir = mkdtempSync(join(tmpdir(), "skillcraft-tr-"));
 		const f = join(dir, "events.jsonl");
 		writeFileSync(f, events.map((e) => JSON.stringify(e)).join("\n") + "\n");
-		expect(succeeded(f, "invented:bar")).toBe(true);
-		expect(succeeded(f, "invented:qux")).toBe(false);
+		expect(succeeded(f, "item:bar")).toBe(true);
+		expect(succeeded(f, "item:qux")).toBe(false);
 		rmSync(dir, { recursive: true, force: true });
 	});
 });
