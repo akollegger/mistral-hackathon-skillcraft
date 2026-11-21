@@ -1,0 +1,12 @@
+{"ts":"2026-11-21T13:18:36.925Z","seq":69,"kind":"run_start","payload":{"runId":"a0000006-0000-4000-8000-000000000006","role":"student","condition":"skill","taskId":"inv-qux-heldout","modelAlias":"mistral-medium-latest","tier":"invented","heldOut":true,"outcome":null}}
+{"ts":"2026-11-21T13:18:37.925Z","seq":70,"kind":"skill_loaded","payload":{"toolName":"mcp_skillcraft_skills.bar-recipe","status":"ok"}}
+{"ts":"2026-11-21T13:18:38.925Z","seq":71,"kind":"prompt","payload":{"length":400}}
+{"ts":"2026-11-21T13:18:39.925Z","seq":72,"kind":"tool_call","payload":{"tool":"place","toolName":"mcp_skillcraft.place","input":{"item":"invented:fiz","slot":0},"status":"ok"}}
+{"ts":"2026-11-21T13:18:40.925Z","seq":73,"kind":"tool_feedback","payload":{"tool":"place","toolName":"mcp_skillcraft.place","failed":false,"output":{"craftable":false,"wouldProduce":null,"grid":[["invented:fiz",null,null],[null,null,null],[null,null,null]],"inventory":{"invented:foo":1,"invented:meh":2,"invented:fiz":1}}}}
+{"ts":"2026-11-21T13:18:41.925Z","seq":74,"kind":"tool_call","payload":{"tool":"place","toolName":"mcp_skillcraft.place","input":{"item":"invented:foo","slot":3},"status":"ok"}}
+{"ts":"2026-11-21T13:18:42.925Z","seq":75,"kind":"tool_feedback","payload":{"tool":"place","toolName":"mcp_skillcraft.place","failed":false,"output":{"craftable":false,"wouldProduce":null,"grid":[["invented:fiz",null,null],["invented:foo",null,null],[null,null,null]],"inventory":{"invented:meh":2,"invented:fiz":1}}}}
+{"ts":"2026-11-21T13:18:43.925Z","seq":76,"kind":"tool_call","payload":{"tool":"place","toolName":"mcp_skillcraft.place","input":{"item":"invented:meh","slot":6},"status":"ok"}}
+{"ts":"2026-11-21T13:18:44.925Z","seq":77,"kind":"tool_feedback","payload":{"tool":"place","toolName":"mcp_skillcraft.place","failed":false,"output":{"craftable":true,"wouldProduce":"invented:qux","grid":[["invented:fiz",null,null],["invented:foo",null,null],["invented:meh",null,null]],"inventory":{"invented:meh":1,"invented:fiz":1}}}}
+{"ts":"2026-11-21T13:18:45.925Z","seq":78,"kind":"tool_call","payload":{"tool":"craft","toolName":"mcp_skillcraft.craft","input":{},"status":"ok"}}
+{"ts":"2026-11-21T13:18:46.925Z","seq":79,"kind":"craft_result","payload":{"craftable":false,"wouldProduce":null,"grid":[[null,null,null],[null,null,null],[null,null,null]],"inventory":{"invented:meh":1,"invented:fiz":1,"invented:qux":2},"success":true,"produced":"invented:qux"}}
+{"ts":"2026-11-21T13:18:47.925Z","seq":80,"kind":"run_end","payload":{"exitCode":0,"contaminated":false}}

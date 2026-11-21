@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>skillcraft · run replayer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <span id="logo" aria-hidden="true"></span>
+      <h1><span class="accent">skillcraft</span> // run replayer</h1>
+      <div class="loaders">
+        <label class="scenario-label" for="scenario">scenario</label>
+        <select id="scenario" title="scenario (task)"></select>
+        <button id="demo-story" type="button">▶ demo story</button>
+        <label for="file-teacher">load teacher<input id="file-teacher" type="file" accept=".jsonl,.json,.txt" /></label>
+        <label for="file-student">load student<input id="file-student" type="file" accept=".jsonl,.json,.txt" /></label>
+      </div>
+    </header>
+    <div id="story-bar" class="story-bar"></div>
+    <main id="panes"></main>
+    <section id="lineage" class="panel">
+      <header class="lineage-head">
+        <span>lineage graph · relate-wasm</span>
+        <button id="load-lineage" type="button">load graph.json</button>
+      </header>
+      <div id="lineage-queries" class="lineage-queries"></div>
+      <pre id="lineage-out" class="panel-inset">no graph loaded — on a gh-pages deploy this runs live Cypher in your browser</pre>
+    </section>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
