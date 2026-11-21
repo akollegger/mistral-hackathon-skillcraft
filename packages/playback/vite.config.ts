@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig, type Plugin } from "vite";
+import { readRelateIndex } from "./src/relate-index";
 
 const pkgDir = fileURLToPath(new URL(".", import.meta.url));
 /** Run output dir; override with SKILLCRAFT_RESULTS_DIR. results/ is gitignored. */
@@ -94,7 +95,13 @@ function runsApi(): Plugin {
       server.middlewares.use((req, res, next) => {
         const url = (req.url ?? "").split("?")[0]!;
         if (!url.startsWith("/api/")) return next();
-        if (url === "/api/runs") return sendJson(res, { resultsDir, runs: scanRuns() });
+        if (url === "/api/runs") {
+          // Relate lineage DB first (authoritative metadata + pairing edges),
+          // JSONL/meta scan as fallback, empty list when neither exists.
+          const relate = readRelateIndex(resultsDir);
+          if (relate) return sendJson(res, { resultsDir, source: "relate", runs: relate.runs, pairs: relate.pairs });
+          return sendJson(res, { resultsDir, source: "jsonl", runs: scanRuns(), pairs: [] });
+        }
         if (url === "/api/manifest") return sendJson(res, { manifest: readManifest() });
         const m = /^\/api\/run\/([^/]+)\/events\.jsonl$/.exec(url);
         if (m) {

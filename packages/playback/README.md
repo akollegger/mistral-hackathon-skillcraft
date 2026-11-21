@@ -15,11 +15,16 @@ pnpm --filter @skillcraft/playback test     # replayer + UI smoke tests
 pnpm --filter @skillcraft/playback typecheck
 ```
 
-In dev, a vite plugin serves a run index from `results/` (override with
+In dev, a vite plugin serves the run index from `results/` (override with
 `SKILLCRAFT_RESULTS_DIR`): `GET /api/runs`, `GET /api/manifest`
-(`results/demo-manifest.json`), `GET /api/run/<runId>/events.jsonl`. With no `results/`
-(or in the static build) the app falls back to the bundled demo fixtures in
-`public/demo/runs/` (6 runs covering the full demo matrix).
+(`results/demo-manifest.json`), `GET /api/run/<runId>/events.jsonl`. `/api/runs` reads
+the **Relate lineage DB** at `results/lineage` first (read-only handle via
+`@relate/relate`, so it coexists with the harness writer) — `Run` nodes for metadata and
+`(teacher)-[:GENERATED]->(:Skill)-[:USED_IN]->(student)` edges for pairing — and falls
+back to scanning `run.meta.json` / `events.jsonl` when no DB exists. Replay itself always
+reads `events.jsonl` only. With no `results/` (or in the static build) the app falls
+back to the bundled demo fixtures in `public/demo/runs/` (6 runs covering the full demo
+matrix).
 
 ## Scenario chooser (docs/demo-matrix.md)
 

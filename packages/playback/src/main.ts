@@ -414,7 +414,7 @@ void (async () => {
   }
   if (scenarios.length > 0) {
     await loadScenario(scenarios[0]!.taskId);
-    if (!index.demo) storyBar.textContent = `scanning results/ — ${index.runs.length} runs found`;
+    if (!index.demo) storyBar.textContent = `${index.runs.length} runs from ${index.source === "relate" ? "Relate lineage graph" : "results/ JSONL"} — press ▶ demo story for the fixtures`;
     else storyBar.textContent = "demo fixtures loaded (no results/ dir) — press ▶ demo story";
   }
   scenarioSelect.addEventListener("change", () => void loadScenario(scenarioSelect.value));

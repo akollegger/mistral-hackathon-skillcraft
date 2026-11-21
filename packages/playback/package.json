@@ -15,6 +15,7 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
+		"@relate/relate": "^1.2.0",
 		"@types/node": "^24",
 		"jsdom": "^31.0.1",
 		"typescript": "^5.9.3",

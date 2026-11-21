@@ -22,6 +22,9 @@ export interface RunIndex {
   runs: RunSummary[];
   manifest: unknown;
   demo: boolean;
+  /** where the index came from: "relate" | "jsonl" | demo fixtures */
+  source: string;
+  pairs: { teacherRunId: string; skillId: string; studentRunId: string }[];
 }
 
 interface DemoIndex {
@@ -40,17 +43,28 @@ async function fetchJson(url: string): Promise<unknown> {
 /** Fetch the run index; falls back to bundled demo fixtures on any failure. */
 export async function fetchRunIndex(): Promise<RunIndex> {
   try {
-    const data = (await fetchJson("./api/runs")) as { runs: RunSummary[] };
+    const data = (await fetchJson("./api/runs")) as {
+      runs: RunSummary[];
+      source?: string;
+      pairs?: RunIndex["pairs"];
+    };
     const manifest = (await fetchJson("./api/manifest").catch(() => null)) as {
       manifest: unknown;
     } | null;
     // If the dev API answers but results/ is empty, still offer demo fixtures.
-    if (data.runs.length > 0) return { runs: data.runs, manifest: manifest?.manifest ?? null, demo: false };
+    if (data.runs.length > 0)
+      return {
+        runs: data.runs,
+        manifest: manifest?.manifest ?? null,
+        demo: false,
+        source: data.source ?? "jsonl",
+        pairs: data.pairs ?? [],
+      };
   } catch {
     /* dev API unavailable (static build) */
   }
   demoIndex = (await fetchJson("./demo/index.json")) as DemoIndex;
-  return { runs: demoIndex.runs, manifest: null, demo: true };
+  return { runs: demoIndex.runs, manifest: null, demo: true, source: "demo", pairs: [] };
 }
 
 /** Raw events.jsonl text for a run. */
