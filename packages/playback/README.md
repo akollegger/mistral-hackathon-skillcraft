@@ -39,6 +39,25 @@ matrix).
 - Manual override: file pickers or drop `events.jsonl` files anywhere (first → teacher,
   second → student).
 
+## Publishing to gh-pages (post-event only)
+
+Raw `results/` stays gitignored (anti-cheat rule 5 — held-out answers must not leak).
+Publishing is a deliberate, post-judging act that ships only the sanitized export:
+
+```sh
+pnpm --filter @skillcraft/playback deploy   # export:data → build → push dist/ to gh-pages branch
+```
+
+- `scripts/export-static.mjs` reads `results/lineage` (Relate, read-only) + `events.jsonl`
+  and writes `public/data/`: `runs.json` (index + skill pairs), `graph.json` (Run/Skill/Task
+  nodes + GENERATED/USED_IN/ATTEMPTED/SCORED_BY edges — Recipe/Book/Item nodes are excluded),
+  and `runs/<runId>.jsonl` replay streams. `public/data/` is gitignored.
+- On the deployed site the client source order is: dev API → `./data/runs.json` → demo
+  fixtures, and the **lineage panel** loads `graph.json` into an in-memory
+  `@relate/relate-wasm` DB so judges can run live Cypher (teacher→skill→student pairs,
+  skill lift) in the browser — no server.
+- `scripts/deploy.mjs` pushes `dist/` to the `gh-pages` branch via the `gh-pages` package.
+
 ## Notes
 
 - The replayer accepts both payload shapes: the frozen contract (`op`, flat feedback) and

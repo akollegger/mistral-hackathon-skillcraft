@@ -26,6 +26,14 @@
     </header>
     <div id="story-bar" class="story-bar"></div>
     <main id="panes"></main>
+    <section id="lineage" class="panel">
+      <header class="lineage-head">
+        <span>lineage graph · relate-wasm</span>
+        <button id="load-lineage" type="button">load graph.json</button>
+      </header>
+      <div id="lineage-queries" class="lineage-queries"></div>
+      <pre id="lineage-out" class="panel-inset">no graph loaded — on a gh-pages deploy this runs live Cypher in your browser</pre>
+    </section>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

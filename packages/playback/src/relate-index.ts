@@ -31,6 +31,69 @@ MATCH (t:Run {role: 'teacher'})-[:GENERATED]->(s:Skill)-[:USED_IN]->(u:Run)
 RETURN t.runId AS teacherRunId, s.skillId AS skillId, u.runId AS studentRunId
 `;
 
+export interface GraphNode {
+  eid: number;
+  labels: string[];
+  props: Record<string, unknown>;
+}
+export interface GraphEdge {
+  from: number;
+  to: number;
+  type: string;
+}
+export interface GraphDump {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
+// Labels/types we are willing to ship to a public static site. Recipe/Book/Item
+// nodes are deliberately excluded (anti-cheat rule 5: answer material stays local).
+const SHIPPABLE_LABELS = new Set(["Run", "Skill", "Task"]);
+const SHIPPABLE_EDGES = new Set(["GENERATED", "USED_IN", "ATTEMPTED", "SCORED_BY"]);
+
+const GRAPH_CYPHER = `
+MATCH (n) WHERE any(l IN labels(n) WHERE l IN $labels)
+OPTIONAL MATCH (n)-[r]->(m)
+RETURN id(n) AS id, labels(n) AS labels, properties(n) AS props,
+       id(m) AS toId, type(r) AS relType
+`;
+
+/** Full shippable graph dump (nodes + lineage edges) for the wasm demo. */
+export function readRelateGraph(resultsDir: string): GraphDump | null {
+  const lineage = join(resultsDir, "lineage");
+  if (!existsSync(lineage)) return null;
+  let db: ReturnType<typeof Database.open>;
+  try {
+    db = Database.open(lineage, { readOnly: true });
+  } catch {
+    return null;
+  }
+  try {
+    const conn = db.connect();
+    const res = conn.query(GRAPH_CYPHER, {
+      labels: [...SHIPPABLE_LABELS],
+    }) as unknown as { rows: Record<string, unknown>[] };
+    const nodes = new Map<number, GraphNode>();
+    const edges: GraphEdge[] = [];
+    for (const row of res.rows) {
+      const id = Number(row.id);
+      if (!nodes.has(id)) {
+        nodes.set(id, {
+          eid: id,
+          labels: (row.labels as string[]).filter((l) => SHIPPABLE_LABELS.has(l)),
+          props: (row.props as Record<string, unknown>) ?? {},
+        });
+      }
+      if (row.toId !== null && row.relType && SHIPPABLE_EDGES.has(row.relType as string)) {
+        edges.push({ from: id, to: Number(row.toId), type: row.relType as string });
+      }
+    }
+    return { nodes: [...nodes.values()], edges };
+  } catch {
+    return null;
+  }
+}
+
 /** Read runs + skill pairs from the lineage DB. Null when no DB exists. */
 export function readRelateIndex(resultsDir: string): RelateIndex | null {
   const lineage = join(resultsDir, "lineage");

@@ -5,6 +5,7 @@
  *  loading a scenario starts both panes on the no-skill/taught runs
  *  (matrix runs 1 + 4). A demo-story button walks 4 → 1 → 5: student baseline,
  *  teacher generates the skill, student with skill. */
+import { LINEAGE_QUERIES, loadLineageDb, type LineageDb } from "./relate-wasm";
 import { buildReplay, ParseError, type Replay, type ReplayStep } from "./replayer";
 import { fetchRunEvents, fetchRunIndex, pickRun, scenariosOf, type RunIndex, type RunSummary } from "./runs";
 import { arrowSprite, itemSprite, mistralLogo } from "./sprites";
@@ -419,3 +420,52 @@ void (async () => {
   }
   scenarioSelect.addEventListener("change", () => void loadScenario(scenarioSelect.value));
 })();
+
+// ---- Lineage panel (relate-wasm, static export) ----
+
+let lineageDb: LineageDb | null = null;
+const lineageOut = document.getElementById("lineage-out")!;
+const lineageQueries = document.getElementById("lineage-queries")!;
+
+function renderRows(rows: Record<string, unknown>[]): void {
+  if (rows.length === 0) {
+    lineageOut.textContent = "(no rows)";
+    return;
+  }
+  const cols = Object.keys(rows[0]!);
+  const lines = [
+    cols.map((c) => c.padEnd(24)).join(" "),
+    cols.map(() => "-".repeat(24)).join(" "),
+    ...rows.map((r) => cols.map((c) => String(r[c] ?? "").padEnd(24)).join(" ")),
+  ];
+  lineageOut.textContent = lines.join("\n");
+}
+
+document.getElementById("load-lineage")!.addEventListener("click", async (e) => {
+  const btn = e.target as HTMLButtonElement;
+  btn.disabled = true;
+  btn.textContent = "loading wasm…";
+  try {
+    lineageDb = await loadLineageDb();
+    lineageOut.textContent = "graph loaded — pick a query";
+    lineageQueries.innerHTML = "";
+    for (const q of LINEAGE_QUERIES) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = q.name;
+      b.addEventListener("click", () => {
+        try {
+          renderRows(lineageDb!.query(q.cypher));
+        } catch (err) {
+          lineageOut.textContent = `query error: ${err instanceof Error ? err.message : String(err)}`;
+        }
+      });
+      lineageQueries.appendChild(b);
+    }
+  } catch (err) {
+    lineageOut.textContent = `load failed: ${err instanceof Error ? err.message : String(err)}`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "reload graph.json";
+  }
+});

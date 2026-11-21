@@ -12,11 +12,15 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "vitest run --passWithNoTests",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"export:data": "node scripts/export-static.mjs",
+		"deploy": "pnpm export:data && pnpm build && node scripts/deploy.mjs"
 	},
 	"devDependencies": {
 		"@relate/relate": "^1.2.0",
+		"@relate/relate-wasm": "^1.2.0",
 		"@types/node": "^24",
+		"gh-pages": "^6.3.0",
 		"jsdom": "^31.0.1",
 		"typescript": "^5.9.3",
 		"vite": "^8.3.8",

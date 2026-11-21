@@ -40,7 +40,8 @@ async function fetchJson(url: string): Promise<unknown> {
   return res.json();
 }
 
-/** Fetch the run index; falls back to bundled demo fixtures on any failure. */
+/** Fetch the run index. Source order: dev API (Relate/JSONL) → static export
+ *  (./data/runs.json, gh-pages build) → bundled demo fixtures. */
 export async function fetchRunIndex(): Promise<RunIndex> {
   try {
     const data = (await fetchJson("./api/runs")) as {
@@ -48,14 +49,11 @@ export async function fetchRunIndex(): Promise<RunIndex> {
       source?: string;
       pairs?: RunIndex["pairs"];
     };
-    const manifest = (await fetchJson("./api/manifest").catch(() => null)) as {
-      manifest: unknown;
-    } | null;
-    // If the dev API answers but results/ is empty, still offer demo fixtures.
+    // If the dev API answers but results/ is empty, keep falling through.
     if (data.runs.length > 0)
       return {
         runs: data.runs,
-        manifest: manifest?.manifest ?? null,
+        manifest: null,
         demo: false,
         source: data.source ?? "jsonl",
         pairs: data.pairs ?? [],
@@ -63,15 +61,26 @@ export async function fetchRunIndex(): Promise<RunIndex> {
   } catch {
     /* dev API unavailable (static build) */
   }
+  try {
+    const data = (await fetchJson("./data/runs.json")) as {
+      runs: (RunSummary & { file: string })[];
+      pairs?: RunIndex["pairs"];
+    };
+    if (data.runs.length > 0)
+      return { runs: data.runs, manifest: null, demo: false, source: "static", pairs: data.pairs ?? [] };
+  } catch {
+    /* no static export */
+  }
   demoIndex = (await fetchJson("./demo/index.json")) as DemoIndex;
   return { runs: demoIndex.runs, manifest: null, demo: true, source: "demo", pairs: [] };
 }
 
-/** Raw events.jsonl text for a run. */
+/** Raw events.jsonl text for a run. run.file is a base-relative static path
+ *  ("data/runs/<id>.jsonl" or "demo/runs/<name>.jsonl"); otherwise the dev API. */
 export async function fetchRunEvents(run: RunSummary): Promise<string> {
   if (run.file) {
-    const res = await fetch(`./demo/${run.file}`);
-    if (!res.ok) throw new Error(`demo fixture ${run.file}: ${res.status}`);
+    const res = await fetch(`./${run.file}`);
+    if (!res.ok) throw new Error(`${run.file}: ${res.status}`);
     return res.text();
   }
   const res = await fetch(`./api/run/${encodeURIComponent(run.runId)}/events.jsonl`);

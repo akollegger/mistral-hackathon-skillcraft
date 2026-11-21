@@ -13,7 +13,7 @@
   ],
   "runs": [
     {
-      "file": "runs/teacher-none-taught.jsonl",
+      "file": "demo/runs/teacher-none-taught.jsonl",
       "runId": "demo-teacher-none-taught",
       "role": "teacher",
       "condition": null,
@@ -26,7 +26,7 @@
       "toolCalls": 6
     },
     {
-      "file": "runs/teacher-skill-taught.jsonl",
+      "file": "demo/runs/teacher-skill-taught.jsonl",
       "runId": "demo-teacher-skill-taught",
       "role": "teacher",
       "condition": "skill",
@@ -39,7 +39,7 @@
       "toolCalls": 3
     },
     {
-      "file": "runs/teacher-skill-heldout.jsonl",
+      "file": "demo/runs/teacher-skill-heldout.jsonl",
       "runId": "demo-teacher-skill-heldout",
       "role": "teacher",
       "condition": "skill",
@@ -52,7 +52,7 @@
       "toolCalls": 3
     },
     {
-      "file": "runs/student-none-taught.jsonl",
+      "file": "demo/runs/student-none-taught.jsonl",
       "runId": "demo-student-none-taught",
       "role": "student",
       "condition": "none",
@@ -65,7 +65,7 @@
       "toolCalls": 6
     },
     {
-      "file": "runs/student-skill-taught.jsonl",
+      "file": "demo/runs/student-skill-taught.jsonl",
       "runId": "demo-student-skill-taught",
       "role": "student",
       "condition": "skill",
@@ -78,7 +78,7 @@
       "toolCalls": 3
     },
     {
-      "file": "runs/student-skill-heldout.jsonl",
+      "file": "demo/runs/student-skill-heldout.jsonl",
       "runId": "demo-student-skill-heldout",
       "role": "student",
       "condition": "skill",

@@ -20,7 +20,8 @@ beforeAll(() => {
     <input id="file-teacher" type="file" />
     <input id="file-student" type="file" />
     <div id="story-bar"></div>
-    <main id="panes"></main>`;
+    <main id="panes"></main>
+    <section id="lineage"><button id="load-lineage"></button><div id="lineage-queries"></div><pre id="lineage-out"></pre></section>`;
 
   // /api/* is unavailable in tests → 404, forcing the demo-fixture fallback.
   vi.stubGlobal("fetch", async (url: string) => {

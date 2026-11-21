@@ -475,3 +475,48 @@ img {
 .events li.active .kind-run_end {
   color: var(--yellow);
 }
+
+/* ---- Lineage panel (relate-wasm) ---- */
+#lineage {
+  margin: 0 16px 16px;
+  padding: 12px;
+}
+.lineage-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.lineage-head button,
+.lineage-queries button {
+  font-family: inherit;
+  font-size: 9px;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--grad);
+  color: #1a0d05;
+  border: 3px solid var(--line);
+  box-shadow: 3px 3px 0 var(--line);
+  padding: 6px 10px;
+}
+.lineage-head button:active,
+.lineage-queries button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--line);
+}
+.lineage-queries {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+#lineage-out {
+  margin: 0;
+  padding: 8px;
+  font-size: 9px;
+  overflow-x: auto;
+  max-height: 220px;
+  overflow-y: auto;
+}
