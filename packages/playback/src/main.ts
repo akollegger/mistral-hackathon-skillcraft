@@ -23,6 +23,8 @@ class RunPane {
   index = -1;
   playing = false;
   speed = 1;
+  /** Fired when auto-play reaches the last event (used by the story loop). */
+  onEnded: (() => void) | null = null;
   private timer: number | null = null;
 
   readonly root: HTMLElement;
@@ -163,7 +165,11 @@ class RunPane {
   setIndex(i: number): void {
     if (!this.replay) return;
     this.index = Math.max(-1, Math.min(i, this.lastIndex()));
-    if (this.index >= this.lastIndex()) this.stop();
+    if (this.index >= this.lastIndex()) {
+      const wasPlaying = this.playing;
+      this.stop();
+      if (wasPlaying) this.onEnded?.(); // auto-play reached the end (story loop)
+    }
     this.render();
   }
 
@@ -193,6 +199,7 @@ class RunPane {
     this.timer = window.setInterval(() => {
       if (this.index >= this.lastIndex()) {
         this.stop();
+        this.onEnded?.();
         return;
       }
       this.setIndex(this.index + 1);
@@ -360,13 +367,17 @@ async function loadScenario(taskId: string): Promise<void> {
 }
 
 // Demo story: 4 → 1 → 5 (student baseline, teacher generates skill, student with skill).
+// The button toggles an auto-looping presentation: each step plays its run to
+// the end, then the next step advances automatically (wraps after 3/3).
 const STORY = [
   { caption: "1/3 · student, no skill — the cold baseline", pane: () => studentPane, condition: "none" as Condition, heldOut: false },
   { caption: "2/3 · teacher, no skill — searches and generates the skill", pane: () => teacherPane, condition: "none" as Condition, heldOut: false },
   { caption: "3/3 · student, with the generated skill — the lift", pane: () => studentPane, condition: "skill" as Condition, heldOut: false },
 ];
 let storyStep = -1;
-storyBtn.addEventListener("click", async () => {
+let storyLooping = false;
+
+async function advanceStory(): Promise<void> {
   storyStep = (storyStep + 1) % STORY.length;
   const s = STORY[storyStep]!;
   const pane = s.pane();
@@ -374,10 +385,31 @@ storyBtn.addEventListener("click", async () => {
   pane.heldOut = s.heldOut;
   syncToggle(pane.condButtons, s.condition);
   syncToggle(pane.heldButtons, "false");
-  storyBar.textContent = s.caption;
+  storyBar.textContent = `${s.caption} · looping`;
   await loadPaneRun(pane);
   pane.play();
+}
+
+storyBtn.addEventListener("click", () => {
+  if (storyLooping) {
+    storyLooping = false;
+    storyBtn.textContent = "▶ demo story";
+    storyBar.textContent = "story stopped";
+    return;
+  }
+  storyLooping = true;
+  storyStep = -1;
+  storyBtn.textContent = "⏹ stop story";
+  void advanceStory();
 });
+
+// When the pane playing the current story step finishes, advance the loop.
+teacherPane.onEnded = () => {
+  if (storyLooping && STORY[storyStep]?.pane() === teacherPane) void advanceStory();
+};
+studentPane.onEnded = () => {
+  if (storyLooping && STORY[storyStep]?.pane() === studentPane) void advanceStory();
+};
 
 // Manual file loading still works: pickers + drag & drop.
 function wireInput(inputId: string, pane: RunPane): void {

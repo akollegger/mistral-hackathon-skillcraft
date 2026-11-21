@@ -88,20 +88,25 @@ describe("app smoke: scenario chooser + story", () => {
     expect(teacher!.querySelector(".badges")!.textContent).toContain("invented"); // tier badge remains
   });
 
-  it("demo story advances 4 → 1 → 5", async () => {
-    const story = document.getElementById("demo-story") as HTMLButtonElement;
-    const bar = document.getElementById("story-bar")!;
-    story.click(); // step 1: student none
-    await flush();
-    expect(bar.textContent).toContain("1/3");
-    expect(panes()[1]!.querySelector(".file-name")!.textContent).toContain("student-none-taught");
-    story.click(); // step 2: teacher none
-    await flush();
-    expect(bar.textContent).toContain("2/3");
-    expect(panes()[0]!.querySelector(".file-name")!.textContent).toContain("teacher-none-taught");
-    story.click(); // step 3: student skill
-    await flush();
-    expect(bar.textContent).toContain("3/3");
-    expect(panes()[1]!.querySelector(".file-name")!.textContent).toContain("student-skill-taught");
+  it("demo story auto-loops 4 → 1 → 5 and stops on toggle", async () => {
+    vi.useFakeTimers();
+    try {
+      const story = document.getElementById("demo-story") as HTMLButtonElement;
+      const bar = document.getElementById("story-bar")!;
+      // Record caption changes while the loop runs; expect 1/3 → 2/3 → 3/3 in order.
+      const seen: string[] = [];
+      story.click(); // start the loop
+      for (let i = 0; i < 60; i++) {
+        await vi.advanceTimersByTimeAsync(1000);
+        const m = /(\d\/3)/.exec(bar.textContent ?? "");
+        if (m && seen[seen.length - 1] !== m[1]) seen.push(m[1]!);
+        if (seen.length >= 3) break;
+      }
+      expect(seen).toEqual(["1/3", "2/3", "3/3"]);
+      story.click(); // stop the loop
+      expect(bar.textContent).toContain("stopped");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
