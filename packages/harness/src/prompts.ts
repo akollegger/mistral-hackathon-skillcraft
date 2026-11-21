@@ -93,6 +93,11 @@ const TEACHING_PHASE = [
 	"instance. If your solution chained multiple crafts (intermediates), explain how:",
 	"craft the intermediate, note that wouldProduce can be a non-target output, then",
 	"use that output in the next pattern.",
+	"",
+	"Alongside the specifics of what you did, include your general observations about",
+	"how this kind of crafting table behaves — patterns in the items, the recipes, or",
+	"the feedback — that would help an agent succeed on related challenges even",
+	"without having seen this exact one.",
 	"No hidden-channel hints.",
 ].join("\n");
 
