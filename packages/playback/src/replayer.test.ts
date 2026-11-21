@@ -59,13 +59,13 @@ const sample = [
 
 // Harness-emitted shapes (packages/harness/src/events.ts): tool/input, output-nested feedback.
 const harnessSample = [
-  ev(1, "run_start", { runId: "abc", role: "student", condition: "skill", taskId: "invented:bar", modelAlias: "mistral-medium-latest" }),
+  ev(1, "run_start", { runId: "abc", role: "student", condition: "skill", taskId: "inv-bar-1", modelAlias: "mistral-medium-latest" }),
   ev(2, "prompt", { length: 400 }),
   ev(3, "skill_loaded", { toolName: "mcp_skillcraft_skills.bar-recipe", status: "ok" }),
   ev(4, "tool_call", { tool: "place", toolName: "mcp_skillcraft.place", input: { item: "invented:goo", slot: 0 }, status: "ok" }),
   ev(5, "tool_feedback", { tool: "place", toolName: "mcp_skillcraft.place", failed: false, output: feedback([[0, "invented:goo"]], false, null, { "invented:goo": 1 }) }),
   ev(6, "tool_call", { tool: "craft", toolName: "mcp_skillcraft.craft", input: {}, status: "ok" }),
-  ev(7, "craft_result", { craftable: false, wouldProduce: null, grid: gridWith([]), inventory: { "invented:bar": 1 }, success: true, produced: "invented:bar" }),
+  ev(7, "craft_result", { craftable: false, wouldProduce: null, grid: gridWith([]), inventory: { "inv-bar-1": 1 }, success: true, produced: "inv-bar-1" }),
   ev(8, "run_end", { exitCode: 0, contaminated: false }),
 ].join("\n");
 
@@ -151,8 +151,8 @@ describe("buildSteps (harness shape)", () => {
 
   it("reads flat craft_result with success/produced", () => {
     expect(steps[6]!.craftSuccess).toBe(true);
-    expect(steps[6]!.lastProduced).toBe("invented:bar");
-    expect(steps[6]!.label).toBe("✔ crafted invented:bar");
+    expect(steps[6]!.lastProduced).toBe("inv-bar-1");
+    expect(steps[6]!.label).toBe("✔ crafted inv-bar-1");
   });
 
   it("maps exitCode to outcome and labels skill_loaded", () => {
@@ -197,7 +197,7 @@ describe("demo fixtures in public/demo/runs (harness shape)", () => {
     expect(taught.steps[taught.steps.length - 1]!.label).toBe("run end: success");
     const heldOut = buildReplay(demo("student-skill-heldout"));
     expect(heldOut.meta?.heldOut).toBe(true);
-    expect(heldOut.meta?.taskId).toBe("invented:qux");
+    expect(heldOut.meta?.taskId).toBe("inv-qux-heldout");
     expect(heldOut.steps.some((s) => s.lastProduced === "invented:qux")).toBe(true);
   });
 });

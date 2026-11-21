@@ -52,8 +52,8 @@ describe("app smoke: scenario chooser + story", () => {
     expect(student!.querySelector(".file-name")!.textContent).toContain("student-none-taught");
     // scenario select offers both demo scenarios
     const options = [...document.querySelectorAll<HTMLOptionElement>("#scenario option")].map((o) => o.value);
-    expect(options).toContain("invented:bar");
-    expect(options).toContain("invented:qux");
+    expect(options).toContain("inv-bar-1");
+    expect(options).toContain("inv-qux-heldout");
     // run select shows outcome + move count (no timestamps)
     const runOpt = teacher!.querySelector(".run-select option")!.textContent!;
     expect(runOpt).toBe("success · 6 moves");
