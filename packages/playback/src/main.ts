@@ -387,6 +387,10 @@ async function advanceStory(): Promise<void> {
   syncToggle(pane.heldButtons, "false");
   storyBar.textContent = `${s.caption} · looping`;
   await loadPaneRun(pane);
+  // Start at the first feedback event so the board isn't blank at the caption —
+  // the run is visibly in progress the moment the step begins.
+  const firstFeedback = pane.replay?.steps.findIndex((st) => st.kind === "tool_feedback") ?? -1;
+  pane.setIndex(firstFeedback >= 0 ? firstFeedback : 0);
   pane.play();
 }
 
