@@ -200,11 +200,18 @@ export const inventedBook: Recipe[] = [
 		partialCreditRules: null,
 	},
 	{
+		// held-out: teacher never sees this. Matched in complexity to inv:bar
+		// (3-item column, 3 item types) so taught-vs-held-out is not confounded
+		// with pattern complexity (pilot finding 2026-11-21).
 		recipeId: "inv:qux",
 		tier: "invented",
 		targetItem: "invented:qux",
-		produces: 3, // held-out: teacher never sees this
-		pattern: P(["mmz", "...", "..."], { m: "invented:meh", z: "invented:fiz" }),
+		produces: 2,
+		pattern: P(["z..", "f..", "m.."], {
+			z: "invented:fiz",
+			f: "invented:foo",
+			m: "invented:meh",
+		}),
 		equivalence: "exact",
 		intermediate: false,
 		partialCreditRules: null,
@@ -217,6 +224,7 @@ export const heldOutScenario: Scenario = {
 	tier: "invented",
 	targetItem: "invented:qux",
 	inventory: new Map([
+		["invented:foo", 1],
 		["invented:meh", 2],
 		["invented:fiz", 2],
 	]),
