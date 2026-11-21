@@ -58,6 +58,9 @@ importers:
       execa:
         specifier: ^9
         version: 9.6.1
+      koffi:
+        specifier: 3.3.8
+        version: 3.3.8
       zod:
         specifier: ^3
         version: 3.25.76

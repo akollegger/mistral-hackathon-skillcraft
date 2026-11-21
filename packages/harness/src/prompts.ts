@@ -48,6 +48,8 @@ function taskStatement(scenario: Scenario): string {
 		"```",
 		"",
 		"Place resources from your inventory into grid slots and craft the target item.",
+		"",
+		"Use the tools to actually craft it — do not just describe the steps in text.",
 	].join("\n");
 }
 
@@ -84,6 +86,13 @@ const TEACHING_PHASE = [
 	"",
 	"Skill rubric — procedures and strategies beat answers: how to search, how to read",
 	"the feedback, pruning heuristics. Worked examples are allowed and encouraged.",
+	"",
+	"The student will face a DIFFERENT but related task (different items, different",
+	"recipe). Say explicitly which parts of your strategy generalize (search order,",
+	"feedback reading, pruning, inventory budgeting) and which are specific to this",
+	"instance. If your solution chained multiple crafts (intermediates), explain how:",
+	"craft the intermediate, note that wouldProduce can be a non-target output, then",
+	"use that output in the next pattern.",
 	"No hidden-channel hints.",
 ].join("\n");
 
