@@ -278,14 +278,8 @@ img {
   color: var(--ink);
   text-transform: uppercase;
 }
-.badge.role-teacher { background: var(--yellow); }
-.badge.role-student { background: var(--orange); }
-.badge.cond-skill { background: var(--amber); }
-.badge.cond-transcript { background: var(--bg-soft); color: var(--dim); }
-.badge.cond-none { background: var(--bg-soft); color: var(--dim); }
 .badge.outcome-success { background: var(--yellow); }
 .badge.outcome-fail, .badge.outcome-timeout { background: var(--red); color: #fff; }
-.badge.held-out { background: var(--ink); color: #fff; }
 
 /* ---- Crafting board ---- */
 .board {

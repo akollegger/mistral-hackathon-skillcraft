@@ -240,15 +240,12 @@ class RunPane {
         this.invEl.appendChild(empty);
       }
     }
+    // Only badges not already reflected elsewhere: tier + outcome. Role,
+    // condition and held-out are shown by the pane label and toggles.
     this.badgesEl.replaceChildren();
     const m = step?.meta ?? this.replay.meta;
     if (m) {
-      this.badgesEl.append(
-        badge(`role-${m.role}`, m.role),
-        badge(m.condition ? `cond-${m.condition}` : "cond-none", m.condition ?? "no aid"),
-        badge(m.tier ? `tier-${m.tier}` : "tier", m.tier ?? ""),
-        badge(m.heldOut ? "held-out" : "seen", m.heldOut ? "held-out" : "taught"),
-      );
+      if (m.tier) this.badgesEl.appendChild(badge(`tier-${m.tier}`, m.tier));
       const end = this.replay.steps[this.lastIndex()]!;
       const outcome = end.kind === "run_end" ? (end.label.split(": ").pop() ?? "") : (m.outcome ?? "…");
       this.badgesEl.appendChild(badge(`outcome-${outcome}`, outcome));

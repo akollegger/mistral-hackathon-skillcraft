@@ -79,7 +79,9 @@ describe("app smoke: scenario chooser + story", () => {
     heldBtn.click();
     await flush();
     expect(teacher!.querySelector(".file-name")!.textContent).toContain("teacher-skill-heldout");
-    expect(teacher!.querySelector(".badges")!.textContent).toContain("held-out");
+    // held-out badge removed (redundant with toggle) — toggle shows the state instead
+    expect(teacher!.querySelector('.toggle[data-dim="heldOut"] button[data-v="true"]')!.classList.contains("on")).toBe(true);
+    expect(teacher!.querySelector(".badges")!.textContent).toContain("invented"); // tier badge remains
   });
 
   it("demo story advances 4 → 1 → 5", async () => {
