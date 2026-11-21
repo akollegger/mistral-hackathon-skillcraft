@@ -126,11 +126,6 @@ img {
   transform: translate(3px, 3px);
   box-shadow: 0 0 0 var(--line);
 }
-.hint {
-  color: var(--dim);
-  font-size: 9px;
-  width: 100%;
-}
 .scenario-label {
   font-size: 10px;
   text-transform: uppercase;

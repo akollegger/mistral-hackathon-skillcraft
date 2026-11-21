@@ -45,7 +45,7 @@ class RunPane {
     this.root.className = "pane panel empty";
     this.root.innerHTML = `
       <header class="pane-head">
-        <span class="slot-label">${role === "teacher" ? "TEACHER · LEFT" : "STUDENT · RIGHT"}</span>
+        <span class="slot-label">${role.toUpperCase()}</span>
         <span class="toggle" data-dim="condition">
           <button type="button" data-v="none" class="on">no skill</button><button type="button" data-v="skill">skill</button>
         </span>
