@@ -120,6 +120,8 @@ export interface ReplayStep {
   wouldProduce: string | null;
   /** Success of the most recent craft_result, null if none yet. */
   craftSuccess: boolean | null;
+  /** Item produced by the most recent successful craft, null if none yet. */
+  lastProduced: string | null;
   meta: RunMetaT | null;
 }
 
@@ -151,6 +153,7 @@ export function buildSteps(events: RunEvent[]): ReplayStep[] {
   let craftable = false;
   let wouldProduce: string | null = null;
   let craftSuccess: boolean | null = null;
+  let lastProduced: string | null = null;
   let meta: RunMetaT | null = null;
 
   return events.map((ev, index) => {
@@ -186,6 +189,7 @@ export function buildSteps(events: RunEvent[]): ReplayStep[] {
         craftable = f.craftable;
         wouldProduce = f.wouldProduce;
         craftSuccess = c.success;
+        if (c.success) lastProduced = c.produced;
         label = c.success ? `✔ crafted ${c.produced}` : "✘ craft failed";
         break;
       }
@@ -213,6 +217,7 @@ export function buildSteps(events: RunEvent[]): ReplayStep[] {
       craftable,
       wouldProduce,
       craftSuccess,
+      lastProduced,
       meta,
     };
   });

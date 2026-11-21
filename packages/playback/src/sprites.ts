@@ -270,24 +270,21 @@ const PAINTERS: Record<string, Painter> = {
   diamond_pickaxe: () => paintPickaxe(DIAMOND),
 };
 
-const cache = new Map<string, HTMLCanvasElement>();
+// Cache pixel buffers, NOT canvases: a DOM node can only be in one place, so
+// returning a shared canvas would move it between grid cells and only the last
+// duplicate item would render. Each call blits a fresh canvas from the buffer.
+const cache = new Map<string, Buf>();
 
-function hash(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return Math.abs(h);
-}
-
-/** 32×32 sprite for an item id (cached). Null/empty → empty slot canvas. */
+/** 32×32 sprite for an item id. Null/empty → empty slot canvas. */
 export function itemSprite(itemId: string | null): HTMLCanvasElement {
   if (!itemId) return blit(newBuf());
   const hit = cache.get(itemId);
-  if (hit) return hit;
+  if (hit) return blit(hit);
   const suffix = itemId.includes(":") ? itemId.split(":").slice(1).join(":") : itemId;
   const painter = PAINTERS[suffix];
-  const cv = blit(painter ? painter() : paintFallbackGem(itemId));
-  cache.set(itemId, cv);
-  return cv;
+  const buf = painter ? painter() : paintFallbackGem(itemId);
+  cache.set(itemId, buf);
+  return blit(buf);
 }
 
 /** The Mistral pixel "M": 5×5 texels in the brand gradient, on a 32×32 canvas. */

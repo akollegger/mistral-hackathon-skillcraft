@@ -132,7 +132,7 @@ class RunPane {
       this.eventsEl.appendChild(li);
     });
     this.stop();
-    this.setIndex(this.lastIndex());
+    this.setIndex(0); // start at the beginning so play/scrub shows placement
   }
 
   setIndex(i: number): void {
@@ -188,14 +188,16 @@ class RunPane {
       cell.replaceChildren(item ? itemSprite(item) : document.createTextNode(""));
       cell.classList.toggle("filled", item !== null);
     }
-    // Output / craftable feedback
+    // Output / craftable feedback: show what the grid would craft, or — after a
+    // successful craft — the item that was produced (the grid is consumed then).
     const craftable = step?.craftable ?? false;
-    const would = step?.wouldProduce ?? null;
-    this.outSlot.replaceChildren(would ? itemSprite(would) : document.createTextNode(""));
+    const shown = step ? (step.wouldProduce ?? step.lastProduced) : null;
+    this.outSlot.replaceChildren(shown ? itemSprite(shown) : document.createTextNode(""));
     this.outSlot.classList.toggle("craftable", craftable);
-    this.outSlot.classList.toggle("blocked", step !== null && !craftable);
+    this.outSlot.classList.toggle("blocked", step !== null && !craftable && shown === null);
+    this.outSlot.classList.toggle("produced", step?.craftSuccess === true);
     const craftNote = step?.craftSuccess === true ? " ✔" : step?.craftSuccess === false ? " ✘" : "";
-    this.outLabel.textContent = would ? `${would}${craftNote}` : step ? "not craftable" : "?";
+    this.outLabel.textContent = shown ? `${shown}${craftNote}` : step ? "not craftable" : "?";
     // Inventory
     this.invEl.replaceChildren();
     if (step) {
