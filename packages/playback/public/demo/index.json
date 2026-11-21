@@ -22,7 +22,8 @@
       "heldOut": false,
       "outcome": "success",
       "modelAlias": "mistral-large-4-0",
-      "startedAt": "2026-11-21T12:16:39.180Z"
+      "startedAt": "2026-11-21T12:16:39.180Z",
+      "toolCalls": 6
     },
     {
       "file": "runs/teacher-skill-taught.jsonl",
@@ -34,7 +35,8 @@
       "heldOut": false,
       "outcome": "success",
       "modelAlias": "mistral-large-4-0",
-      "startedAt": "2026-11-21T12:17:39.180Z"
+      "startedAt": "2026-11-21T12:17:39.180Z",
+      "toolCalls": 3
     },
     {
       "file": "runs/teacher-skill-heldout.jsonl",
@@ -46,7 +48,8 @@
       "heldOut": true,
       "outcome": "success",
       "modelAlias": "mistral-large-4-0",
-      "startedAt": "2026-11-21T12:18:39.180Z"
+      "startedAt": "2026-11-21T12:18:39.180Z",
+      "toolCalls": 3
     },
     {
       "file": "runs/student-none-taught.jsonl",
@@ -58,7 +61,8 @@
       "heldOut": false,
       "outcome": "fail",
       "modelAlias": "mistral-medium-latest",
-      "startedAt": "2026-11-21T12:19:39.180Z"
+      "startedAt": "2026-11-21T12:19:39.180Z",
+      "toolCalls": 6
     },
     {
       "file": "runs/student-skill-taught.jsonl",
@@ -70,7 +74,8 @@
       "heldOut": false,
       "outcome": "success",
       "modelAlias": "mistral-medium-latest",
-      "startedAt": "2026-11-21T12:20:39.180Z"
+      "startedAt": "2026-11-21T12:20:39.180Z",
+      "toolCalls": 3
     },
     {
       "file": "runs/student-skill-heldout.jsonl",
@@ -82,7 +87,8 @@
       "heldOut": true,
       "outcome": "success",
       "modelAlias": "mistral-medium-latest",
-      "startedAt": "2026-11-21T12:21:39.180Z"
+      "startedAt": "2026-11-21T12:21:39.180Z",
+      "toolCalls": 3
     }
   ]
 }

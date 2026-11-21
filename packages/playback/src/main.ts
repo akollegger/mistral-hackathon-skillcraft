@@ -302,7 +302,7 @@ async function loadPaneRun(pane: RunPane): Promise<void> {
   for (const r of matches) {
     const opt = document.createElement("option");
     opt.value = r.runId;
-    opt.textContent = `${r.outcome ?? "…"} · ${r.startedAt ? r.startedAt.slice(11, 19) : r.runId}`;
+    opt.textContent = `${r.outcome ?? "…"} · ${r.toolCalls ?? "?"} moves`;
     pane.runSelect.appendChild(opt);
   }
   const run = pickRun(index.runs, { role: pane.role, condition: pane.condition, heldOut: pane.heldOut, taskId: scenario, tier: scenarioTier });

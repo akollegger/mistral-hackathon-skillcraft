@@ -12,6 +12,7 @@ export interface RunSummary {
   heldOut: boolean | undefined;
   outcome: string | null | undefined;
   modelAlias: string | undefined;
+  toolCalls: number | undefined;
   startedAt: string | null;
   /** demo mode: fixture file to fetch instead of an API path */
   file: string | undefined;

@@ -17,6 +17,7 @@ export interface RunSummary {
   heldOut: boolean | undefined;
   outcome: string | null | undefined;
   modelAlias: string | undefined;
+  toolCalls: number | undefined;
   startedAt: string | null;
 }
 
@@ -36,14 +37,17 @@ function scanRuns(): RunSummary[] {
       /* run not completed yet — fall back to events.jsonl */
     }
     let startedAt: string | null = null;
+    let toolCalls: number | undefined;
     if (!meta) {
       try {
-        const first = readFileSync(join(dir, "events.jsonl"), "utf8").split("\n", 1)[0];
+        const lines = readFileSync(join(dir, "events.jsonl"), "utf8").split("\n");
+        const first = lines[0];
         if (first) {
           const ev = JSON.parse(first) as { ts?: string; payload?: Record<string, unknown> };
           startedAt = ev.ts ?? null;
           meta = (ev.payload ?? {}) as Record<string, unknown>;
         }
+        toolCalls = lines.filter((l) => l.includes('"tool_call"')).length;
       } catch {
         /* no events yet */
       }
@@ -59,6 +63,7 @@ function scanRuns(): RunSummary[] {
       heldOut: meta.heldOut as boolean | undefined,
       outcome: (meta.outcome as string | null) ?? null,
       modelAlias: meta.modelAlias as string | undefined,
+      toolCalls: (meta.toolCalls as number | undefined) ?? toolCalls,
       startedAt,
     });
   }

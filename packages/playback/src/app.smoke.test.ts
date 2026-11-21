@@ -53,6 +53,9 @@ describe("app smoke: scenario chooser + story", () => {
     const options = [...document.querySelectorAll<HTMLOptionElement>("#scenario option")].map((o) => o.value);
     expect(options).toContain("invented:bar");
     expect(options).toContain("invented:qux");
+    // run select shows outcome + move count (no timestamps)
+    const runOpt = teacher!.querySelector(".run-select option")!.textContent!;
+    expect(runOpt).toBe("success · 6 moves");
   });
 
   it("skill toggle on the student pane swaps to the skill run", async () => {
