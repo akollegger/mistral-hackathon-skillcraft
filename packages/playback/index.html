@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>skillcraft · run replayer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <span id="logo" aria-hidden="true"></span>
+      <h1><span class="accent">skillcraft</span> // run replayer</h1>
+      <div class="loaders">
+        <label for="file-a">load run A<input id="file-a" type="file" accept=".jsonl,.json,.txt" /></label>
+        <label for="file-b">load run B<input id="file-b" type="file" accept=".jsonl,.json,.txt" /></label>
+        <button id="demo-teacher" type="button">demo: teacher</button>
+        <button id="demo-student" type="button">demo: student</button>
+        <button id="demo-both" type="button">demo: both</button>
+        <span class="hint">…or drop one / two events.jsonl files anywhere. Built from the event log only — never live agent state.</span>
+      </div>
+    </header>
+    <main id="panes"></main>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
