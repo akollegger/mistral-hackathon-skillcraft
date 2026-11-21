@@ -1,0 +1,220 @@
+S1 probe v4 (vibe 3.1.4) — 2026-11-20T17:02:56Z
+
+===== 1. version =====
+vibe 3.1.4
+exit=0
+
+===== candidate: canonical =====
+Reading API keys from the macOS Keychain (set them as environment variables to skip this)
+[
+  {
+    "id": "user-turn-d42ae6140c90f22b63aa9a5b4c23c470-1",
+    "sessionId": "7279d437-dcd8-3ce3-5533-f203f6b00be7",
+    "turnId": "turn-d42ae6140c90f22b63aa9a5b4c23c470",
+    "inputEntryId": null,
+    "createdAt": 1795194182647,
+    "updatedAt": 1795194182647,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "user",
+    "content": [
+      {
+        "type": "text",
+        "text": "Create a file named hello.md in the current directory containing exactly the word: s1-ok. Do nothing else."
+      }
+    ],
+    "source": "turn_start",
+    "userDisplayContent": null,
+    "outcome": null
+  },
+  {
+    "id": "reasoning-1b69e085-3eaa-5f07-9945-e2742206edcf-0",
+    "sessionId": "7279d437-dcd8-3ce3-5533-f203f6b00be7",
+    "turnId": "turn-d42ae6140c90f22b63aa9a5b4c23c470",
+    "inputEntryId": "user-turn-d42ae6140c90f22b63aa9a5b4c23c470-1",
+    "createdAt": 1795194184872,
+    "updatedAt": 1795194184872,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "The user wants me to create a file named hello.md in the current directory containing exactly the word \"s1-ok\". The current directory is /Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical.\n\nI need to use the write_file tool to create this file with the exact content \"s1-ok\".",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "effect-9065b6b4-cadc-5a4b-90ff-46cb0f4b94e3",
+    "sessionId": "7279d437-dcd8-3ce3-5533-f203f6b00be7",
+    "turnId": "turn-d42ae6140c90f22b63aa9a5b4c23c470",
+    "inputEntryId": "user-turn-d42ae6140c90f22b63aa9a5b4c23c470-1",
+    "createdAt": 1795194184880,
+    "updatedAt": 1795194184895,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.write_file",
+    "detail": {
+      "toolName": "file_system.write_file",
+      "display": {
+        "summary": "Writing hello.md",
+        "content": "s1-ok",
+        "suffix": "",
+        "verb": "Creating",
+        "message": "hello.md",
+        "settledVerb": "Created",
+        "settledMessage": "hello.md",
+        "statusText": "Writing file"
+      },
+      "kind": "file_write",
+      "input": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/hello.md",
+        "content": "s1-ok"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/hello.md",
+        "content": "s1-ok",
+        "fileExisted": false,
+        "previousContent": null
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Created",
+        "message": "hello.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      },
+      "decision": "execute",
+      "approvalType": "always",
+      "approvalSource": "bypass"
+    },
+    "toolCallId": "Fg66aiz4C"
+  },
+  {
+    "id": "reasoning-73238f8e-7623-513b-b8c1-f93c6d336fef-0",
+    "sessionId": "7279d437-dcd8-3ce3-5533-f203f6b00be7",
+    "turnId": "turn-d42ae6140c90f22b63aa9a5b4c23c470",
+    "inputEntryId": "user-turn-d42ae6140c90f22b63aa9a5b4c23c470-1",
+    "createdAt": 1795194186528,
+    "updatedAt": 1795194186528,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "The file has been created successfully. The task is complete. I should not do anything else.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "assistant-73238f8e-7623-513b-b8c1-f93c6d336fef",
+    "sessionId": "7279d437-dcd8-3ce3-5533-f203f6b00be7",
+    "turnId": "turn-d42ae6140c90f22b63aa9a5b4c23c470",
+    "inputEntryId": "user-turn-d42ae6140c90f22b63aa9a5b4c23c470-1",
+    "createdAt": 1795194186528,
+    "updatedAt": 1795194186528,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "Done."
+      }
+    ],
+    "source": "harness",
+    "userDisplayContent": null,
+    "outcome": {
+      "type": "committed"
+    }
+  }
+]
+exit=0 elapsed=10s
+RESULT: hello.md created:
+s1-ok
+===== 3. artifact survey =====
+--- canonical run dir ---
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/export.json
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/hello.md
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session/journal
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session/context-breakdown.json
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session/chunks
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session/CURRENT
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session/scheduled-loops.json
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session/generations
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/scratch/canonical/session/meta.json
+--- export.json (first 60 lines) ---
+{
+  "outcome": "finished",
+  "stop_reason": null,
+  "error": null,
+  "session_id": "7279d437-dcd8-3ce3-5533-f203f6b00be7",
+  "usage": {
+    "input_tokens": 13236,
+    "output_tokens": 162,
+    "cached_input_tokens": 6528,
+    "total_tokens": 13398
+  },
+  "cost_usd": 0.0122562,
+  "steps": 2,
+  "config": {
+    "active_model": "mistral-medium-3.5",
+    "routed_default_model": "",
+    "routed_model_config": null,
+    "catalog_model_aliases": {},
+    "catalog_recommended_model": "",
+    "catalog_default_model": "",
+    "routed_extra_models": [],
+    "providers": [
+      {
+        "name": "mistral",
+        "api_base": "https://api.mistral.ai/v1",
+        "api_key_env_var": "MISTRAL_API_KEY",
+        "browser_auth_base_url": "https://console.mistral.ai",
+        "browser_auth_api_base_url": "https://console.mistral.ai/api",
+        "browser_auth_allow_origin_rewrite": false,
+        "preserve_api_base": false,
+        "api_style": "openai",
+        "backend": "mistral",
+        "reasoning_field_name": "reasoning_content",
+        "emits_finish_reason": true,
+        "project_id": "",
+        "region": "",
+        "extra_headers": {}
+      },
+      {
+        "name": "llamacpp",
+        "api_base": "http://127.0.0.1:8080/v1",
+        "api_key_env_var": "",
+        "browser_auth_base_url": null,
+        "browser_auth_api_base_url": null,
+        "browser_auth_allow_origin_rewrite": false,
+        "preserve_api_base": false,
+        "api_style": "openai",
+        "backend": "generic",
+        "reasoning_field_name": "reasoning_content",
+        "emits_finish_reason": true,
+        "project_id": "",
+        "region": "",
+        "extra_headers": {}
+      }
+    ],
+    "models": {
+      "mistral-large-4-0": {
+        "name": "mistral-large-4-0",
+        "provider": "mistral",
+        "alias": "mistral-large-4-0",
+
+===== 4. risk notes =====
+Expected: exit=0, hello.md=created, export.json fields: version/config/usage/cost/stop_reason/outcome
+Log saved: /Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s1/s1-raw.log

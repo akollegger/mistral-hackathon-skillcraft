@@ -1,0 +1,8 @@
+{
+  "name": "@skillcraft/playback",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "dependencies": { "@skillcraft/contracts": "workspace:*" },
+  "scripts": { "dev": "vite", "test": "vitest run --passWithNoTests" }
+}

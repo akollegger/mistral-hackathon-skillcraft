@@ -1,0 +1,8 @@
+{
+  "name": "@skillcraft/harness",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": { "@skillcraft/contracts": "workspace:*", "@skillcraft/world": "workspace:*", "execa": "^9", "zod": "^3" },
+  "scripts": { "test": "vitest run --passWithNoTests" }
+}

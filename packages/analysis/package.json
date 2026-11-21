@@ -1,0 +1,8 @@
+{
+  "name": "@skillcraft/analysis",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": { "@skillcraft/contracts": "workspace:*", "zod": "^3" },
+  "scripts": { "test": "vitest run --passWithNoTests" }
+}

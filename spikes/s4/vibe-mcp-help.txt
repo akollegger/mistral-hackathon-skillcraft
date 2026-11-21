@@ -1,0 +1,11 @@
+Manage MCP server configuration without starting a session
+
+Usage: vibe mcp <COMMAND>
+
+Commands:
+  add     Add an MCP server to the user configuration
+  remove  Remove an MCP server from the user configuration
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help

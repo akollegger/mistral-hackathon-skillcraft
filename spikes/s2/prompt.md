@@ -1,0 +1,1 @@
+You have a crafting table available as tools (place, take, clear_grid, craft), a 3x3 grid (slots 0-8, row-major), and an inventory. Your goal: craft a torch. Use the tools to do it, then report which tool calls you made, in order, and the final craft result.

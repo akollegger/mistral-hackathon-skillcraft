@@ -1,0 +1,24 @@
+Add an MCP server to the user configuration
+
+Usage: vibe mcp add [OPTIONS] <NAME_OR_URL>
+
+Arguments:
+  <NAME_OR_URL>  Server name with --url or --transport stdio; otherwise a hosted server URL
+
+Options:
+      --url <URL>                      Remote server URL (use a positional server name)
+      --name <NAME>                    Server alias for the legacy URL-first syntax
+      --transport <TRANSPORT>          Server transport [default: streamable-http] [possible values: http, streamable-http, stdio]
+      --scope <SCOPES>                 OAuth scope. Repeat for multiple scopes
+      --no-login                       Save an OAuth server without starting browser login
+      --allow-insecure-http            Allow plaintext HTTP to non-localhost hosts; credentials are unencrypted
+      --header <NAME=VALUE>            Static header NAME=VALUE. Stored in plaintext; use --api-key-env for secrets
+      --api-key-env <VAR>              Environment variable containing the API key [alias: --bearer-token-env-var]
+      --api-key-header <HEADER>        API key header (default: Authorization)
+      --api-key-format <FORMAT>        API key header format containing {token} (default: Bearer {token})
+      --command <COMMAND>              Executable for a stdio server
+      --arg <VALUE>                    Argument for the stdio executable. Repeat for multiple arguments
+      --env <NAME=VALUE>               Environment variable for the stdio process. Repeat for multiple variables
+      --startup-timeout-sec <SECONDS>  Server startup timeout in seconds
+      --tool-timeout-sec <SECONDS>     Tool execution timeout in seconds
+  -h, --help                           Print help

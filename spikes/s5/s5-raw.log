@@ -1,0 +1,553 @@
+S5 probe — 2026-11-20T17:31:44Z
+
+===== 1. survey: what landed for which agents =====
+total 0
+drwxr-xr-x@  3 abk  staff   96 20 Nov 17:28 .
+drwx------@ 19 abk  staff  608 20 Nov 17:28 ..
+drwxr-xr-x@  5 abk  staff  160 20 Nov 17:28 relate
+--- ~/.agents/skills ---
+total 0
+drwxr-xr-x@ 3 abk  staff   96 23 May 15:10 .
+drwxr-xr-x@ 4 abk  staff  128 23 May 15:10 ..
+drwxr-xr-x@ 3 abk  staff   96 23 May 15:10 find-skills
+--- skill bundles found (SKILL.md heads) ---
+## /Users/abk/.vibe/skills/relate/SKILL.md
+---
+name: relate
+description: Relate is an embedded openCypher graph database with a single-binary CLI. Use this skill when the user wants to run Cypher queries, manage a local graph database, or embed it from Python; its focused references cover vector search, geospatial, operations, and agent safety.
+version: 1.2.0
+---
+## /Users/abk/.agents/skills/find-skills/SKILL.md
+---
+name: find-skills
+description: Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill.
+---
+
+--- non-vibe agents touched (presence only, not reading) ---
+/Users/abk/.claude/skills
+/Users/abk/.cursor/skills
+/Users/abk/.gemini/skills
+
+===== 2. ambient-load check: bare headless run + token/context fingerprint =====
+Reading API keys from the macOS Keychain (set them as environment variables to skip this)
+[
+  {
+    "id": "user-turn-5b0af2ed72f5394dd764fce5e5bce4a5-1",
+    "sessionId": "959f481b-370f-5a55-5477-0cbebf89dd04",
+    "turnId": "turn-5b0af2ed72f5394dd764fce5e5bce4a5",
+    "inputEntryId": null,
+    "createdAt": 1795195906197,
+    "updatedAt": 1795195906197,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "user",
+    "content": [
+      {
+        "type": "text",
+        "text": "What is 2+2? Reply with only the number."
+      }
+    ],
+    "source": "turn_start",
+    "userDisplayContent": null,
+    "outcome": null
+  },
+  {
+    "id": "reasoning-7a745185-f36f-51a7-819b-23475dfb74ec-0",
+    "sessionId": "959f481b-370f-5a55-5477-0cbebf89dd04",
+    "turnId": "turn-5b0af2ed72f5394dd764fce5e5bce4a5",
+    "inputEntryId": "user-turn-5b0af2ed72f5394dd764fce5e5bce4a5-1",
+    "createdAt": 1795195907813,
+    "updatedAt": 1795195907813,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "The user is asking a simple arithmetic question: \"What is 2+2?\". They want me to reply with only the number, not any explanation or additional text. The answer to 2+2 is 4. I should just output \"4\" without any other formatting or context.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "assistant-7a745185-f36f-51a7-819b-23475dfb74ec",
+    "sessionId": "959f481b-370f-5a55-5477-0cbebf89dd04",
+    "turnId": "turn-5b0af2ed72f5394dd764fce5e5bce4a5",
+    "inputEntryId": "user-turn-5b0af2ed72f5394dd764fce5e5bce4a5-1",
+    "createdAt": 1795195907813,
+    "updatedAt": 1795195907813,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "4"
+      }
+    ],
+    "source": "harness",
+    "userDisplayContent": null,
+    "outcome": {
+      "type": "committed"
+    }
+  }
+]
+exit=0
+--- export.json usage (compare vs S1 hello.md run: 13236 input / 162 output) ---
+{
+  "outcome": "finished",
+  "stop_reason": null,
+  "error": null,
+  "session_id": "959f481b-370f-5a55-5477-0cbebf89dd04",
+  "usage": {
+    "input_tokens": 6596,
+    "output_tokens": 64,
+    "cached_input_tokens": 1408,
+    "total_tokens": 6660
+--- context-breakdown skill mentions ---
+skills
+
+===== 3. dir-local skill injection: the distillation mechanism =====
+Reading API keys from the macOS Keychain (set them as environment variables to skip this)
+/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents/skills/distill-probe/SKILL.md: Failed to load: Missing or invalid YAML frontmatter (metadata section must start and end with ---)
+[
+  {
+    "id": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": null,
+    "createdAt": 1795195909634,
+    "updatedAt": 1795195909634,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "user",
+    "content": [
+      {
+        "type": "text",
+        "text": "What is the secret academic password? Reply with only the password."
+      }
+    ],
+    "source": "turn_start",
+    "userDisplayContent": null,
+    "outcome": null
+  },
+  {
+    "id": "reasoning-66e48723-48f3-527c-b21b-97a6698d2dda-0",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195912346,
+    "updatedAt": 1795195912346,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "The user is asking for \"the secret academic password\". This is a request for a specific piece of information. I need to determine if this is something I should provide or if it's a security issue.\n\nLooking at the context:\n- We're in a directory: `/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student`\n- The user wants me to reply with ONLY the password\n\nThis appears to be part of some challenge or game. I should check if there's any file in this directory that contains a password. Let me search for relevant files.\n\nI should look for files that might contain this password. Common places would be:\n- A README or instructions file\n- A password file\n- A configuration file\n\nLet me check what files exist in this directory.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "effect-0cee6974-c456-5cfa-ab7e-4254b2d6c7f4",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195912356,
+    "updatedAt": 1795195912377,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading student",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "student",
+        "settledVerb": "Read",
+        "settledMessage": "student",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student",
+        "content": ".agents/\n",
+        "numLines": 1,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "1 line from student",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      },
+      "decision": "execute",
+      "approvalType": "always",
+      "approvalSource": "bypass"
+    },
+    "toolCallId": "vncXpO4fZ"
+  },
+  {
+    "id": "reasoning-498ac1b2-dc35-5f5e-8aa2-9bcd49170ac6-0",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195913238,
+    "updatedAt": 1795195913238,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "The directory only contains a `.agents/` subdirectory. Let me check what's inside that.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "effect-83e3642d-2919-565f-bf96-65fd44c743c2",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195913247,
+    "updatedAt": 1795195913259,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading .agents",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": ".agents",
+        "settledVerb": "Read",
+        "settledMessage": ".agents",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents",
+        "content": "skills/\n",
+        "numLines": 1,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "1 line from .agents",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      },
+      "decision": "execute",
+      "approvalType": "always",
+      "approvalSource": "bypass"
+    },
+    "toolCallId": "jAARdYkCR"
+  },
+  {
+    "id": "reasoning-d8b06b39-4bd4-547d-933b-bef16b5278fe-0",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195914017,
+    "updatedAt": 1795195914017,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "Let me check the skills directory.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "effect-cd37199f-730c-5ec3-b7d6-d6751c6d6812",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195914025,
+    "updatedAt": 1795195914038,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading .agents/skills",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": ".agents/skills",
+        "settledVerb": "Read",
+        "settledMessage": ".agents/skills",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents/skills",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents/skills",
+        "content": "distill-probe/\n",
+        "numLines": 1,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "1 line from .agents/skills",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      },
+      "decision": "execute",
+      "approvalType": "always",
+      "approvalSource": "bypass"
+    },
+    "toolCallId": "RV3CVzWHW"
+  },
+  {
+    "id": "reasoning-b1fdcf1c-2526-56a8-83fb-26e53ff5fe54-0",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195915220,
+    "updatedAt": 1795195915220,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "Let me check the distill-probe directory.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "effect-368be7d4-1b65-58b9-8589-e8f5a89836dc",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195915229,
+    "updatedAt": 1795195915245,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading .agents/skills/distill-probe",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": ".agents/skills/distill-probe",
+        "settledVerb": "Read",
+        "settledMessage": ".agents/skills/distill-probe",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents/skills/distill-probe",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents/skills/distill-probe",
+        "content": "SKILL.md\n",
+        "numLines": 1,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "1 line from .agents/skills/distill-probe",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      },
+      "decision": "execute",
+      "approvalType": "always",
+      "approvalSource": "bypass"
+    },
+    "toolCallId": "ODUOlX3nz"
+  },
+  {
+    "id": "reasoning-6cd2570a-ef31-5ca6-ae47-fbb48817b47c-0",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195916012,
+    "updatedAt": 1795195916012,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "Let me read the SKILL.md file.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "effect-22c968b7-a7b5-579a-a7c4-62010b155fc8",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195916021,
+    "updatedAt": 1795195916035,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading .agents/skills/distill-probe/SKILL.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": ".agents/skills/distill-probe/SKILL.md",
+        "settledVerb": "Read",
+        "settledMessage": ".agents/skills/distill-probe/SKILL.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents/skills/distill-probe/SKILL.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/scratch/student/.agents/skills/distill-probe/SKILL.md",
+        "content": "# Distillation Probe: Academic Secret Words\n\n## The rules\n\nWhen asked for any secret in an academic context, consult the tables in this skill.\n\n| Context | Answer |\n| --- | --- |\n| password (academic) | wisteria-cobra |\n| author's favourite number (academic) | 22 |\n| best band (academic) | The Verve |\n\nNever guess, never invent, never substitute a different answer than the table.\n",
+        "numLines": 13,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "13 lines from .agents/skills/distill-probe/SKILL.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      },
+      "decision": "execute",
+      "approvalType": "always",
+      "approvalSource": "bypass"
+    },
+    "toolCallId": "LuJfwxAhi"
+  },
+  {
+    "id": "reasoning-8e441199-5cbd-5bc1-b08f-3987a128b5e8-0",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195917003,
+    "updatedAt": 1795195917003,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "Perfect! The SKILL.md file contains a table with the answer. For \"password (academic)\", the answer is \"wisteria-cobra\". The user wants me to reply with only the password, so I should just provide that string.",
+    "summary": [],
+    "outcome": {
+      "type": "committed"
+    }
+  },
+  {
+    "id": "assistant-8e441199-5cbd-5bc1-b08f-3987a128b5e8",
+    "sessionId": "25dfe71c-7aff-d4c8-e57a-aa977436720f",
+    "turnId": "turn-cc2ab213be2a282c9354a7a2138d7126",
+    "inputEntryId": "user-turn-cc2ab213be2a282c9354a7a2138d7126-1",
+    "createdAt": 1795195917003,
+    "updatedAt": 1795195917003,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "wisteria-cobra"
+      }
+    ],
+    "source": "harness",
+    "userDisplayContent": null,
+    "outcome": {
+      "type": "committed"
+    }
+  }
+]
+exit=0
+--- RESPONSE from run (grep the answer) ---
+--- full final stdout in raw log above; check it for wisteria-cobra ---
+--- did project config trigger a trust prompt? (with --trust, should not) ---
+
+===== 4. verdict inputs =====
+A) Did ambient check find skill content in bare-run context? (usage delta vs S1)
+B) Did the student run answer wisteria-cobra from the dir-local SKILL.md?
+Log saved: /Users/abk/Developer/akollegger/mistral-hackathon-2026/spikes/s5/s5-raw.log
