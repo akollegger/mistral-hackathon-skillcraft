@@ -1,0 +1,6 @@
+node_modules/
+results/
+*.log
+!spikes/**/*.log
+.DS_Store
+dist/
