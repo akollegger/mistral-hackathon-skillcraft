@@ -46,10 +46,12 @@ function scoredSuccess(
 		});
 }
 
-/** Load all runs. targets maps taskId -> targetItem (from the scenario books). */
+/** Load runs. targets maps taskId -> targetItem (from the scenario books).
+ *  CODE-REVIEW A5: opts.round filters to one experiment round (run.meta.round). */
 export function loadRuns(
 	resultsDir: string,
 	targets: Record<string, string>,
+	opts?: { round?: string },
 ): RunRecord[] {
 	const runsDir = join(resultsDir, "runs");
 	if (!existsSync(runsDir)) return [];
@@ -59,6 +61,7 @@ export function loadRuns(
 			const meta = RunMeta.parse(
 				JSON.parse(readFileSync(join(runsDir, runId, "run.meta.json"), "utf8")),
 			);
+			if (opts?.round !== undefined && meta.round !== opts.round) continue;
 			const skillMetaPath = join(runsDir, runId, "skill.meta.json");
 			let skillClassification: string | undefined;
 			let skillExampleCount: number | undefined;
@@ -157,6 +160,44 @@ export function strategyQuality(runs: RunRecord[]): Record<string, unknown>[] {
 		}
 	}
 	return rows;
+}
+
+/** CODE-REVIEW A4: failure reasons (budget/timeout/gave_up/...) per tier x condition. */
+export function failureBreakdown(runs: RunRecord[]): Record<string, unknown>[] {
+	const rows: Record<string, unknown>[] = [];
+	for (const tier of TIER_ORDER) {
+		for (const condition of ["none", "transcript", "skill"]) {
+			const cell = students(runs).filter(
+				(r) => r.meta.tier === tier && r.meta.condition === condition,
+			);
+			const fails = cell.filter((r) => !r.success);
+			if (fails.length === 0) continue;
+			const byReason = new Map<string, number>();
+			for (const f of fails)
+				byReason.set(f.meta.failureReason ?? "unknown", (byReason.get(f.meta.failureReason ?? "unknown") ?? 0) + 1);
+			rows.push({ tier, condition, failures: fails.length, byReason: Object.fromEntries(byReason) });
+		}
+	}
+	return rows;
+}
+
+/** CODE-REVIEW B6: skill-condition lift per pinned skill (skillId in run meta). */
+export function skillLiftBySkill(runs: RunRecord[]): Record<string, unknown>[] {
+	const bySkill = new Map<string, RunRecord[]>();
+	for (const r of students(runs)) {
+		if (r.meta.condition === "skill" && r.meta.skillId) {
+			const arr = bySkill.get(r.meta.skillId) ?? [];
+			arr.push(r);
+			bySkill.set(r.meta.skillId, arr);
+		}
+	}
+	return [...bySkill.entries()].map(([skillId, rs]) => ({
+		skillId,
+		taskIds: [...new Set(rs.map((r) => r.meta.taskId))],
+		n: rs.length,
+		successRate: rate(rs),
+		avgToolCalls: rs.reduce((a, r) => a + r.meta.toolCalls, 0) / rs.length,
+	}));
 }
 
 /** skillQuality: student outcome vs teacher skill classification. */

@@ -9,10 +9,12 @@ import {
 	fenceFromLogsScenario,
 	heldOutScenario,
 	inventedBook,
+	inventedBookTaught,
 	inventedScenario,
 	pickaxeScenario,
 	stoolFromLogsScenario,
 	traditionalBook,
+	traditionalBookTaught,
 } from "@skillcraft/world";
 import type { z } from "zod";
 
@@ -33,7 +35,7 @@ export const CELLS: GridCell[] = [
 		tier: "traditional",
 		label: "pickaxe",
 		scenario: pickaxeScenario,
-		book: traditionalBook,
+		book: traditionalBookTaught,
 		heldOut: false,
 	},
 	{
@@ -54,7 +56,7 @@ export const CELLS: GridCell[] = [
 		tier: "invented",
 		label: "bar",
 		scenario: inventedScenario,
-		book: inventedBook,
+		book: inventedBookTaught,
 		heldOut: false,
 	},
 	{
@@ -68,6 +70,13 @@ export const CELLS: GridCell[] = [
 
 /** Taught cells — the teacher runs (P3) and skill generation happen here. */
 export const TAUGHT_CELLS = CELLS.filter((c) => !c.heldOut);
+
+/** Scenario with heldOut stamped from the grid cell (A1: the cell is the source
+ *  of truth; scenario objects may disagree). */
+export const cellScenario = (cell: GridCell): GridCell["scenario"] => ({
+	...cell.scenario,
+	heldOut: cell.heldOut,
+});
 
 export const TARGETS: Record<string, string> = Object.fromEntries(
 	CELLS.map((c) => [c.scenario.taskId, c.scenario.targetItem]),

@@ -44,4 +44,8 @@ export const RunMeta = z.object({
 	modelAlias: z.string(), // must equal the --model passed on the spawn
 	cliVersion: z.string(), // record: version skew caught us once already
 	exitCode: z.number().int(), // 0/1/2/3/4 semantics per s1-notes.md
+	// CODE-REVIEW A4/A5/B6: optional so metas written before round 4 still parse
+	failureReason: z.enum(["budget", "timeout", "turns", "gave_up", "contaminated"]).nullable().optional(),
+	round: z.string().optional(), // e.g. "r4"; set via SKILLCRAFT_ROUND at spawn time
+	skillId: z.string().uuid().nullable().optional(), // skill pinned to this run (skill condition)
 });

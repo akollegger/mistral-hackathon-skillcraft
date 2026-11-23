@@ -296,11 +296,22 @@ const storyBar = document.getElementById("story-bar")!;
 
 function matchingRuns(pane: RunPane): RunSummary[] {
   if (!index) return [];
-  return index.runs.filter((r) => {
+  const matches = index.runs.filter((r) => {
     if (r.role !== pane.role || (r.condition ?? "none") !== pane.condition) return false;
     if (pane.heldOut) return r.heldOut === true && (scenarioTier === undefined || r.tier === scenarioTier);
     return r.taskId === scenario && !r.heldOut;
   });
+  // Fallback: scenarios made only of held-out runs (fence-heldout, qux-heldout)
+  // still need playable runs in the taught panes.
+  if (matches.length === 0 && !pane.heldOut)
+    return index.runs.filter(
+      (r) => r.role === pane.role && (r.condition ?? "none") === pane.condition && r.taskId === scenario,
+    );
+  // Relaxation for sparse cells (e.g. no teacher-none runs on fence-heldout):
+  // any condition for this role+scenario.
+  if (matches.length === 0)
+    return index.runs.filter((r) => r.role === pane.role && r.taskId === scenario);
+  return matches;
 }
 
 async function loadPaneRun(pane: RunPane): Promise<void> {
@@ -313,7 +324,19 @@ async function loadPaneRun(pane: RunPane): Promise<void> {
     opt.textContent = `${r.outcome ?? "…"} · ${r.toolCalls ?? "?"} moves`;
     pane.runSelect.appendChild(opt);
   }
-  const run = pickRun(index.runs, { role: pane.role, condition: pane.condition, heldOut: pane.heldOut, taskId: scenario, tier: scenarioTier });
+  let run = pickRun(index.runs, { role: pane.role, condition: pane.condition, heldOut: pane.heldOut, taskId: scenario, tier: scenarioTier });
+  // Relaxation for sparse cells (e.g. fence-heldout has no teacher-none runs):
+  // fall back to any condition for this role+scenario before giving up.
+  if (!run) {
+    const relaxed = index.runs.filter(
+      (r) =>
+        r.role === pane.role &&
+        r.taskId === scenario &&
+        (pane.heldOut ? r.heldOut === true : true),
+    );
+    run = relaxed[0] ?? null;
+    if (run) console.warn(`no ${pane.role}/${pane.condition} run for ${scenario}; fell back to ${run.runId} (${run.condition ?? "none"})`);
+  }
   if (!run) {
     pane.replay = null;
     pane.nameEl.textContent = "no matching run";

@@ -131,8 +131,3 @@ export const matches = (
 	return false;
 };
 
-// Debug: log matches calls
-// export const matches = (grid: Grid, pattern: Grid, eq: Equivalence): boolean => {
-//   console.log("matches called with:", { grid, pattern, eq });
-//   ...
-// };

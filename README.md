@@ -21,13 +21,15 @@ The experiment proper is **skill distillation**: an experienced **teacher** agen
 - **Strategy quality:** tool calls and failed attempts per successful craft. Imitation and memorization cost many blind attempts; genuine strategy transfer costs few.
 - **Composition depth reached:** how far up the recipe DAG an agent gets on its own.
 
+## Status (post-hackathon)
+
+The hackathon is over; the harness, world model, and playback visualizer are implemented and the experiment matrix has been run (rounds 3–4, see `docs/matrix-r3-findings.md` and `docs/matrix-r4-findings.md`). The visualizer is published to the `gh-pages` branch (`pnpm --filter @skillcraft/playback deploy`); `results/` is gitignored, so run data is local — archive or re-run via `packages/harness/dist/p3.mjs` / `p4.mjs` / `p6.mjs`.
+
 ## How to help
 
-This repo is being built for the [Mistral Vibe hackathon](https://mistral.ai) (July 2026), with a strict **prep/event boundary**: design, specs, contracts and tooling probes are done in advance (that's what you're reading); all implementation happens during the event clock. Ways to contribute now:
-
-- **Review the design.** [`2-project-brief.md`](./2-project-brief.md) (architecture) and [`3-project-plan.md`](./3-project-plan.md) (event-day plan with pre-committed experiment matrix). Issues and push requests welcome.
-- **Stress-test the scenario model.** [`docs/scenario-model.md`](./docs/scenario-model.md) defines recipes-as-functions, composition depth, and the tier semantics. If you know Minecraft recipes (or experiment design!), we want holes poked in it.
-- **Datasets.** Recipe books per tier, inventories with distractor items, and hidden held-out invented-tier tasks all need designing. Claim a tier, read the contracts in [`packages/contracts/src/scenario.ts`](./packages/contracts/src/scenario.ts), propose data.
+- **Reproduce / extend the matrix.** `SKILLCRAFT_ROUND=r5 node packages/harness/dist/p6.mjs 30 5 5` (adaptive student sample; teachers via `p3.mjs`). Analysis tables: `packages/analysis` (`skillLift`, `skillLiftBySkill`, `failureBreakdown`, `sampleEfficiency`, `skillQuality`) with a `round` filter.
+- **Review the design.** [`docs/scenario-model.md`](./docs/scenario-model.md), [`docs/demo-matrix.md`](./docs/demo-matrix.md), [`CODE-REVIEW.md`](./CODE-REVIEW.md) (known limitations B2–B8).
+- **Known design limits:** one task per tier (B2), tier confounded with composition depth (B3), teacher/student cells mix model and call budget (B5), taught cells are a recall control (B8). See `docs/matrix-r4-findings.md`.
 - **Judge queries.** Four eval queries reduce to one Cypher statement each ([`docs/graph-schema.cypher`](./docs/graph-schema.cypher)). Better formulations are contributions.
 - **Playback (stretch).** An event-log replayer and a mocked crafting-table UI would make results legible to non-engineers.
 

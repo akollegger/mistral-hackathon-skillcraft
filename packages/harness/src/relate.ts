@@ -13,6 +13,7 @@
  *    graph only AFTER scoring that run — writeRecipes() is called post-scoring.
  */
 
+import { execaSync } from "execa";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { Database } from "@relate/relate";
@@ -60,132 +61,161 @@ export interface LineageStore {
 
 export function openLineageStore(storePath: string): LineageStore {
 	mkdirSync(dirname(storePath), { recursive: true });
-	const db = Database.open(storePath);
-	const conn = db.connect();
-	const q = (cypher: string, params?: Record<string, unknown>) =>
-		params ? conn.query(cypher, params as never) : conn.query(cypher);
-
-	// constraints (S3: supported)
-	q(
+	// Less-greedy locking: writes go through one-shot `relate query` CLI calls,
+	// so the single-writer lock is held only for the duration of one write batch
+	// (process open -> statements -> exit) instead of for the whole driver
+	// process. The embedded Database handle has no close() in v1.2.0, so an
+	// in-process writer would hold the lock until GC. Readers use read-only
+	// in-process handles (any number may coexist with the writer).
+	const CONSTRAINTS = [
 		"CREATE CONSTRAINT task_id IF NOT EXISTS FOR (t:Task) REQUIRE t.taskId IS UNIQUE",
-	);
-	q(
 		"CREATE CONSTRAINT run_id IF NOT EXISTS FOR (r:Run) REQUIRE r.runId IS UNIQUE",
-	);
-	q(
 		"CREATE CONSTRAINT skill_id IF NOT EXISTS FOR (s:Skill) REQUIRE s.skillId IS UNIQUE",
-	);
+	];
+	const withWriter = (fn: (qq: (cypher: string, params?: Record<string, unknown>) => void) => void): void => {
+		const stmts: [string, Record<string, unknown> | undefined][] = [];
+		fn((cypher, p) => stmts.push([cypher, p]));
+		// one CLI call per statement: --param values are global to an invocation,
+		// so batching statements that reuse a param name would collide
+		let first = true;
+		for (const [cypher, params] of stmts) {
+			const args = ["query", first ? [...CONSTRAINTS, cypher].join(";") : cypher, "--database", storePath];
+			first = false;
+			if (params)
+				for (const [k, v] of Object.entries(params)) args.push("--param", `${k}=${JSON.stringify(v)}`);
+			execaSync("relate", args); // non-zero exit throws (classified error on stdout)
+		}
+	};
+	const withReader = <T>(fn: (qq: (cypher: string, params?: Record<string, unknown>) => { rows: unknown[] }) => T): T => {
+		const rdb = Database.open(storePath, { readOnly: true });
+		const rconn = rdb.connect();
+		const qq = (cypher: string, params?: Record<string, unknown>) =>
+			(params ? rconn.query(cypher, params as never) : rconn.query(cypher)) as { rows: unknown[] };
+		return fn(qq);
+	};
 
 	return {
 		upsertTask(task) {
-			q(
-				"MERGE (t:Task {taskId: $taskId}) SET t.tier = $tier, t.targetItem = $targetItem, t.heldOut = $heldOut",
-				{
-					taskId: task.taskId,
-					tier: task.tier,
-					targetItem: task.targetItem,
-					heldOut: task.heldOut ?? false,
-				},
+			withWriter((q) =>
+				q(
+					"MERGE (t:Task {taskId: $taskId}) SET t.tier = $tier, t.targetItem = $targetItem, t.heldOut = $heldOut",
+					{
+						taskId: task.taskId,
+						tier: task.tier,
+						targetItem: task.targetItem,
+						heldOut: task.heldOut ?? false,
+					},
+				),
 			);
 		},
 		upsertRun(run) {
-			q(
-				`MERGE (r:Run {runId: $runId}) SET r.role = $role, r.condition = $condition, r.taskId = $taskId,
+			withWriter((q) =>
+				q(
+					`MERGE (r:Run {runId: $runId}) SET r.role = $role, r.condition = $condition, r.taskId = $taskId,
          r.tier = $tier, r.heldOut = $heldOut, r.outcome = $outcome, r.toolCalls = $toolCalls,
          r.failedAttempts = $failedAttempts, r.durationMs = $durationMs`,
-				{ ...run, condition: run.condition ?? null },
+					{ ...run, condition: run.condition ?? null },
+				),
 			);
 		},
 		upsertSkill(skill) {
-			q(
-				`MERGE (s:Skill {skillId: $skillId}) SET s.generatedByRunId = $generatedByRunId,
+			withWriter((q) =>
+				q(
+					`MERGE (s:Skill {skillId: $skillId}) SET s.generatedByRunId = $generatedByRunId,
          s.classification = $classification, s.exampleCount = $exampleCount`,
-				skill,
+					skill,
+				),
 			);
 		},
 		edge(from, to, type, props) {
 			const propsClause = props ? " SET e += $props" : "";
-			q(
-				`MATCH (a:${from.label} {${from.key}: $fromVal}), (b:${to.label} {${to.key}: $toVal})
+			withWriter((q) =>
+				q(
+					`MATCH (a:${from.label} {${from.key}: $fromVal}), (b:${to.label} {${to.key}: $toVal})
          MERGE (a)-[e:${type}]->(b)${propsClause}`,
-				{ fromVal: from.value, toVal: to.value, ...(props ? { props } : {}) },
+					{ fromVal: from.value, toVal: to.value, ...(props ? { props } : {}) },
+				),
 			);
 		},
 		upsertEval(eval_) {
-			q(
-				`MATCH (r:Run {runId: $runId}) MERGE (r)-[:SCORED_BY]->(e:Eval {metric: $metric, value: $value})`,
-				eval_,
+			withWriter((q) =>
+				q(
+					`MATCH (r:Run {runId: $runId}) MERGE (r)-[:SCORED_BY]->(e:Eval {metric: $metric, value: $value})`,
+					eval_,
+				),
 			);
 		},
 		writeRecipes(book, bookId) {
-			q("MERGE (b:Book {bookId: $bookId})", { bookId });
-			for (const r of book) {
-				// shape = 9-char template, one distinct letter per ingredient type (var binds into shape);
-				// shapeless = shape null + counts only (graceful degradation, scenario-model ruling)
-				const letters = new Map<string, string>();
-				let next = 0;
-				const shape =
-					r.equivalence === "shapeless"
-						? null
-						: r.pattern
-								.flat()
-								.map((cell) => {
-									if (cell === null) return ".";
-									if (!letters.has(cell))
-										letters.set(cell, String.fromCharCode(65 + next++));
-									return letters.get(cell);
-								})
-								.join("");
-				q(
-					`MERGE (r:Recipe {recipeId: $recipeId}) SET r.tier = $tier, r.targetItem = $targetItem,
+			withWriter((q) => {
+				q("MERGE (b:Book {bookId: $bookId})", { bookId });
+				for (const r of book) {
+					// shape = 9-char template, one distinct letter per ingredient type (var binds into shape);
+					// shapeless = shape null + counts only (graceful degradation, scenario-model ruling)
+					const letters = new Map<string, string>();
+					let next = 0;
+					const shape =
+						r.equivalence === "shapeless"
+							? null
+							: r.pattern
+									.flat()
+									.map((cell) => {
+										if (cell === null) return ".";
+										if (!letters.has(cell))
+											letters.set(cell, String.fromCharCode(65 + next++));
+										return letters.get(cell);
+									})
+									.join("");
+					q(
+						`MERGE (r:Recipe {recipeId: $recipeId}) SET r.tier = $tier, r.targetItem = $targetItem,
            r.equivalence = $equivalence, r.produces = $produces, r.shape = $shape, r.intermediate = $intermediate
            WITH r MATCH (b:Book {bookId: $bookId}) MERGE (b)-[:CONTAINS]->(r)`,
-					{
-						recipeId: r.recipeId,
-						tier: r.tier,
-						targetItem: r.targetItem,
-						equivalence: r.equivalence,
-						produces: r.produces,
-						shape,
-						intermediate: r.intermediate,
-						bookId,
-					},
-				);
-				// REQUIRES: one edge per ingredient type, quantity + var; PRODUCES edge to target
-				for (const [itemId, varLetter] of letters) {
-					const quantity = r.pattern.flat().filter((c) => c === itemId).length;
-					q(
-						`MATCH (r:Recipe {recipeId: $recipeId}) MERGE (i:Item {itemId: $itemId})
-             MERGE (r)-[:REQUIRES {quantity: $quantity, var: $varLetter}]->(i)`,
-						{ recipeId: r.recipeId, itemId, quantity, varLetter },
+						{
+							recipeId: r.recipeId,
+							tier: r.tier,
+							targetItem: r.targetItem,
+							equivalence: r.equivalence,
+							produces: r.produces,
+							shape,
+							intermediate: r.intermediate,
+							bookId,
+						},
 					);
-				}
-				if (r.equivalence === "shapeless") {
-					for (const cell of r.pattern.flat()) {
-						if (cell === null) continue;
+					// REQUIRES: one edge per ingredient type, quantity + var; PRODUCES edge to target
+					for (const [itemId, varLetter] of letters) {
+						const quantity = r.pattern.flat().filter((c) => c === itemId).length;
 						q(
 							`MATCH (r:Recipe {recipeId: $recipeId}) MERGE (i:Item {itemId: $itemId})
-               MERGE (r)-[e:REQUIRES {quantity: 1}]->(i) SET e.var = null`,
-							{ recipeId: r.recipeId, itemId: cell },
+             MERGE (r)-[:REQUIRES {quantity: $quantity, var: $varLetter}]->(i)`,
+							{ recipeId: r.recipeId, itemId, quantity, varLetter },
 						);
 					}
-				}
-				q(
-					`MATCH (r:Recipe {recipeId: $recipeId}) MERGE (i:Item {itemId: $targetItem})
+					if (r.equivalence === "shapeless") {
+						for (const cell of r.pattern.flat()) {
+							if (cell === null) continue;
+							q(
+								`MATCH (r:Recipe {recipeId: $recipeId}) MERGE (i:Item {itemId: $itemId})
+               MERGE (r)-[e:REQUIRES {quantity: 1}]->(i) SET e.var = null`,
+								{ recipeId: r.recipeId, itemId: cell },
+							);
+						}
+					}
+					q(
+						`MATCH (r:Recipe {recipeId: $recipeId}) MERGE (i:Item {itemId: $targetItem})
            MERGE (r)-[:PRODUCES {quantity: $produces}]->(i)`,
-					{
-						recipeId: r.recipeId,
-						targetItem: r.targetItem,
-						produces: r.produces,
-					},
-				);
-			}
+						{
+							recipeId: r.recipeId,
+							targetItem: r.targetItem,
+							produces: r.produces,
+						},
+					);
+				}
+			});
 		},
 		query<T>(cypher: string, params?: Record<string, unknown>) {
-			return q(cypher, params).rows as T[];
+			return withReader((qq) => qq(cypher, params).rows as unknown as T[]);
 		},
 		close() {
-			db.checkpoint(); // WAL flush; the embedded engine has no close() (v1.2.0 API)
+			// writer lock is released per batch by the CLI exiting; nothing held open
 		},
 	};
 }

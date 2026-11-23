@@ -166,7 +166,24 @@ export function buildRunMeta(args: {
 	cliVersion: string;
 	exitCode: number;
 	outcome: "success" | "fail" | "timeout";
+	maxToolCalls?: number | undefined;
+	skillId?: string | null | undefined;
 }): RunMeta {
+	// CODE-REVIEW A4: classify why a failed run failed (signals: exitCode 3 =
+	// time limit; toolCalls at the cap with refused calls = budget; contaminated
+	// flag; otherwise a plain fail = gave up / error)
+	const failureReason: "budget" | "timeout" | "turns" | "gave_up" | "contaminated" | null =
+		args.parsed.contaminated
+			? "contaminated"
+			: // budget first: the MCP cap ends the run with exitCode 3, so a capped
+				// run is budget exhaustion even though the exit code reads as timeout
+				args.maxToolCalls !== undefined && args.parsed.toolCalls >= args.maxToolCalls
+					? "budget"
+					: args.outcome === "timeout" || args.exitCode === 3
+						? "timeout"
+						: args.outcome === "fail"
+							? "gave_up"
+							: null;
 	return {
 		runId: args.runId,
 		role: args.role,
@@ -185,6 +202,9 @@ export function buildRunMeta(args: {
 		outputTokens: args.exportJson.usage?.output_tokens ?? 0,
 		costUsd: args.exportJson.cost_usd ?? 0,
 		modelAlias: args.modelAlias,
+		failureReason,
+		round: process.env.SKILLCRAFT_ROUND ?? "dev",
+		skillId: args.skillId ?? null,
 		cliVersion: args.cliVersion,
 		exitCode: args.exitCode,
 	};

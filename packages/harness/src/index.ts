@@ -75,6 +75,7 @@ export interface SpawnRunRequest {
 	/** student conditions: source files to copy into the run dir */
 	skillContent?: string; // skill.md content (skill condition)
 	transcriptContent?: string; // transcript.md content (transcript condition)
+	skillId?: string; // pinned skill id, recorded in run meta (CODE-REVIEW B6)
 	runId?: string;
 }
 
@@ -363,6 +364,8 @@ export async function spawnRun(req: SpawnRunRequest): Promise<SpawnRunResult> {
 		),
 		exitCode,
 		outcome,
+		maxToolCalls: req.maxToolCalls,
+		skillId: req.skillId ?? null,
 	});
 	writeFileSync(
 		paths.metaPath,
@@ -380,4 +383,23 @@ export async function spawnRun(req: SpawnRunRequest): Promise<SpawnRunResult> {
 		exitCode,
 		contaminated: parsed.contaminated,
 	};
+}
+
+// --- skill content heuristics (CODE-REVIEW B7) ---
+
+/** Count worked examples = fenced code blocks that contain a craft tool call. */
+export function countSkillExamples(content: string): number {
+	const fences = content.match(/```[\s\S]*?```/g) ?? [];
+	return fences.filter((f) => /\b(place|craft|take|clear)\s*\(/.test(f)).length;
+}
+
+/** Lightweight classification into the contract enum: procedure (imperative,
+ *  tool-driven), answer (prose that reads like the solution), unknown. */
+export function classifySkill(content: string): "procedure" | "answer" | "unknown" {
+	const toolCalls = (content.match(/\b(place|craft|take|clear)\s*\(/g) ?? []).length;
+	const steps = (content.match(/^\s*\d+[.)]\s/gm) ?? []).length;
+	const prose = content.replace(/```[\s\S]*?```/g, "").split(/\s+/).length;
+	if (toolCalls + steps >= 3 && toolCalls > 0) return "procedure";
+	if (toolCalls === 0 && steps === 0 && prose > 40) return "answer";
+	return "unknown";
 }

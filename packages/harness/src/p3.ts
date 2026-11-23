@@ -9,13 +9,16 @@
 import { createHash, randomUUID } from "node:crypto";
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { TAUGHT_CELLS } from "./grid.js";
-import { RESULTS_DIR, spawnRun, validateSkillFrontmatter } from "./index.js";
+import { CELLS, TAUGHT_CELLS, cellScenario } from "./grid.js";
+import { RESULTS_DIR, classifySkill, countSkillExamples, spawnRun, validateSkillFrontmatter } from "./index.js";
 import { openLineageStore } from "./relate.js";
 
 const N = Number(process.argv[2] ?? 1);
-// Optional 3rd arg: only run taught cells whose label matches (e.g. "stool")
-const ONLY = process.argv[3]?.toLowerCase();
+// Optional 3rd arg: only run cells whose label matches (e.g. "stool")
+const ONLY = process.argv.slice(3).find((a) => !a.startsWith("--"))?.toLowerCase();
+// --all: include held-out cells too (backfill teacher-cold baselines)
+const ALL = process.argv.includes("--all");
+const CELLS_TO_RUN = ALL ? CELLS : TAUGHT_CELLS;
 /** Teachers need headroom to solve AND distill; students stay capped at 80. */
 const TEACHER_MAX_TOOL_CALLS = 200;
 
@@ -36,12 +39,12 @@ function findSkillFile(dir: string): string | null {
 
 async function main() {
 	console.log(
-		`P3: ${N} teacher(s) per taught scenario x ${TAUGHT_CELLS.length} scenarios`,
+		`P3: ${N} teacher(s) per scenario x ${CELLS_TO_RUN.length} scenarios${ALL ? " (ALL incl. held-out)" : ""}`,
 	);
 	const store = openLineageStore(join(RESULTS_DIR, "lineage"));
 	const summary: unknown[] = [];
 	try {
-		for (const cell of TAUGHT_CELLS) {
+		for (const cell of CELLS_TO_RUN) {
 			if (ONLY && !cell.label.toLowerCase().includes(ONLY)) continue;
 			store.upsertTask({
 				taskId: cell.scenario.taskId,
@@ -57,7 +60,7 @@ async function main() {
 				const res = await spawnRun({
 					role: "teacher",
 					condition: null,
-					scenario: cell.scenario,
+					scenario: cellScenario(cell),
 					book: cell.book,
 					timeLimitSec: 300,
 					maxTurns: 25,
@@ -88,9 +91,12 @@ async function main() {
 					"ATTEMPTED",
 				);
 
-				const skillPath = findSkillFile(
-					join(RESULTS_DIR, "runs", res.runId, "dir"),
-				);
+				// held-out cells: never harvest (a held-out skill pinned to held-out
+				// students would contaminate the transfer test)
+				const skillPath = cell.heldOut
+					? null
+					: findSkillFile(join(RESULTS_DIR, "runs", res.runId, "dir"));
+				if (cell.heldOut) console.log("  held-out cell: skill NOT harvested (anti-contamination)");
 				if (skillPath) {
 					const content = readFileSync(skillPath, "utf8");
 					const gate = validateSkillFrontmatter(content);
@@ -103,8 +109,8 @@ async function main() {
 							generatedByRunId: res.runId,
 							contentHash: createHash("sha256").update(content).digest("hex"),
 							content,
-							classification: "unknown",
-							exampleCount: (content.match(/```/g)?.length ?? 0) / 2,
+							classification: classifySkill(content),
+							exampleCount: countSkillExamples(content),
 							taskId: cell.scenario.taskId,
 						};
 						writeFileSync(

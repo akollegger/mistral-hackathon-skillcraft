@@ -4,3 +4,6 @@ results/
 !spikes/**/*.log
 .DS_Store
 dist/
+
+# spike scratch dirs (session journals, WAL, locks) are local artifacts
+spikes/*/scratch/

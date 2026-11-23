@@ -114,5 +114,15 @@ export function pickRun(
     if (opts.heldOut) return r.heldOut === true && (opts.tier === undefined || r.tier === opts.tier);
     return r.taskId === opts.taskId && !r.heldOut;
   });
+  // A scenario may consist entirely of held-out runs (e.g. fence-heldout,
+  // qux-heldout in the round-4 grid): fall back to them so the scenario
+  // still has playable runs in the taught panes.
+  if (matches.length === 0 && !opts.heldOut)
+    return runs.find(
+      (r) =>
+        r.role === opts.role &&
+        (r.condition ?? "none") === (opts.condition ?? "none") &&
+        r.taskId === opts.taskId,
+    ) ?? null;
   return matches[0] ?? null;
 }

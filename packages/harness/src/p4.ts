@@ -11,7 +11,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { CELLS, TARGETS } from "./grid.js";
+import { CELLS, TARGETS, cellScenario } from "./grid.js";
 import {
 	RESULTS_DIR,
 	STUDENT_MODEL,
@@ -33,6 +33,7 @@ interface TeacherSkill {
 	content: string;
 	taskId: string;
 	tier: string;
+	outcome: string;
 }
 
 function loadTeacherSkills(): TeacherSkill[] {
@@ -48,13 +49,15 @@ function loadTeacherSkills(): TeacherSkill[] {
 			const runMeta = JSON.parse(
 				readFileSync(join(RESULTS_DIR, "runs", runId, "run.meta.json"), "utf8"),
 			);
-			if (runMeta.role === "teacher")
+			// CODE-REVIEW A3: failed/timeout teacher runs are not skill sources
+			if (runMeta.role === "teacher" && runMeta.outcome === "success")
 				skills.push({
 					runId,
 					skillId: meta.skillId,
 					content: meta.content,
 					taskId: runMeta.taskId,
 					tier: runMeta.tier,
+					outcome: "success",
 				});
 		} catch {
 			/* not a teacher run */
@@ -131,7 +134,7 @@ async function main() {
 				const transcriptContent = src
 					? renderTranscript(
 							join(RESULTS_DIR, "runs", src.runId, "events.jsonl"),
-							{ taskId: src.taskId, outcome: "success" },
+							{ taskId: src.taskId, outcome: src.outcome },
 						)
 					: undefined;
 				const label = `${cell.tier}/${cell.label}/${condition}/rep${r}`;
@@ -141,12 +144,12 @@ async function main() {
 				const res = await spawnRun({
 					role: "student",
 					condition,
-					scenario: cell.scenario,
+					scenario: cellScenario(cell),
 					book: cell.book,
 					timeLimitSec: 300,
 					maxTurns: 30,
 					...(condition === "skill" && src
-						? { skillContent: src.content }
+						? { skillContent: src.content, skillId: src.skillId }
 						: {}),
 					...(condition === "transcript" && transcriptContent
 						? { transcriptContent }
@@ -213,12 +216,13 @@ async function main() {
 					const tres = await spawnRun({
 						role: "teacher",
 						condition: "skill",
-						scenario: cell.scenario,
+						scenario: cellScenario(cell),
 						book: cell.book,
 						timeLimitSec: 300,
 						maxTurns: 30,
 						maxToolCalls: 200, // teacher headroom (students stay capped at 80)
 						skillContent: src.content,
+						skillId: src.skillId,
 					});
 					const tsuccess = succeeded(tres.eventsPath, cell.scenario.targetItem);
 					const tmeta = JSON.parse(

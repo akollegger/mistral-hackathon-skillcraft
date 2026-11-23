@@ -23,9 +23,10 @@ beforeAll(() => {
     <main id="panes"></main>
     <section id="lineage"><button id="load-lineage"></button><div id="lineage-queries"></div><pre id="lineage-out"></pre></section>`;
 
-  // /api/* is unavailable in tests → 404, forcing the demo-fixture fallback.
+  // /api/* and the exported data/ bundle are unavailable in tests → 404,
+  // forcing the demo-fixture fallback.
   vi.stubGlobal("fetch", async (url: string) => {
-    if (url.startsWith("./api/")) return { ok: false, status: 404, json: async () => ({}), text: async () => "" };
+    if (url.startsWith("./api/") || url.startsWith("./data/")) return { ok: false, status: 404, json: async () => ({}), text: async () => "" };
     const path = url.replace(/^\.\//, "");
     try {
       const body = readFileSync(`public/${path}`, "utf8");

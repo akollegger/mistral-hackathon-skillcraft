@@ -95,6 +95,13 @@ export const traditionalBook: Recipe[] = [
 	},
 ];
 
+/** Taught traditional book: everything EXCEPT the held-out fence recipe, so the
+ *  pickaxe task cannot discover the fence recipe through wouldProduce feedback
+ *  (anti-cheat rule 5; CODE-REVIEW A2). */
+export const traditionalBookTaught: Recipe[] = traditionalBook.filter(
+	(r) => r.recipeId !== "mc:oak_fence",
+);
+
 export const pickaxeScenario: Scenario = {
 	taskId: "trad-pickaxe-1",
 	tier: "traditional",
@@ -219,6 +226,13 @@ export const inventedBook: Recipe[] = [
 ];
 
 /** Held-out invented task (teacher never sees it; students judged cold). */
+/** Taught invented book: everything EXCEPT the held-out qux recipe, so the bar
+ *  task cannot discover qux through wouldProduce feedback (anti-cheat rule 5;
+ *  CODE-REVIEW A2). */
+export const inventedBookTaught: Recipe[] = inventedBook.filter(
+	(r) => r.recipeId !== "inv:qux",
+);
+
 export const heldOutScenario: Scenario = {
 	taskId: "inv-qux-heldout",
 	tier: "invented",

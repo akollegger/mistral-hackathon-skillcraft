@@ -1,4 +1,0 @@
-auth: basic (from --auth)
-serve: HTTP Query API v2 listening on http://127.0.0.1:7474 (auth: basic)
-serve: MCP (streamable HTTP) listening on http://127.0.0.1:7475 (auth: basic)
-serve: shutting down
