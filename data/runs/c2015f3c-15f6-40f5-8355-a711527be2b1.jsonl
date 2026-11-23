@@ -1,0 +1,2 @@
+{"ts":"2026-11-23T10:00:12.442Z","seq":0,"kind":"run_start","payload":{"runId":"c2015f3c-15f6-40f5-8355-a711527be2b1","role":"student","condition":"transcript","taskId":"trad-pickaxe-1","modelAlias":"mistral-medium-latest"}}
+{"ts":"2026-11-23T10:00:12.442Z","seq":1,"kind":"prompt","payload":{"length":1072}}
