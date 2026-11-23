@@ -2,6 +2,78 @@
   "source": "static",
   "runs": [
     {
+      "runId": "c6b2742c-2c7b-4eea-8cfa-d16dde519c0a",
+      "role": "teacher",
+      "condition": null,
+      "taskId": "inv-qux-heldout",
+      "tier": "invented",
+      "heldOut": false,
+      "outcome": "timeout",
+      "toolCalls": 192,
+      "startedAt": "2026-11-23T09:30:38.979Z",
+      "file": "data/runs/c6b2742c-2c7b-4eea-8cfa-d16dde519c0a.jsonl"
+    },
+    {
+      "runId": "2244c60d-bc1c-4193-8794-1a9e21e83c83",
+      "role": "teacher",
+      "condition": null,
+      "taskId": "inv-qux-heldout",
+      "tier": "invented",
+      "heldOut": false,
+      "outcome": "timeout",
+      "toolCalls": 204,
+      "startedAt": "2026-11-23T09:25:34.973Z",
+      "file": "data/runs/2244c60d-bc1c-4193-8794-1a9e21e83c83.jsonl"
+    },
+    {
+      "runId": "2aacaba1-acde-4162-9e99-1482162788a5",
+      "role": "teacher",
+      "condition": null,
+      "taskId": "inv-qux-heldout",
+      "tier": "invented",
+      "heldOut": false,
+      "outcome": "success",
+      "toolCalls": 203,
+      "startedAt": "2026-11-23T09:20:31.082Z",
+      "file": "data/runs/2aacaba1-acde-4162-9e99-1482162788a5.jsonl"
+    },
+    {
+      "runId": "a63f4277-d221-43d5-b847-c3d1abd15dc3",
+      "role": "teacher",
+      "condition": null,
+      "taskId": "trad-fence-1",
+      "tier": "traditional",
+      "heldOut": false,
+      "outcome": "success",
+      "toolCalls": 20,
+      "startedAt": "2026-11-23T09:17:43.137Z",
+      "file": "data/runs/a63f4277-d221-43d5-b847-c3d1abd15dc3.jsonl"
+    },
+    {
+      "runId": "6c9dc25e-15e9-4a5f-b1e7-e37aee1379ef",
+      "role": "teacher",
+      "condition": null,
+      "taskId": "trad-fence-1",
+      "tier": "traditional",
+      "heldOut": false,
+      "outcome": "success",
+      "toolCalls": 20,
+      "startedAt": "2026-11-23T09:15:48.894Z",
+      "file": "data/runs/6c9dc25e-15e9-4a5f-b1e7-e37aee1379ef.jsonl"
+    },
+    {
+      "runId": "08e0c649-9d43-43d1-be59-da8af2495894",
+      "role": "teacher",
+      "condition": null,
+      "taskId": "trad-fence-1",
+      "tier": "traditional",
+      "heldOut": false,
+      "outcome": "success",
+      "toolCalls": 106,
+      "startedAt": "2026-11-23T09:14:12.395Z",
+      "file": "data/runs/08e0c649-9d43-43d1-be59-da8af2495894.jsonl"
+    },
+    {
       "runId": "a91d8ce9-0f54-4edb-b2dc-05f20d09488a",
       "role": "student",
       "condition": "transcript",
