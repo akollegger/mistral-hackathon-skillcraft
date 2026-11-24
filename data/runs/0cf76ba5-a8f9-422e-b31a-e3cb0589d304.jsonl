@@ -1,0 +1,2 @@
+{"ts":"2026-11-23T13:03:14.972Z","seq":0,"kind":"run_start","payload":{"runId":"0cf76ba5-a8f9-422e-b31a-e3cb0589d304","role":"student","condition":"none","taskId":"inv-bar-1","modelAlias":"mistral-medium-latest"}}
+{"ts":"2026-11-23T13:03:14.973Z","seq":1,"kind":"prompt","payload":{"length":928}}

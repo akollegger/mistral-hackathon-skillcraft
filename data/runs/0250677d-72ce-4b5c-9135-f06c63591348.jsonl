@@ -1,0 +1,2 @@
+{"ts":"2026-11-23T13:03:14.969Z","seq":0,"kind":"run_start","payload":{"runId":"0250677d-72ce-4b5c-9135-f06c63591348","role":"student","condition":"none","taskId":"inv-qux-heldout","modelAlias":"mistral-medium-latest"}}
+{"ts":"2026-11-23T13:03:14.970Z","seq":1,"kind":"prompt","payload":{"length":928}}
